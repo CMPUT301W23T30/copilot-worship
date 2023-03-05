@@ -39,4 +39,10 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation platform('com.google.firebase:firebase-bom:31.2.2')
     implementation 'com.google.firebase:firebase-firestore'
+
+    //Firebase testing
+    //testImplementation 'org.powermock:powermock:1.6.5'
+    //testImplementation 'org.powermock:powermock-module-junit4:1.6.5'
+    //testImplementation 'org.powermock:powermock-api-mockito:1.6.5'
+
 }

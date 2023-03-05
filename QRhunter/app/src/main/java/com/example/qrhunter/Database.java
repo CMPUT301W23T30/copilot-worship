@@ -56,31 +56,30 @@ public class Database {
     }
 
     //TODO see if we should return a task here as well
-    public void addPlayer(Player p) {
+    public Task<Void> addPlayer(Player p) {
         //TODO Do QR Codes
         Map<String, Object> playerInfo = new HashMap<>();
         playerInfo.put("email", p.getEmail());
         playerInfo.put("number", p.getNumber());
         playerInfo.put("username", p.getUsername());
 
-        playersCollection
+        return playersCollection
                 .document(p.getUsername())
-                .set(playerInfo)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        //TODO add success listener
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        //TODO add failure listener
-                    }
-                });
-
+                .set(playerInfo);
     }
 
+    //TODO see if we should return task
+    public Task<Void> removePlayer(Player p){
+        return playersCollection
+                .document(p.getUsername())
+                .delete();
+    }
+    public Task<Void> removePlayer(String p){
+        return playersCollection
+                .document(p)
+                .delete();
+
+    }
 
 
 }

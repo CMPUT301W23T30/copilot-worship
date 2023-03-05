@@ -50,8 +50,6 @@ public class MainActivity extends AppCompatActivity {
                         else {
                             Log.d("Database Error", "Could not retrieve" +
                                     p.getUsername() + " Error: " + task.getException());
-
-
                         }
                     }
                 });
