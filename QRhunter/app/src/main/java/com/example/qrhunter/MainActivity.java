@@ -20,7 +20,7 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
-    public void testAddScannedCode(){
+    public void testAddScannedCode() {
 
         Database db = new Database(); // Creates database
         Player testPlayer = new Player(); // Creates player for testing
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("Db Test", "player -> qrCollection Exception: " + e.getMessage());
                     }
                 });
-
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
