@@ -79,7 +79,7 @@ public class Database {
     }
 
     /**
-     * Returns a task of QuerySnapshot for finding a QRCode
+     * Returns a task of QuerySnapshot for finding a player in the QRCode collection
      * @param qrCode Name of the QRCode to be found
      * @return Task of Query with the result
      */
@@ -89,6 +89,44 @@ public class Database {
                 .collection("Players")
                 .get()
         ;
+    }
+
+    /**
+     * Adds a QR code to the database
+     * @param qrCode QR code to be added
+     * @return Void task of qr code being added
+     */
+    public Task<Void> addQrCode(@NonNull QRCode qrCode){
+        HashMap<String, Object> qrInfo = new HashMap<>();
+        qrInfo.put("hash", qrCode.getName());
+        qrInfo.put("score",qrCode.getScore());
+        qrInfo.put("location", qrCode.getLocation());
+        return qrCodeCollection
+                .document(qrCode.getName())
+                .set(qrInfo);
+    }
+
+    /**
+     * Removes a QR code from the database
+     * @param qrCode QR code to be removed
+     * @return Void task of qr code being removed
+     */
+    public Task<Void> removeQrCode(@NonNull QRCode qrCode) {
+        return qrCodeCollection
+                .document(qrCode.getName())
+                .delete();
+    }
+
+    /**
+     * Returns a task of QuerySnapshot for finding a QR code in the player collection
+     * @param player Username of the player to be found
+     * @return Task of Query with the result
+     */
+    public Task<QuerySnapshot> getQrCodesFromPlayer(Player player) {
+        return playersCollection
+                .document(player.getUsername())
+                .collection("QRCodes")
+                .get();
     }
 
     /**
@@ -115,20 +153,6 @@ public class Database {
                 .document(player.getUsername())
                 .set(playerInfo));
         return tasks;
-    }
-    /**
-     * Adds a QR code to the database
-     * @param qrCode QR code to be added
-     * @return Void task of qr code being added
-     */
-    public Task<Void> addQrCode(@NonNull QRCode qrCode){
-        HashMap<String, Object> qrInfo = new HashMap<>();
-        qrInfo.put("hash", qrCode.getName());
-        qrInfo.put("score",qrCode.getScore());
-        qrInfo.put("location", qrCode.getLocation());
-        return qrCodeCollection
-                .document(qrCode.getName())
-                .set(qrInfo);
     }
 
 
