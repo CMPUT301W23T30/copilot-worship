@@ -13,12 +13,11 @@ public class Player {
     private ArrayList<QRCode> qrCodes;
 
     /**
-     * Default constructor for player class
-     * Sets the username to "Default username", email to "Default email",
-     * number to 0, codes to null
+     * Test constructor for player class
+     * Sets the username only, everything else test values
      */
-    public Player(){
-        this.username = "Default username";
+    public Player(String username){
+        this.username = username;
         this.email = "Default email";
         this.number = 0;
         this.qrCodes = null;

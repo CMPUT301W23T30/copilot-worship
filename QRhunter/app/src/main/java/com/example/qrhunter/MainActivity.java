@@ -22,53 +22,59 @@ public class MainActivity extends AppCompatActivity {
 
     public void testAddScannedCode() {
 
-        Database db = new Database(); // Creates database
-        Player testPlayer = new Player(); // Creates player for testing
-        int randomScore = (int) Math.floor(Math.random() * 1001); // Generates random score
-        QRCode testQRCode = new QRCode("name", "location", randomScore); // Creates QRCode for testing
-        db.addPlayer(testPlayer); // Adds player to database
-        db.addQrCode(testQRCode); // Adds QRCode to database
+        for (int i = 0; i < 10; i++) {
 
-        /*
-          "tasks" is a hashmap containing two keys, "QrToPlayerCol" and "PlayerToQrCol",
-          which are .set() commands that execute whenever you call their respective keys
-          (hence the success and failure listeners)
-         */
-        HashMap<String, Task<Void>> tasks = db.addScannedCode(testQRCode, testPlayer);
+            int randomScore = (int) Math.floor(Math.random() * 1001); // Generates random score
+            int randomUsername = (int) Math.floor(Math.random() * 1001); // Generates random username (int for now)
+            int randomQRname = (int) Math.floor(Math.random() * 1001); // Generates random QR name (int for now)
 
-        // Adds a QRCode to the players collection
-        tasks.get("QrToPlayerCol")
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("Db Test", "qrCode -> playerCollection added succesfully");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("Db Test", "qrCode -> playerCollection Exception: " + e.getMessage());
-                    }
-                });
+            Database db = new Database(); // Creates database
+            Player testPlayer = new Player(String.valueOf(randomUsername)); // Creates player for testing
+            QRCode testQRCode = new QRCode(String.valueOf(randomQRname), "location", randomScore); // Creates QRCode for testing
+            db.addPlayer(testPlayer); // Adds player to database
+            db.addQrCode(testQRCode); // Adds QRCode to database
 
-        // Log statements for testing
-        Log.d("Db Test", (String) tasks.keySet().toArray()[0]);
-        Log.d("Db Test", (String) tasks.keySet().toArray()[1]);
+            /*
+              "tasks" is a hashmap containing two keys, "QrToPlayerCol" and "PlayerToQrCol",
+              which are .set() commands that execute whenever you call their respective keys
+              (hence the success and failure listeners)
+             */
+            HashMap<String, Task<Void>> tasks = db.addScannedCode(testQRCode, testPlayer);
 
-        // Adds a player to the QRCode collection
-        tasks.get("PlayerToQrCol")
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("Db Test", "player -> qrCollection added succesfully");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("Db Test", "player -> qrCollection Exception: " + e.getMessage());
-                    }
-                });
+            // Adds a QRCode to the players collection
+            tasks.get("QrToPlayerCol")
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Log.d("Db Test", "qrCode -> playerCollection added successfully");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("Db Test", "qrCode -> playerCollection Exception: " + e.getMessage());
+                        }
+                    });
+
+            // Log statements for testing
+            Log.d("Db Test", (String) tasks.keySet().toArray()[0]);
+            Log.d("Db Test", (String) tasks.keySet().toArray()[1]);
+
+            // Adds a player to the QRCode collection
+            tasks.get("PlayerToQrCol")
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Log.d("Db Test", "player -> qrCollection added succesfully");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("Db Test", "player -> qrCollection Exception: " + e.getMessage());
+                        }
+                    });
+        }
     }
 
     @Override
