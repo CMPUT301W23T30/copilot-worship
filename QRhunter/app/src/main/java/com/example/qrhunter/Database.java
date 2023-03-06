@@ -23,17 +23,14 @@ import java.util.Map;
  * This class represents the database the app uses
  */
 public class Database {
-    /**
-     * db a firestore database
-     */
+
+    // Initialize database and collections
     private final FirebaseFirestore db;
     private CollectionReference playersCollection;
     private CollectionReference qrCodeCollection;
 
 
-    /**
-     * Default constructor for Database
-     */
+    // Default constructor for Database, creates a new instance of the database and collections
     public Database(){
         db = FirebaseFirestore.getInstance();
         playersCollection = db.collection("Players");
@@ -41,48 +38,51 @@ public class Database {
     }
 
 
-
-
     /**
-     * returns task of querysnapshot for finding player
-     * @param user Username of player to be found
+     * Returns task of QuerySnapshot for finding player
+     * @param username Username of player to be found
      * @return Task of Query with the result
      */
-    public Task<QuerySnapshot> getPlayerFromUsername(String user){
+    public Task<QuerySnapshot> getPlayerFromUsername(String username){
         return playersCollection
-                .whereEqualTo("username", user)
+                .whereEqualTo("username", username)
                 .get();
     }
 
 
     /**
      * Adds a player to the database
-     * @param p : Player to add
-     * @return Void Task of the player being added to the db
+     * @param player : Player to add
+     * @return Void Task of the player being added to the database
      */
-    public Task<Void> addPlayer(Player p) {
+    public Task<Void> addPlayer(Player player) {
         //TODO Do QR Codes
         Map<String, Object> playerInfo = new HashMap<>();
-        playerInfo.put("email", p.getEmail());
-        playerInfo.put("number", p.getNumber());
-        playerInfo.put("username", p.getUsername());
+        playerInfo.put("email", player.getEmail());
+        playerInfo.put("number", player.getNumber());
+        playerInfo.put("username", player.getUsername());
 
         return playersCollection
-                .document(p.getUsername())
+                .document(player.getUsername())
                 .set(playerInfo);
     }
 
     /**
-     * Removes a player from the db
-     * @param p username of player to remove
+     * Removes a player from the database
+     * @param player username of player to remove
      * @return Void task of player being removed
      */
-    public Task<Void> removePlayer(String p){
+    public Task<Void> removePlayer(String player){
         return playersCollection
-                .document(p)
+                .document(player)
                 .delete();
     }
 
+    /**
+     * Returns a task of QuerySnapshot for finding a QRCode
+     * @param qrCode Name of the QRCode to be found
+     * @return Task of Query with the result
+     */
     public Task<QuerySnapshot> getPlayersFromQRCode(QRCode qrCode){
         return qrCodeCollection
                 .document(qrCode.getName())
@@ -116,7 +116,11 @@ public class Database {
                 .set(playerInfo));
         return tasks;
     }
-
+    /**
+     * Adds a QR code to the database
+     * @param qrCode QR code to be added
+     * @return Void task of qr code being added
+     */
     public Task<Void> addQrCode(@NonNull QRCode qrCode){
         HashMap<String, Object> qrInfo = new HashMap<>();
         qrInfo.put("hash", qrCode.getName());

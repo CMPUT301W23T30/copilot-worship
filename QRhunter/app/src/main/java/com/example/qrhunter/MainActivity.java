@@ -21,38 +21,52 @@ import java.util.HashMap;
 public class MainActivity extends AppCompatActivity {
 
     public void testAddScannedCode(){
-        Database db = new Database();
-        Player p = new Player();
-        QRCode qr = new QRCode("name", "location", 123);
-        db.addPlayer(p);
-        db.addQrCode(qr);
-        HashMap<String, Task<Void>> tasks = db.addScannedCode(qr, p);
+
+        Database db = new Database(); // Creates database
+        Player testPlayer = new Player(); // Creates player for testing
+        int randomScore = (int) Math.floor(Math.random() * 1001); // Generates random score
+        QRCode testQRCode = new QRCode("name", "location", randomScore); // Creates QRCode for testing
+        db.addPlayer(testPlayer); // Adds player to database
+        db.addQrCode(testQRCode); // Adds QRCode to database
+
+        /*
+          "tasks" is a hashmap containing two keys, "QrToPlayerCol" and "PlayerToQrCol",
+          which are .set() commands that execute whenever you call their respective keys
+          (hence the success and failure listeners)
+         */
+        HashMap<String, Task<Void>> tasks = db.addScannedCode(testQRCode, testPlayer);
+
+        // Adds a QRCode to the players collection
         tasks.get("QrToPlayerCol")
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        Log.d("Db Test", "qr -> player added succesfully");
+                        Log.d("Db Test", "qrCode -> playerCollection added succesfully");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("Db Test", "qr -> player Exception: " + e.getMessage());
+                        Log.d("Db Test", "qrCode -> playerCollection Exception: " + e.getMessage());
                     }
                 });
-        System.out.println(tasks.keySet().toArray()[0]);
-        System.out.println(tasks.keySet().toArray()[1]);
+
+        // Log statements for testing
+        Log.d("Db Test", (String) tasks.keySet().toArray()[0]);
+        Log.d("Db Test", (String) tasks.keySet().toArray()[1]);
+
+        // Adds a player to the QRCode collection
         tasks.get("PlayerToQrCol")
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        Log.d("Db Test", "player -> qr added succesfully");
+                        Log.d("Db Test", "player -> qrCollection added succesfully");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("Db Test", "player -> qr Exception: " + e.getMessage());
+                        Log.d("Db Test", "player -> qrCollection Exception: " + e.getMessage());
                     }
                 });
 
@@ -63,11 +77,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //start populate xml
+        // Code for setting the profile circle (can be adapted for custom profile pics later)
         ImageView profileCircle = (ImageView) findViewById(R.id.default_profile_icon);
-        //in the future if we want to add profile pictures
         profileCircle.setImageResource(R.drawable._icon__profile_circle_);
-        //throwaway to test add scanned code
+
+        // Code for testing the database
         testAddScannedCode();
     }
 }
