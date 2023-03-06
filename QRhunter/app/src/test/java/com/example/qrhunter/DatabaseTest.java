@@ -21,7 +21,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.google.firebase.database.*;
+//import com.google.firebase.database.*;
 //import com.google.firebase.database.DataSnapshot;
 //import com.google.firebase.database.DatabaseReference;
 //import com.google.firebase.database.FirebaseDatabase;
@@ -102,11 +102,40 @@ public class DatabaseTest {
 
     @Test
     public void testAddScannedCode(){
+        Database db = new Database();
         Player p = new Player();
         QRCode qr = new QRCode("name", "location", 123);
         db.addPlayer(p);
         db.addQrCode(qr);
         HashMap<String, Task<Void>> tasks = db.addScannedCode(qr, p);
+        tasks.get("QrToPlayerCol")
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("Db Test", "qr -> player added succesfully");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("Db Test", "qr -> player Exception: " + e.getMessage());
+                    }
+                });
+        System.out.println(tasks.keySet().toArray()[0]);
+        System.out.println(tasks.keySet().toArray()[1]);
+        tasks.get("PlayerToQrCol")
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("Db Test", "player -> qr added succesfully");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("Db Test", "player -> qr Exception: " + e.getMessage());
+                    }
+                });
 
     }
 
