@@ -1,8 +1,11 @@
 package com.example.qrhunter;
 
+import android.content.Intent;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageView;
 
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -88,5 +91,11 @@ public class MainActivity extends AppCompatActivity {
 
         // Code for testing the database
         testAddScannedCode();
+
+        Button tempAddPlayerButton = (Button) findViewById(R.id.tempAddPlayerButton);
+        tempAddPlayerButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, AddPlayerActivity.class);
+            startActivity(intent);
+        });
     }
 }
