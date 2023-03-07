@@ -75,27 +75,5 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         userText.setText(username);
-
-        db.getPlayerFromUsername(username)
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                //TODO Make some kinda error screen
-                                Log.d(TAG, "Could not load player from db" + e.getMessage());
-                            }
-                        })
-                       .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                           @Override
-                           public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                               for(QueryDocumentSnapshot doc : queryDocumentSnapshots){
-                                   userText.setText(doc.getId());
-                                   Log.d(TAG, doc.getId());
-                               }
-                               if(queryDocumentSnapshots.isEmpty()){
-                                   Log.d(TAG, "Player not found");
-                               }
-                           }
-                       });
-
     }
 }
