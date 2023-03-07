@@ -3,6 +3,9 @@
           xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28"/>
 
     <application
             android:allowBackup="true"
@@ -11,8 +14,7 @@
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:supportsRtl="true"
-            android:theme="@style/Theme.QRhunter"
-            tools:targetApi="31">
+            android:theme="@style/Theme.QRhunter">
         <activity
                 android:name=".MainActivity"
                 android:exported="true">
@@ -26,8 +28,17 @@
                     android:name="android.app.lib_name"
                     android:value=""/>
         </activity>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.android.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
         <activity android:name=".CaptureAct"
-            android:screenOrientation="portrait"
+            android:screenOrientation="fullSensor"
             android:stateNotNeeded="true"
             android:theme="@style/Theme.QRhunter"/>
         <meta-data android:name="preloaded_fonts" android:resource="@array/preloaded_fonts"/>

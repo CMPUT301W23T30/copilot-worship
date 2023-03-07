@@ -22,16 +22,16 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="157dp"
-            android:layout_height="152dp"
+            android:layout_width="253dp"
+            android:layout_height="232dp"
             android:layout_alignStart="@+id/Photo_Button"
             android:layout_alignTop="@+id/Scan_Button"
             android:layout_alignEnd="@+id/Photo_Button"
             android:layout_alignBottom="@+id/Photo_Button"
-            android:layout_marginStart="-10dp"
-            android:layout_marginTop="129dp"
-            android:layout_marginEnd="-19dp"
-            android:layout_marginBottom="-163dp"
+            android:layout_marginStart="-58dp"
+            android:layout_marginTop="123dp"
+            android:layout_marginEnd="-67dp"
+            android:layout_marginBottom="-237dp"
             tools:srcCompat="@tools:sample/avatars" />
 
         <Button
