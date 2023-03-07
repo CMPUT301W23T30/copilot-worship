@@ -6,11 +6,55 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+
+        <Button
+            android:id="@+id/Scan_Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Scan" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="157dp"
+            android:layout_height="152dp"
+            android:layout_alignStart="@+id/Photo_Button"
+            android:layout_alignTop="@+id/Scan_Button"
+            android:layout_alignEnd="@+id/Photo_Button"
+            android:layout_alignBottom="@+id/Photo_Button"
+            android:layout_marginStart="-10dp"
+            android:layout_marginTop="129dp"
+            android:layout_marginEnd="-19dp"
+            android:layout_marginBottom="-163dp"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <Button
+            android:id="@+id/Photo_Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/Scan_Button"
+            android:layout_below="@+id/Scan_Button"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="138dp"
+            android:layout_marginTop="17dp"
+            android:layout_marginEnd="145dp"
+            android:layout_marginBottom="-119dp"
+            android:text="Take Photo" />
+
+    </RelativeLayout>
+
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="JANEDOE"
-            android:fontFamily="@font/nunito_bold"
+
             android:textSize="32dp" android:textAlignment="viewStart"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -20,48 +64,10 @@
     <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" app:srcCompat="@drawable/_icon__profile_circle_"
-            android:id="@+id/default_profile_icon"
+            android:id="@+id/profile_icon"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/user_name" app:layout_constraintTop_toTopOf="parent"/>
-    <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/user_name" app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias="0.183"
-            android:id="@+id/linearLayout">
 
-        <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="27dp"
-                android:id="@+id/user_total_score"
-                android:text="LMAO might want to make this into a fragment">
-
-        </TextView>
-
-        <ListView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/user_stats_display">
-
-        </ListView>
-    </LinearLayout>
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".MainActivity">
-
-        <Button
-            android:id="@+id/Scan_Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Scan"
-            android:layout_centerInParent="true"/>
-    </RelativeLayout>
     <TextView
             android:text="yeah we will need to make that bottom nav fragment somehow"
             android:layout_width="match_parent"
