@@ -29,7 +29,6 @@ public class Database {
     private final FirebaseFirestore db;
     private CollectionReference playersCollection;
     private CollectionReference qrCodeCollection;
-    final String TAG = "Database";
 
 
     /**
@@ -43,7 +42,7 @@ public class Database {
 
 
 
-//TODO are you SURE we cant just return a player?
+
     /**
      * returns task of querysnapshot for finding player
      * @param user Username of player to be found
@@ -55,7 +54,12 @@ public class Database {
                 .get();
     }
 
-    //TODO see if we should return a task here as well
+
+    /**
+     * Adds a player to the database
+     * @param p : Player to add
+     * @return Void Task of the player being added to the db
+     */
     public Task<Void> addPlayer(Player p) {
         //TODO Do QR Codes
         Map<String, Object> playerInfo = new HashMap<>();
@@ -68,17 +72,59 @@ public class Database {
                 .set(playerInfo);
     }
 
-    //TODO see if we should return task
-    public Task<Void> removePlayer(Player p){
-        return playersCollection
-                .document(p.getUsername())
-                .delete();
-    }
+    /**
+     * Removes a player from the db
+     * @param p username of player to remove
+     * @return Void task of player being removed
+     */
     public Task<Void> removePlayer(String p){
         return playersCollection
                 .document(p)
                 .delete();
+    }
 
+    public Task<QuerySnapshot> getPlayersFromQRCode(QRCode qrCode){
+        return qrCodeCollection
+                .document(qrCode.getName())
+                .collection("Players")
+                .get()
+        ;
+    }
+
+    /**
+     * Adds a Player and the scanned QR code to the database
+     * Returns a map of tasks for the caller to handle
+     * @param qrCode qrcode to be added
+     * @param player Player that scanned the qr code
+     * @return A map with the tasks {QrToPlayerCol, PlayerToQrCol}
+     */
+    public HashMap<String, Task<Void>> addScannedCode(@NonNull QRCode qrCode, @NonNull Player player){
+        HashMap<String, Task<Void>> tasks = new HashMap<>();
+        HashMap<String, Object> qrInfo = new HashMap<>();
+        HashMap<String, Object> playerInfo = new HashMap<>();
+        qrInfo.put("hash", qrCode.getName());
+        tasks.put("QrToPlayerCol", playersCollection
+                .document(player.getUsername())
+                .collection("QRCodes")
+                .document(qrCode.getName())
+                .set(qrInfo));
+        playerInfo.put("username", player.getUsername());
+        tasks.put("PlayerToQrCol", qrCodeCollection
+                .document(qrCode.getName())
+                .collection("Players")
+                .document(player.getUsername())
+                .set(playerInfo));
+        return tasks;
+    }
+
+    public Task<Void> addQrCode(@NonNull QRCode qrCode){
+        HashMap<String, Object> qrInfo = new HashMap<>();
+        qrInfo.put("hash", qrCode.getName());
+        qrInfo.put("score",qrCode.getScore());
+        qrInfo.put("location", qrCode.getLocation());
+        return qrCodeCollection
+                .document(qrCode.getName())
+                .set(qrInfo);
     }
 
 

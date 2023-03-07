@@ -1,8 +1,7 @@
 package com.example.qrhunter;
 
+//DO NOT RUN THIS
 
-//Using Code from https://stackoverflow.com/questions/43225804/junit-testing-in-android-studio-with-firebase
-//TODO make this sourcing better
 import static org.junit.Assert.assertEquals;
 
 import android.util.Log;
@@ -11,6 +10,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -19,6 +19,8 @@ import org.junit.After;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import com.google.firebase.database.*;
 //import com.google.firebase.database.DataSnapshot;
 //import com.google.firebase.database.DatabaseReference;
@@ -96,6 +98,16 @@ public class DatabaseTest {
                     }
                 })
         ;
+    }
+
+    @Test
+    public void testAddScannedCode(){
+        Player p = new Player();
+        QRCode qr = new QRCode("name", "location", 123);
+        db.addPlayer(p);
+        db.addQrCode(qr);
+        HashMap<String, Task<Void>> tasks = db.addScannedCode(qr, p);
+
     }
 
     /**
