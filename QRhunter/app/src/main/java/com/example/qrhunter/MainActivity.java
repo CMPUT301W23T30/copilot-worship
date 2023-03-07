@@ -9,8 +9,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -49,27 +51,27 @@ public class MainActivity extends AppCompatActivity {
             else{
                 SharedPreferences.Editor editor = settings.edit();
                 db.getPlayerCount()
-                        .addOnSuccessListener(new OnSuccessListener<AggregateQuerySnapshot>() {
+                        .addOnCompleteListener(new OnCompleteListener<AggregateQuerySnapshot>() {
                             @Override
-                            public void onSuccess(AggregateQuerySnapshot aggregateQuerySnapshot) {
-                                username = "Player-" + (aggregateQuerySnapshot
-                                        .getCount() + 1);
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                //TODO add an error message here
-                                Log.d(TAG, "Failed to get player count for new player");
-                                username = "Player-?";
+                            public void onComplete(@NonNull Task<AggregateQuerySnapshot> task) {
+                                if(task.isSuccessful()){
+                                    username = "Player-" + (task.getResult().getCount()
+                                             + 1);
+                                }
+                                else{
+                                    //TODO add an error message here
+                                    Log.d(TAG, "Failed to get player count for new player");
+                                    username = "Player-?";
+                                }
+                                editor.putString("Username", username);
+                                editor.apply();
+                                userText.setText(username);
+                                db.addPlayer(new Player(username));
                             }
                         })
                 ;
 
-                editor.putString("Username", username);
-                editor.apply();
-                userText.setText(username);
-                db.addPlayer(new Player(username));
+
             }
         }
         userText.setText(username);
