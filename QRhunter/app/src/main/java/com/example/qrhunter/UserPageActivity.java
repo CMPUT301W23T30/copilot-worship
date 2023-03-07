@@ -35,6 +35,8 @@ public class UserPageActivity extends AppCompatActivity {
         TextView userText = findViewById(R.id.user_page_user_name);
         Bundle bundle = getIntent().getExtras();
         Database db = new Database();
+        String username = bundle.getString("username");
+        Log.d(TAG,username);
         db.getPlayerFromUsername(bundle.getString("username"))
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -48,6 +50,10 @@ public class UserPageActivity extends AppCompatActivity {
                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                for(QueryDocumentSnapshot doc : queryDocumentSnapshots){
                                    userText.setText(doc.getId());
+                                   Log.d(TAG, doc.getId());
+                               }
+                               if(queryDocumentSnapshots.isEmpty()){
+                                   Log.d(TAG, "Player not found");
                                }
                            }
                        });

@@ -23,7 +23,7 @@ public class LoginActivity extends AppCompatActivity {
     public void toUserPage(String username){
         Intent intent = new Intent(LoginActivity.this, UserPageActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("player", username);
+        bundle.putString("username", username);
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -34,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
 
         Button devLogin = findViewById(R.id.dev_login_button);
         Button registerButton = findViewById(R.id.register_button);
+        Button loginButton = findViewById(R.id.login_button);
         TextView usernameTextView = findViewById(R.id.login_page_user_name);
 
         Database db = new Database();
@@ -46,7 +47,14 @@ public class LoginActivity extends AppCompatActivity {
         devLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toUserPage(new Player().getUsername());
+                db.addPlayer(new Player())
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                toUserPage(new Player().getUsername());
+                            }
+                        });
+
             }
         });
 
@@ -103,5 +111,32 @@ public class LoginActivity extends AppCompatActivity {
                         });
             }
         });
+
+        //Login user
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String username = usernameTextView.getText().toString();
+                db.getPlayerFromUsername(username)
+                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                if(!queryDocumentSnapshots.isEmpty()){
+                                    toUserPage(username);
+                                }
+                                else{
+                                    //TODO tell user that user does not exist
+                                }
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                //TODO tell user query failed
+                            }
+                        });
+            }
+        });
+
     }
 }
