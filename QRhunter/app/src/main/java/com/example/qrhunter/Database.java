@@ -56,7 +56,6 @@ public class Database {
      * @return Void Task of the player being added to the database
      */
     public Task<Void> addPlayer(Player player) {
-        //TODO Do QR Codes
         Map<String, Object> playerInfo = new HashMap<>();
         playerInfo.put("email", player.getEmail());
         playerInfo.put("number", player.getNumber());

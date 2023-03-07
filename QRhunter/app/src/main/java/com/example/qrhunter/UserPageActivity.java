@@ -1,6 +1,7 @@
 package com.example.qrhunter;
 
 import android.content.Intent;
+import android.nfc.Tag;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -12,12 +13,14 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.gson.Gson;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 
 import java.util.HashMap;
 
 public class UserPageActivity extends AppCompatActivity {
-
+    final String TAG = "Login Page";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,18 +31,26 @@ public class UserPageActivity extends AppCompatActivity {
         ImageView profileCircle = (ImageView) findViewById(R.id.default_profile_icon);
         profileCircle.setImageResource(R.drawable._icon__profile_circle_);
 
-        Gson gson = new Gson();
-        Bundle bundle = getIntent().getExtras();
-        Player p = gson.fromJson(bundle.getString("player", "default"), Player.class);
+
         TextView userText = findViewById(R.id.user_page_user_name);
-
-        userText.setText(p.getUsername());
-
-
-
-
-
-
+        Bundle bundle = getIntent().getExtras();
+        Database db = new Database();
+        db.getPlayerFromUsername(bundle.getString("username"))
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                //TODO Make some kinda error screen
+                                Log.d(TAG, "Could not load player from db" + e.getMessage());
+                            }
+                        })
+                       .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                           @Override
+                           public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                               for(QueryDocumentSnapshot doc : queryDocumentSnapshots){
+                                   userText.setText(doc.getId());
+                               }
+                           }
+                       });
 
     }
 }
