@@ -55,7 +55,7 @@ public class UserPageActivity extends AppCompatActivity {
             else{
                 SharedPreferences.Editor editor = settings.edit();
                 //TODO have the db make some kind of new unique Player info
-                username = "Dev Account";
+                username = "New Account";
                 editor.putString("Username", username);
                 editor.apply();
                 userText.setText(username);
