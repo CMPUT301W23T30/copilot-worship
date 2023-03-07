@@ -1,6 +1,7 @@
 package com.example.qrhunter;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.nfc.Tag;
 import android.util.Log;
 import android.widget.ImageView;
@@ -18,9 +19,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class UserPageActivity extends AppCompatActivity {
-    final String TAG = "Login Page";
+    final String TAG = "User Profile Page";
+    String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +38,33 @@ public class UserPageActivity extends AppCompatActivity {
         TextView userText = findViewById(R.id.user_page_user_name);
         Bundle bundle = getIntent().getExtras();
         Database db = new Database();
-        String username = bundle.getString("username");
-        //If nothing passed into page, we can assume that the page is from the user opening it
-        if(username == ""){
-
+        //https://stackoverflow.com/questions/10209814/saving-user-information-in-app-settings
+        //Roughly following
+        //TODO properly cite
+        if(bundle != null){
+            username = bundle.getString("username");
         }
-        Log.d(TAG,username);
-        db.getPlayerFromUsername(bundle.getString("username"))
+        else{
+
+            SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+            //If login info saved already
+            if(settings.contains("Username")){
+                username = settings.getString("Username", "");
+            }
+            //else we can assume a new player
+            else{
+                SharedPreferences.Editor editor = settings.edit();
+                //TODO have the db make some kind of new unique Player info
+                username = "Dev Account";
+                editor.putString("Username", username);
+                editor.apply();
+                userText.setText(username);
+                db.addPlayer(new Player(username));
+            }
+        }
+        userText.setText(username);
+
+        db.getPlayerFromUsername(username)
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
