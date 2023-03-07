@@ -36,6 +36,10 @@ public class UserPageActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         Database db = new Database();
         String username = bundle.getString("username");
+        //If nothing passed into page, we can assume that the page is from the user opening it
+        if(username == ""){
+
+        }
         Log.d(TAG,username);
         db.getPlayerFromUsername(bundle.getString("username"))
                         .addOnFailureListener(new OnFailureListener() {
