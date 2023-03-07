@@ -1,8 +1,6 @@
 package com.example.qrhunter;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.nfc.Tag;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -13,22 +11,18 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-
-import java.util.HashMap;
-import java.util.Objects;
-
-public class UserPageActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
     final String TAG = "User Profile Page";
     String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_page);
+        setContentView(R.layout.activity_main);
 
         // Code for setting the profile circle (can be adapted for custom profile pics later)
         ImageView profileCircle = (ImageView) findViewById(R.id.default_profile_icon);
@@ -54,8 +48,24 @@ public class UserPageActivity extends AppCompatActivity {
             //else we can assume a new player
             else{
                 SharedPreferences.Editor editor = settings.edit();
-                //TODO have the db make some kind of new unique Player info
-                username = "New Account";
+                db.getPlayerCount()
+                        .addOnSuccessListener(new OnSuccessListener<AggregateQuerySnapshot>() {
+                            @Override
+                            public void onSuccess(AggregateQuerySnapshot aggregateQuerySnapshot) {
+                                username = "Player-" + (aggregateQuerySnapshot
+                                        .getCount() + 1);
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                //TODO add an error message here
+                                Log.d(TAG, "Failed to get player count for new player");
+                                username = "Player-?";
+                            }
+                        })
+                ;
+
                 editor.putString("Username", username);
                 editor.apply();
                 userText.setText(username);

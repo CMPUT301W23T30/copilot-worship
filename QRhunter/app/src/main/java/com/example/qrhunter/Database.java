@@ -8,6 +8,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.AggregateQuerySnapshot;
+import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -154,5 +156,13 @@ public class Database {
         return tasks;
     }
 
+    /**
+     * get number of players
+     * @return Aggregate task that gets the player count
+     */
+    public Task<AggregateQuerySnapshot> getPlayerCount(){
+        return qrCodeCollection.count()
+                .get(AggregateSource.SERVER);
+    }
 
 }
