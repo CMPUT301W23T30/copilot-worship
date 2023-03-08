@@ -1,11 +1,7 @@
 package com.example.qrhunter;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
@@ -15,9 +11,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -86,7 +79,7 @@ public class Database {
      */
     public Task<QuerySnapshot> getPlayersFromQRCode(QRCode qrCode){
         return qrCodeCollection
-                .document(qrCode.getName())
+                .document(qrCode.getHash())
                 .collection("Players")
                 .get()
         ;
@@ -99,11 +92,13 @@ public class Database {
      */
     public Task<Void> addQrCode(@NonNull QRCode qrCode){
         HashMap<String, Object> qrInfo = new HashMap<>();
-        qrInfo.put("hash", qrCode.getName());
+        qrInfo.put("hash", qrCode.getHash());
         qrInfo.put("score",qrCode.getScore());
-        qrInfo.put("location", qrCode.getLocation());
+        qrInfo.put("longitude", qrCode.getLocation().getLongitude());
+        qrInfo.put("latitude", qrCode.getLocation().getLongitude());
+        qrInfo.put("name", qrCode.getName());
         return qrCodeCollection
-                .document(qrCode.getName())
+                .document(qrCode.getHash())
                 .set(qrInfo);
     }
 
@@ -114,7 +109,7 @@ public class Database {
      */
     public Task<Void> removeQrCode(@NonNull QRCode qrCode) {
         return qrCodeCollection
-                .document(qrCode.getName())
+                .document(qrCode.getHash())
                 .delete();
     }
 
@@ -141,15 +136,15 @@ public class Database {
         HashMap<String, Task<Void>> tasks = new HashMap<>();
         HashMap<String, Object> qrInfo = new HashMap<>();
         HashMap<String, Object> playerInfo = new HashMap<>();
-        qrInfo.put("hash", qrCode.getName());
+        qrInfo.put("hash", qrCode.getHash());
         tasks.put("QrToPlayerCol", playersCollection
                 .document(player.getUsername())
                 .collection("QRCodes")
-                .document(qrCode.getName())
+                .document(qrCode.getHash())
                 .set(qrInfo));
         playerInfo.put("username", player.getUsername());
         tasks.put("PlayerToQrCol", qrCodeCollection
-                .document(qrCode.getName())
+                .document(qrCode.getHash())
                 .collection("Players")
                 .document(player.getUsername())
                 .set(playerInfo));
@@ -163,6 +158,20 @@ public class Database {
     public Task<AggregateQuerySnapshot> getPlayerCount(){
         return qrCodeCollection.count()
                 .get(AggregateSource.SERVER);
+    }
+
+    //Temp module for testing
+    //Deletes entire db :( DO NOT RUN THIS METHOD WITHOUT TELLING PPL
+    public static void destroy(){
+        qrCodeCollection.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot doc : queryDocumentSnapshots ){
+                            doc.d
+                        }
+                    }
+                })
     }
 
 }

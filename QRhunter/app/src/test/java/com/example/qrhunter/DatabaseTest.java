@@ -4,6 +4,7 @@ package com.example.qrhunter;
 
 import static org.junit.Assert.assertEquals;
 
+import android.location.Location;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -107,11 +108,11 @@ public class DatabaseTest {
 
             int randomScore = (int) Math.floor(Math.random() * 1001); // Generates random score
             int randomUsername = (int) Math.floor(Math.random() * 1001); // Generates random username (int for now)
-            int randomQRname = (int) Math.floor(Math.random() * 1001); // Generates random QR name (int for now)
+            int randomQRname = (int) Math.floor(Math.random() * 1001); // Generates random QR hash (int for now)
 
             Database db = new Database(); // Creates database
             Player testPlayer = new Player(String.valueOf(randomUsername)); // Creates player for testing
-            QRCode testQRCode = new QRCode(String.valueOf(randomQRname), "location", randomScore); // Creates QRCode for testing
+            QRCode testQRCode = new QRCode(String.valueOf(randomQRname), new Location(""), randomScore); // Creates QRCode for testing TODO find a way to make good locations for testing
             db.addPlayer(testPlayer); // Adds player to database
             db.addQrCode(testQRCode); // Adds QRCode to database
 
