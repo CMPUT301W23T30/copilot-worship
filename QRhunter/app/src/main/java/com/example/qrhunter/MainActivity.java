@@ -81,8 +81,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         userText.setText(username);
-        // Code for testing the database
-        testAddScannedCode();
 
         // temp button for gallery
         Button galleryButton = findViewById(R.id.gallery_button);
