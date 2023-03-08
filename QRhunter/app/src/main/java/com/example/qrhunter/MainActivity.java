@@ -97,8 +97,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String hasher(String unhashedQRCode) {
-        String hashedQRCode = sha256Hex(unhashedQRCode); // Hashes the QR code into a SHA-256 hexadecimal string
-        return hashedQRCode;
+        return sha256Hex(unhashedQRCode);
+    }
+
+    private int scoreCalculator(String hashedQRCode) {
+        // Find contiguous repeated numbers or characters in hex string
+        // Each number or character is equal to number^(n-1) points where n is the number of times it is repeated
+        int score = 0;
+        int n = 0;
+        String prev = "";
+        for (int i = 0; i < hashedQRCode.length(); i++) {
+            if (hashedQRCode.substring(i, i + 1).equals(prev)) {
+                n++;
+            } else {
+                if (n > 1) {
+                    score += Math.pow(Integer.parseInt(prev, 16), n - 1);
+                }
+                n = 1;
+                prev = hashedQRCode.substring(i, i + 1);
+            }
+        }
+
+        return score;
+
     }
 
     /**
@@ -108,12 +129,12 @@ public class MainActivity extends AppCompatActivity {
     {
         if(result.getContents() !=null)
         {
-            String hashed = hasher(result.getContents()); // If this fails alert won't appear, makes it easier to test
+            String hashedCode = hasher(result.getContents()); // If this fails alert won't appear, makes it easier to test
 
             Toast.makeText(this, "make object", Toast.LENGTH_SHORT).show();
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Result");
-            builder.setMessage(hashed);
+            builder.setMessage(hashedCode);
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
             {
                 @Override
