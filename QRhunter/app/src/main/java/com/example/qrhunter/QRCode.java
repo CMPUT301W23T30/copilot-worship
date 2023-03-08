@@ -1,5 +1,10 @@
 package com.example.qrhunter;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 /*
  * This class represents a QR Code
  */
@@ -19,6 +24,9 @@ public class QRCode {
     }
 
     // Getter and Setter methods for name, location, and score
+
+
+
 
     public String getName() {
         return name;
@@ -40,5 +48,7 @@ public class QRCode {
     public void setScore(int score) {
         this.score = score;
     }
+
+
 }
 
