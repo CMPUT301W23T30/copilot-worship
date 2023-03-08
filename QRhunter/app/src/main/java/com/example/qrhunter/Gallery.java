@@ -42,6 +42,7 @@ public class Gallery extends AppCompatActivity {
                                 location.setLatitude((Double) d.get("latitude"));
                                 QRCode qrCode = new QRCode(
                                         d.get("hash").toString(),
+                                        d.get("name").toString(),
                                         location,
                                         Integer.parseInt(d.get("score").toString()));
 

@@ -15,10 +15,11 @@ public class QRCode {
     /*
      * Default constructor for QRCode class
      */
-    public QRCode(String name, Location location, int score){
-        this.hash = name;
+    public QRCode(String hash, String name, Location location, int score){
+        this.hash = hash;
         this.location = location;
         this.score = score;
+        this.name = name;
     }
 
     // Getter and Setter methods for hash, location, and score

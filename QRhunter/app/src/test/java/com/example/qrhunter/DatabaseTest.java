@@ -112,7 +112,7 @@ public class DatabaseTest {
 
             Database db = new Database(); // Creates database
             Player testPlayer = new Player(String.valueOf(randomUsername)); // Creates player for testing
-            QRCode testQRCode = new QRCode(String.valueOf(randomQRname), new Location(""), randomScore); // Creates QRCode for testing TODO find a way to make good locations for testing
+            QRCode testQRCode = new QRCode("String.valueOf(randomQRname)",String.valueOf(randomQRname), new Location(""), randomScore); // Creates QRCode for testing TODO find a way to make good locations for testing
             db.addPlayer(testPlayer); // Adds player to database
             db.addQrCode(testQRCode); // Adds QRCode to database
 
