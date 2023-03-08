@@ -130,11 +130,12 @@ public class MainActivity extends AppCompatActivity {
         if(result.getContents() !=null)
         {
             String hashedCode = hasher(result.getContents()); // If this fails alert won't appear, makes it easier to test
+            int score = scoreCalculator(hashedCode);
 
             Toast.makeText(this, "make object", Toast.LENGTH_SHORT).show();
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Result");
-            builder.setMessage(hashedCode);
+            builder.setMessage(score + " points");
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
             {
                 @Override
