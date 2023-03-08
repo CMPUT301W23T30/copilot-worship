@@ -1,10 +1,11 @@
 package com.example.qrhunter;
 
+import static org.apache.commons.codec.digest.DigestUtils.sha256Hex;
+
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -18,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-import androidx.core.content.PackageManagerCompat;
 
 import android.os.Bundle;
 import android.widget.Toast;
@@ -33,8 +33,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-
-import org.apache.commons.codec.digest.DigestUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -98,8 +96,9 @@ public class MainActivity extends AppCompatActivity {
         barLaucher.launch(options);
     }
 
-    private void hasher() {
-
+    private String hasher(String unhashedQRCode) {
+        String hashedQRCode = sha256Hex(unhashedQRCode); // Hashes the QR code into a SHA-256 hexadecimal string
+        return hashedQRCode;
     }
 
     /**
@@ -109,12 +108,12 @@ public class MainActivity extends AppCompatActivity {
     {
         if(result.getContents() !=null)
         {
-            hasher(result.getContents()); // If this fails alert won't appear, makes it easier to test
+            String hashed = hasher(result.getContents()); // If this fails alert won't appear, makes it easier to test
 
             Toast.makeText(this, "make object", Toast.LENGTH_SHORT).show();
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Result");
-            builder.setMessage(result.getContents());
+            builder.setMessage(hashed);
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
             {
                 @Override
