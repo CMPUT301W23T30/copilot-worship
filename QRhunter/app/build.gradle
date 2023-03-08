@@ -9,8 +9,8 @@ android {
 
     defaultConfig {
         applicationId "com.example.qrhunter"
-        minSdk 33
-        targetSdk 31
+        minSdk 31
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -40,6 +40,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation platform('com.google.firebase:firebase-bom:31.2.2')
     implementation 'com.google.firebase:firebase-firestore'
+    implementation 'commons-codec:commons-codec:1.13'
 
     //Firebase testing
     //testImplementation 'org.powermock:powermock:1.6.5'
