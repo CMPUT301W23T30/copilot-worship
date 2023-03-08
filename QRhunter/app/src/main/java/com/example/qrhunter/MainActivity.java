@@ -1,8 +1,13 @@
 package com.example.qrhunter;
 
+
 import android.content.SharedPreferences;
+
+import android.content.Intent;
+
 import android.util.Log;
-import android.widget.ImageView;
+import android.view.View;
+import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +25,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 public class MainActivity extends AppCompatActivity {
     final String TAG = "User Profile Page";
     String username;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +78,20 @@ public class MainActivity extends AppCompatActivity {
                         })
                 ;
 
-
             }
         }
         userText.setText(username);
+        // Code for testing the database
+        testAddScannedCode();
+
+        // temp button for gallery
+        Button galleryButton = findViewById(R.id.gallery_button);
+        galleryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,Gallery.class);
+                startActivity(intent);
+            }
+        });
     }
 }

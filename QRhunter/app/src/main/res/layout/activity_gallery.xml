@@ -17,7 +17,8 @@
     <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="27dp">
+            android:layout_margin="27dp"
+            android:id="@+id/gallery_content">
 
     </ListView>
 
