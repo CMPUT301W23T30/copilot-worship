@@ -1,7 +1,9 @@
 package com.example.qrhunter;
 
+import android.content.Intent;
 import android.util.Log;
-import android.widget.ImageView;
+import android.view.View;
+import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,15 +13,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
     public void testAddScannedCode() {
 
         for (int i = 0; i < 10; i++) {
@@ -88,5 +88,15 @@ public class MainActivity extends AppCompatActivity {
 
         // Code for testing the database
         testAddScannedCode();
+
+        // temp button for gallery
+        Button galleryButton = findViewById(R.id.gallery_button);
+        galleryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,Gallery.class);
+                startActivity(intent);
+            }
+        });
     }
 }
