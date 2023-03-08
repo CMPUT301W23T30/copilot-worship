@@ -1,5 +1,6 @@
 package com.example.qrhunter;
 
+import android.location.Location;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,9 +37,13 @@ public class Gallery extends AppCompatActivity {
                             List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                             for (DocumentSnapshot d : list) {
 
+                                Location location = new Location("");
+                                location.setLongitude((Double) d.get("longitude"));
+                                location.setLatitude((Double) d.get("latitude"));
                                 QRCode qrCode = new QRCode(
                                         d.get("hash").toString(),
-                                        d.get("location").toString(),
+                                        d.get("name").toString(),
+                                        location,
                                         Integer.parseInt(d.get("score").toString()));
 
                                 // after getting data from Firebase we are

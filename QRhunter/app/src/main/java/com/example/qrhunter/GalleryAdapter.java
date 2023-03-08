@@ -1,6 +1,7 @@
 package com.example.qrhunter;
 
 import android.content.Context;
+import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +36,10 @@ public class GalleryAdapter extends ArrayAdapter<QRCode> {
 
         // set
         name.setText(qrMon.getName());
-        location.setText(qrMon.getLocation());
+        //temp set location to longtitude and latitude?
+        Location qrMonLocation = qrMon.getLocation();
+        String locationString = "" + qrMonLocation.getLongitude() + qrMonLocation.getLatitude();
+        location.setText(locationString);
         score.setText(String.format("%d",qrMon.getScore()));
 
         return view;
