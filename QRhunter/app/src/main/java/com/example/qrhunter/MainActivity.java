@@ -96,6 +96,10 @@ public class MainActivity extends AppCompatActivity {
         barLaucher.launch(options);
     }
 
+    private void hasher() {
+
+    }
+
     /**
      * Scan QR code
      */
@@ -103,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
     {
         if(result.getContents() !=null)
         {
+            hasher(); // If this fails alert won't appear, makes it easier to test
+
             Toast.makeText(this, "make object", Toast.LENGTH_SHORT).show();
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Result");
