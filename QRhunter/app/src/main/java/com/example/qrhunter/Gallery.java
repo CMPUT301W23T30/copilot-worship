@@ -1,6 +1,9 @@
 package com.example.qrhunter;
 
+import android.content.Intent;
 import android.location.Location;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -52,9 +55,22 @@ public class Gallery extends AppCompatActivity {
                             }
                             GalleryAdapter adapter = new GalleryAdapter(Gallery.this,qrCodeArrayList);
                             galleryView.setAdapter(adapter);
+                            galleryView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                                @Override
+                                public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                    Intent intent = new Intent(Gallery.this, QrDisplayActivity.class);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("hash", adapter.getItem(i).getHash());
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+                                    return false;
+                                }
+                            });
                         }
                     }
                 });
+
+
 
 
     }

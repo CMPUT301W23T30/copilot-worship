@@ -109,6 +109,17 @@ public class Database {
     }
 
     /**
+     * Retrieves Qr Codes
+     * @param hash hash of qr code to be found
+     * @return
+     */
+    public Task<QuerySnapshot> getQr(String hash){
+        return qrCodeCollection
+                .whereEqualTo("hash", hash)
+                .get();
+    }
+
+    /**
      * Removes a QR code from the database
      * @param qrCode QR code to be removed
      * @return Void task of qr code being removed
@@ -184,6 +195,7 @@ public class Database {
             }
         });
     }
+
     public void populateQR(int count, int count2){
         int numCodes = (int) Math.floor(Math.random() * 5);
         for(int i = 0; i < numCodes; i++){
