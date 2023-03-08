@@ -34,6 +34,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 public class MainActivity extends AppCompatActivity {
 
     final static int CAMERA_PERM_CODE = 101;
@@ -107,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
     {
         if(result.getContents() !=null)
         {
-            hasher(); // If this fails alert won't appear, makes it easier to test
+            hasher(result.getContents()); // If this fails alert won't appear, makes it easier to test
 
             Toast.makeText(this, "make object", Toast.LENGTH_SHORT).show();
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
