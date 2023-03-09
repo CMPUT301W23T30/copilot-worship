@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         TextView userText = findViewById(R.id.user_page_user_name);
         Bundle bundle = getIntent().getExtras();
         Database db = new Database();
+        //db.populateDB();
         //https://stackoverflow.com/questions/10209814/saving-user-information-in-app-settings
         //Roughly following
         //TODO properly cite
