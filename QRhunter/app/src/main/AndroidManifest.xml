@@ -42,7 +42,6 @@
         <activity
             android:name=".AddPlayerActivity"
             android:label="Add Player"
-            android:parentActivityName=".MainActivity"
             android:exported="false" >
         </activity>
         <activity
