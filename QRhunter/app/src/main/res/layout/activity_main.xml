@@ -7,12 +7,17 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity">
 
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity"/>
 
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="JANEDOE"
-            android:fontFamily="@font/nunito_bold"
+
             android:textSize="32dp" android:textAlignment="viewStart"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -22,7 +27,7 @@
     <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" app:srcCompat="@drawable/_icon__profile_circle_"
-            android:id="@+id/default_profile_icon"
+            android:id="@+id/profile_icon"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/user_page_user_name" app:layout_constraintTop_toTopOf="parent"/>
     <LinearLayout
@@ -50,19 +55,7 @@
 
         </ListView>
     </LinearLayout>
-    <TextView
-            android:text="yeah we will need to make that bottom nav fragment somehow"
-            android:layout_width="match_parent"
-            android:layout_height="66dp" android:id="@+id/textView2"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
-    <Button
-            android:text="Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:id="@+id/gallery_button"
-            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/textView2"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout" app:layout_constraintHorizontal_bias="0.123"
-            app:layout_constraintVertical_bias="0.792"/>
+
+    <include layout="@layout/navbar"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

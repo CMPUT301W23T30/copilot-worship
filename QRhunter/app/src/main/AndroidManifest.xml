@@ -6,6 +6,11 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28"/>
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -42,6 +47,21 @@
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
+<<<<<<< HEAD
+=======
+        </activity>
+        <activity
+            android:name=".AddPlayerActivity"
+            android:label="Add Player"
+            android:exported="false" >
+        </activity>
+        <activity
+            android:name=".MapsActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value=""/>
+>>>>>>> 0f310763a96f5247fad0fbf0a5729a30eabf5ba7
         </activity>
         <activity
             android:name=".MainActivity"
@@ -56,10 +76,27 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+<<<<<<< HEAD
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+=======
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.android.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+        <activity android:name=".CaptureAct"
+            android:screenOrientation="fullSensor"
+            android:stateNotNeeded="true"
+            android:theme="@style/Theme.QRhunter"/>
+        <meta-data android:name="preloaded_fonts" android:resource="@array/preloaded_fonts"/>
+>>>>>>> 0f310763a96f5247fad0fbf0a5729a30eabf5ba7
     </application>
 
 </manifest>
