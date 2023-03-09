@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.qrhunter"
-        minSdk 33
+        minSdk 31
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -35,6 +35,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'
@@ -44,6 +45,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation platform('com.google.firebase:firebase-bom:31.2.2')
     implementation 'com.google.firebase:firebase-firestore'
+    implementation 'commons-codec:commons-codec:1.13'
     androidTestImplementation "androidx.test:rules:1.5.0"
     androidTestImplementation "com.jayway.android.robotium:robotium-solo:5.2.1"
 
