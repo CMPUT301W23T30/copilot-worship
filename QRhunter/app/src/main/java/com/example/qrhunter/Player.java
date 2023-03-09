@@ -1,5 +1,10 @@
 package com.example.qrhunter;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 
 /*
@@ -12,6 +17,15 @@ public class Player {
     private int number; //TODO : Format number?
     private ArrayList<QRCode> qrCodes;
 
+    /**
+     * Test constructor with invalid username for testing
+     */
+    public Player(){
+        this.username = "qwertyuiopasdfghjklzxcvbnm";//Invalid username
+        this.email = "Default email";
+        this.number = 0;
+        this.qrCodes = null;
+    }
     /**
      * Test constructor for player class
      * Sets the username only, everything else test values
@@ -39,6 +53,8 @@ public class Player {
 
     // Getter and Setter methods for username, email, number, and QRCodes
 
+
+
     public String getUsername() {
         return username;
     }
@@ -54,4 +70,5 @@ public class Player {
 
     public ArrayList<QRCode> getQrCodes() { return qrCodes; }
     public void setQrCodes(ArrayList<QRCode> qrCodes) { this.qrCodes = qrCodes; }
+
 }

@@ -1,36 +1,43 @@
 package com.example.qrhunter;
 
+import android.location.Location;
+
 /*
  * This class represents a QR Code
  */
 public class QRCode {
 
+    public String hash;
     public String name;
-    public String location;
-    public int score;
+    public Location location;
 
+    public int score;
     /*
      * Default constructor for QRCode class
      */
-    public QRCode(String name, String location, int score){
-        this.name = name;
+    public QRCode(String hash, String name, Location location, int score){
+        this.hash = hash;
         this.location = location;
         this.score = score;
-    }
-
-    // Getter and Setter methods for name, location, and score
-
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
         this.name = name;
     }
 
-    public String getLocation() {
+    // Getter and Setter methods for hash, location, and score
+
+
+
+
+    public String getHash() {
+        return hash;
+    }
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
+
+    public Location getLocation() {
         return location;
     }
-    public void setLocation(String location) {
+    public void setLocation(Location location) {
         this.location = location;
     }
 
@@ -40,5 +47,14 @@ public class QRCode {
     public void setScore(int score) {
         this.score = score;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }
 
