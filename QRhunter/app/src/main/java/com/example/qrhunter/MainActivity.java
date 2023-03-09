@@ -55,9 +55,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
 
-import static org.apache.commons.codec.digest.DigestUtils.sha256Hex;
-import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA_256;
-
 public class MainActivity extends AppCompatActivity {
     final String TAG = "User Profile Page";
     String username;
