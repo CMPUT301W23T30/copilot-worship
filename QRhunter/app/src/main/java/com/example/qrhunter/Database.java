@@ -79,13 +79,13 @@ public class Database {
     }
 
     /**
-     * Returns a task of QuerySnapshot for finding a player in the QRCode collection
+     * Returns a task of QuerySnapshot for finding all the players associated with a qr code
      * @param qrCode Name of the QRCode to be found
      * @return Task of Query with the result
      */
-    public Task<QuerySnapshot> getPlayersFromQRCode(QRCode qrCode){
+    public Task<QuerySnapshot> getPlayersFromQRCode(String hash){
         return qrCodeCollection
-                .document(qrCode.getHash())
+                .document(hash)
                 .collection("Players")
                 .get()
         ;
@@ -106,6 +106,17 @@ public class Database {
         return qrCodeCollection
                 .document(qrCode.getHash())
                 .set(qrInfo);
+    }
+
+    /**
+     * Retrieves Qr Codes
+     * @param hash hash of qr code to be found
+     * @return
+     */
+    public Task<QuerySnapshot> getQr(String hash){
+        return qrCodeCollection
+                .whereEqualTo("hash", hash)
+                .get();
     }
 
     /**
@@ -184,6 +195,7 @@ public class Database {
             }
         });
     }
+
     public void populateQR(int count, int count2){
         int numCodes = (int) Math.floor(Math.random() * 5);
         for(int i = 0; i < numCodes; i++){

@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         //TODO properly cite
         if(bundle != null){
             username = bundle.getString("username");
+            userText.setText(username);
         }
         else{
 
@@ -114,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
             //If login info saved already
             if(settings.contains("Username")){
                 username = settings.getString("Username", "");
+                userText.setText(username);
             }
             //else we can assume a new player
             else{
@@ -141,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
-        userText.setText(username);
+
 
 //        photoButton = findViewById(R.id.Photo_Button);
 //        photoButton.setOnClickListener(v -> {
@@ -161,6 +163,8 @@ public class MainActivity extends AppCompatActivity {
          * onClick Actions for Navbar
          *
          * TODO Add in Intents for Camera (addQRButton), Search, and Rankings
+         * TODO Disable buttons until username is not null as some activities require
+         * the user username
          */
 
         mapButton.setOnClickListener(new View.OnClickListener() {
@@ -173,7 +177,10 @@ public class MainActivity extends AppCompatActivity {
         galleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Bundle bundle = new Bundle();
                 Intent intent = new Intent(MainActivity.this,Gallery.class);
+                bundle.putString("username", username);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
