@@ -79,13 +79,13 @@ public class Database {
     }
 
     /**
-     * Returns a task of QuerySnapshot for finding a player in the QRCode collection
+     * Returns a task of QuerySnapshot for finding all the players associated with a qr code
      * @param qrCode Name of the QRCode to be found
      * @return Task of Query with the result
      */
-    public Task<QuerySnapshot> getPlayersFromQRCode(QRCode qrCode){
+    public Task<QuerySnapshot> getPlayersFromQRCode(String hash){
         return qrCodeCollection
-                .document(qrCode.getHash())
+                .document(hash)
                 .collection("Players")
                 .get()
         ;

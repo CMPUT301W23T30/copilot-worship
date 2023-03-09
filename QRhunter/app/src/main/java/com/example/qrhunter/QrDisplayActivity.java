@@ -8,6 +8,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+
 public class QrDisplayActivity extends AppCompatActivity {
 
     @Override
@@ -27,10 +33,13 @@ public class QrDisplayActivity extends AppCompatActivity {
         seeOthers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(QrDisplayActivity.this, PlayerGalleryActivity.class);
-                intent.putExtras(bundle);
+                Intent intent = new Intent(
+                        QrDisplayActivity.this,
+                        PlayerGalleryActivity.class);
+                Bundle b = new Bundle();
+                b.putString("hash", hash);
+                intent.putExtras(b);
                 startActivity(intent);
-
             }
         });
 

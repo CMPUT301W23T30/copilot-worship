@@ -7,6 +7,12 @@
     android:orientation="vertical"
     tools:context=".PlayerGalleryActivity">
 
+    <TextView
+        android:id="@+id/player_gallery_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Player Gallery" />
+
     <ListView
         android:id="@+id/player_list"
         android:layout_width="match_parent"
