@@ -1,6 +1,5 @@
 package com.example.qrhunter;
 
-import static org.apache.commons.codec.digest.DigestUtils.sha256Hex;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -50,6 +49,8 @@ import java.util.HashMap;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
+
+import static org.apache.commons.codec.digest.DigestUtils.sha256Hex;
 
 public class MainActivity extends AppCompatActivity {
     final String TAG = "User Profile Page";
@@ -188,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    // TODO: to fix!!!
     private String hasher(String unhashedQRCode) {
         return sha256Hex(unhashedQRCode);
     }
@@ -221,13 +223,13 @@ public class MainActivity extends AppCompatActivity {
     {
         if(result.getContents() !=null)
         {
-            String hashedCode = hasher(result.getContents()); // If this fails alert won't appear, makes it easier to test
-            int score = scoreCalculator(hashedCode);
+//            String hashedCode = hasher(result.getContents()); // If this fails alert won't appear, makes it easier to test
+//            int score = scoreCalculator(hashedCode);
 
             Toast.makeText(this, "make object", Toast.LENGTH_SHORT).show();
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Result");
-            builder.setMessage(score + " points");
+            builder.setMessage(result.getContents());
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
             {
                 @Override
