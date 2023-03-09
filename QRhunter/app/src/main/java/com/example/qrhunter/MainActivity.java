@@ -163,17 +163,19 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this,Gallery.class);
                 //I think this should change to device ID in the future
-                intent.putExtra("Player ID", username);
+                intent.putExtra("Username", username);
                 startActivity(intent);
             }
         });
 
+
+        // Mayba camera stuff should be in seperate activity?
         addQRButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, "Start Scanning", Toast.LENGTH_SHORT).show();
                 QRScan newClass = new QRScan();
-                newClass.scanCode(barLaucher);
+                newClass.scanCode(barLauncher);
             }
         });
 
@@ -209,17 +211,20 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Scan QR code
      */
-    ActivityResultLauncher<ScanOptions> barLaucher = registerForActivityResult(new ScanContract(), result->
+    ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result->
     {
         if(result.getContents() !=null)
         {
 //            String hashedCode = hasher(result.getContents()); // If this fails alert won't appear, makes it easier to test
 //            int score = scoreCalculator(hashedCode);
 
+            Log.d("HASHCODE", result.getContents());
+
             Toast.makeText(this, "make object", Toast.LENGTH_SHORT).show();
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Result");
-            builder.setMessage(result.getContents());
+            builder.setMessage("Coolio");
+//            builder.setMessage(result.getContents());
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
             {
                 @Override
