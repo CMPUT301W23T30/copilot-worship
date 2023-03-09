@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ToggleButton;
 
 import androidx.core.app.ActivityCompat;
@@ -31,6 +32,8 @@ public class MapsActivity extends FragmentActivity
         LocationListener {
 
     private GoogleMap mMap;
+    private Button addQRButton;
+    private Button backButton;
     private Button myLocationButton;
     private ToggleButton followLocationButton;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -42,7 +45,7 @@ public class MapsActivity extends FragmentActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
+        setContentView(R.layout.activity_map);
 
         // Create a new SupportMapFragment
         SupportMapFragment mapFragment = new SupportMapFragment();
@@ -53,6 +56,16 @@ public class MapsActivity extends FragmentActivity
                 .replace(R.id.map_container, mapFragment)
                 .commit();
 
+        // Back Button
+        // Goes back to Profile
+        backButton = findViewById(R.id.map_back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         // Set the callback for when the map is ready
         mapFragment.getMapAsync(this);
 
@@ -61,7 +74,7 @@ public class MapsActivity extends FragmentActivity
         }
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        myLocationButton = findViewById(R.id.btnCurrentLocation);
+        myLocationButton = findViewById(R.id.map_locate_button);
         myLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,7 +92,7 @@ public class MapsActivity extends FragmentActivity
                         });
             }
         });
-        followLocationButton = findViewById(R.id.btnFollowLocation);
+        followLocationButton = findViewById(R.id.map_follow_button);
         followLocationButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -94,7 +107,22 @@ public class MapsActivity extends FragmentActivity
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
+
+        // Add QR Button implementation + onClick
+        // TODO Add Camera activity
+        addQRButton = findViewById(R.id.map_add_button);
+
+//        addQRButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//            }
+//        });
+
+
     }
+
+
 
     /**
      * Manipulates the map once available.
