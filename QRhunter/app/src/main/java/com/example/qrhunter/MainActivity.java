@@ -163,6 +163,14 @@ public class MainActivity extends AppCompatActivity {
          * TODO Add in Intents for Camera (addQRButton), Search, and Rankings
          */
 
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,SearchPlayerActivity.class);
+                startActivity(intent);
+            }
+        });
+
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
