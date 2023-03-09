@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
 import de.hdodenhof.circleimageview.CircleImageView;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,6 +37,13 @@ public class SearchPlayerAdapter extends RecyclerView.Adapter<SearchPlayerAdapte
 
 //        holder.img.setImageResource(item.getPfp());
         holder.username.setText(item.getUsername());
+
+//        Glide.with(holder.img.getContext())
+//                .load(SearchModel.getPfp())
+//                .placeholder(R.drawable._icon__profile_circle_)
+//                .circleCrop()
+//                .error(com.google.android.gms.base.R.drawable.common_google_signin_btn_icon_dark_normal)
+//                .into(holder.img);
     }
 
     @Override
