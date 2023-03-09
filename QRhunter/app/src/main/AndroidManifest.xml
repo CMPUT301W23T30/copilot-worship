@@ -36,8 +36,13 @@
                 android:name=".Gallery"
                 android:exported="false">
             <meta-data
-                    android:name="android.app.lib_name"
-                    android:value=""/>
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".AddPlayerActivity"
+            android:label="Add Player"
+            android:exported="false" >
         </activity>
         <activity
             android:name=".MapsActivity"
