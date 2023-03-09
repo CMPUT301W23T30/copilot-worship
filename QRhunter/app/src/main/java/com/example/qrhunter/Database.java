@@ -1,11 +1,9 @@
 package com.example.qrhunter;
 
-import android.util.Log;
+import android.location.Location;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
@@ -15,9 +13,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.lang.reflect.Array;
+import org.checkerframework.checker.units.qual.A;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,6 +75,7 @@ public class Database {
         return playersCollection
                 .document(player)
                 .delete();
+
     }
 
     /**
@@ -86,7 +85,7 @@ public class Database {
      */
     public Task<QuerySnapshot> getPlayersFromQRCode(QRCode qrCode){
         return qrCodeCollection
-                .document(qrCode.getName())
+                .document(qrCode.getHash())
                 .collection("Players")
                 .get()
         ;
@@ -99,11 +98,13 @@ public class Database {
      */
     public Task<Void> addQrCode(@NonNull QRCode qrCode){
         HashMap<String, Object> qrInfo = new HashMap<>();
-        qrInfo.put("hash", qrCode.getName());
+        qrInfo.put("hash", qrCode.getHash());
         qrInfo.put("score",qrCode.getScore());
-        qrInfo.put("location", qrCode.getLocation());
+        qrInfo.put("longitude", qrCode.getLocation().getLongitude());
+        qrInfo.put("latitude", qrCode.getLocation().getLongitude());
+        qrInfo.put("name", qrCode.getName());
         return qrCodeCollection
-                .document(qrCode.getName())
+                .document(qrCode.getHash())
                 .set(qrInfo);
     }
 
@@ -114,7 +115,7 @@ public class Database {
      */
     public Task<Void> removeQrCode(@NonNull QRCode qrCode) {
         return qrCodeCollection
-                .document(qrCode.getName())
+                .document(qrCode.getHash())
                 .delete();
     }
 
@@ -141,15 +142,15 @@ public class Database {
         HashMap<String, Task<Void>> tasks = new HashMap<>();
         HashMap<String, Object> qrInfo = new HashMap<>();
         HashMap<String, Object> playerInfo = new HashMap<>();
-        qrInfo.put("hash", qrCode.getName());
+        qrInfo.put("hash", qrCode.getHash());
         tasks.put("QrToPlayerCol", playersCollection
                 .document(player.getUsername())
                 .collection("QRCodes")
-                .document(qrCode.getName())
+                .document(qrCode.getHash())
                 .set(qrInfo));
         playerInfo.put("username", player.getUsername());
         tasks.put("PlayerToQrCol", qrCodeCollection
-                .document(qrCode.getName())
+                .document(qrCode.getHash())
                 .collection("Players")
                 .document(player.getUsername())
                 .set(playerInfo));
@@ -164,5 +165,47 @@ public class Database {
         return qrCodeCollection.count()
                 .get(AggregateSource.SERVER);
     }
+    //Test method for popualting DB
+    //TODO DELETE THIS
+    public void populateDB(){
+        populatePlayer(20, 20);
+    }
+    public void populatePlayer(int count, int count2){
+        if(count == 0){
+            return;
+        }
+        String username = "Player-" + count;
+        Player p = new Player(username);
+        addPlayer(p).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                populateQR(count, count2 * 5);
+                populatePlayer(count -1, count2);
+            }
+        });
+    }
+    public void populateQR(int count, int count2){
+        int numCodes = (int) Math.floor(Math.random() * 5);
+        for(int i = 0; i < numCodes; i++){
+            Location l = new Location("");
+            //Incomplete but acceptable locations
+            l.setLongitude(Math.random() * 180);
+            l.setLatitude(Math.random() * 90);
+            int score = (int) Math.floor(Math.random() * count2);
+            String hashname = "" + score;
+            QRCode qr = new QRCode(hashname,hashname, l, score );
+            addQrCode(qr).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    String username = "Player-" + count;
+                    addScannedCode(qr, new Player(username));
+                }
+            });
+
+        }
+    }
+    //TODO integrate proper deletion for player nad qr c
+    //ie remove player from the qr collection once player deleted
+
 
 }

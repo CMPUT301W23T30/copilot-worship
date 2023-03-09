@@ -7,12 +7,17 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity">
 
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity"/>
 
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="JANEDOE"
-            android:fontFamily="@font/nunito_bold"
+
             android:textSize="32dp" android:textAlignment="viewStart"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -22,7 +27,7 @@
     <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" app:srcCompat="@drawable/_icon__profile_circle_"
-            android:id="@+id/default_profile_icon"
+            android:id="@+id/profile_icon"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/user_page_user_name" app:layout_constraintTop_toTopOf="parent"/>
     <LinearLayout
