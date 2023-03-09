@@ -1,5 +1,6 @@
 package com.example.qrhunter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import de.hdodenhof.circleimageview.CircleImageView;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class SearchPlayerAdapter extends RecyclerView.Adapter<SearchPlayerAdapter.myViewHolder> {
+
+    public SearchPlayerAdapter(List<SearchModel> userList, Context context) {
+        this.userList = userList;
+        this.context = context;
+    }
+
+    private List<SearchModel> userList;
+    private Context context;
 
     @NonNull
     @NotNull
@@ -21,12 +32,15 @@ public class SearchPlayerAdapter extends RecyclerView.Adapter<SearchPlayerAdapte
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull myViewHolder holder, int position) {
+        SearchModel item = userList.get(position);
 
+//        holder.img.setImageResource(item.getPfp());
+        holder.username.setText(item.getUsername());
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return userList.size();
     }
 
     class myViewHolder extends RecyclerView.ViewHolder{

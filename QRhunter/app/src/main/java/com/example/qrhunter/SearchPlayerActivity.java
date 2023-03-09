@@ -5,9 +5,15 @@ import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SearchPlayerActivity extends AppCompatActivity {
 
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter adapter;
+
+    private List<SearchModel> userList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -15,6 +21,11 @@ public class SearchPlayerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search_player);
 
         recyclerView = (RecyclerView)findViewById(R.id.rv);
+        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        userList = new ArrayList<>();
+
+
     }
 }
