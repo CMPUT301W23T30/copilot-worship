@@ -4,8 +4,8 @@ public class SearchModel {
 
     String username;
 
-    SearchModel(){
-
+    SearchModel(String username){
+        this.username = username;
     }
 
     public String getUsername() {
