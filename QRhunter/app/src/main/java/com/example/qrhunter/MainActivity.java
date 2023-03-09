@@ -96,33 +96,6 @@ public class MainActivity extends AppCompatActivity {
         //in the future if we want to add profile pictures
         profileCircle.setImageResource(R.drawable._icon__profile_circle_);
 
-        FirebaseFirestore db;
-
-        db = FirebaseFirestore.getInstance();
-
-        final CollectionReference collectionReference = db.collection("Cities");
-
-        HashMap<String, String> data = new HashMap<>();
-        data.put("Province Name", "lol");
-
-
-        collectionReference
-                .document("Lmao")
-                .set(data);
-
-        scanButton = findViewById(R.id.Scan_Button);
-        scanButton.setOnClickListener(v -> {
-            Toast.makeText(MainActivity.this, "Start Scanning", Toast.LENGTH_SHORT).show();
-            QRScan newClass = new QRScan();
-            newClass.scanCode(barLaucher);
-        });
-
-        photoButton = findViewById(R.id.Photo_Button);
-        photoButton.setOnClickListener(v -> {
-            Toast.makeText(MainActivity.this, "Open Camera", Toast.LENGTH_SHORT).show();
-            PhotoTake newClass = new PhotoTake();
-            newClass.takePhoto();
-        });
 
         TextView userText = findViewById(R.id.user_page_user_name);
         Bundle bundle = getIntent().getExtras();
@@ -169,6 +142,13 @@ public class MainActivity extends AppCompatActivity {
         }
         userText.setText(username);
 
+//        photoButton = findViewById(R.id.Photo_Button);
+//        photoButton.setOnClickListener(v -> {
+//            Toast.makeText(MainActivity.this, "Open Camera", Toast.LENGTH_SHORT).show();
+//            PhotoTake newClass = new PhotoTake();
+//            newClass.takePhoto();
+//        });
+
         // NAVBAR Buttons
         mapButton = findViewById(R.id.navbar_map_button);
         galleryButton = findViewById(R.id.navbar_gallery_button);
@@ -194,6 +174,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this,Gallery.class);
                 startActivity(intent);
+            }
+        });
+
+        addQRButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, "Start Scanning", Toast.LENGTH_SHORT).show();
+                QRScan newClass = new QRScan();
+                newClass.scanCode(barLaucher);
             }
         });
 
