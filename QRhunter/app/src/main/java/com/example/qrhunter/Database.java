@@ -10,12 +10,8 @@ import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.checkerframework.checker.units.qual.A;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,7 +71,6 @@ public class Database {
         return playersCollection
                 .document(player)
                 .delete();
-
     }
 
     /**
@@ -165,7 +160,7 @@ public class Database {
         return qrCodeCollection.count()
                 .get(AggregateSource.SERVER);
     }
-    //Test method for popualting DB
+    //Test method for populating DB
     //TODO DELETE THIS
     public void populateDB(){
         populatePlayer(20, 20);

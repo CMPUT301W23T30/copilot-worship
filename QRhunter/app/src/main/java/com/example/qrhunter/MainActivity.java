@@ -1,65 +1,44 @@
 package com.example.qrhunter;
 
 
-import android.app.Activity;
+import static org.apache.commons.codec.digest.DigestUtils.sha256Hex;
+
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.widget.Button;
-import android.widget.ImageView;
-
-import androidx.activity.result.ActivityResultLauncher;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-
-import android.os.Bundle;
-import android.widget.Toast;
-
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.journeyapps.barcodescanner.ScanContract;
-import com.journeyapps.barcodescanner.ScanOptions;
-
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
-
-import static org.apache.commons.codec.digest.DigestUtils.sha256Hex;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 
 public class MainActivity extends AppCompatActivity {
     final String TAG = "User Profile Page";
-    String username;
+    public String username;
 
+    SharedPreferences sharedPreferences;
 
+    public TextView usernameText;
+    public TextView userScoreText;
+    public TextView strongestText;
+    public TextView weakestText;
+    public TextView contactText;
 
-    Button scanButton;
-    Button photoButton;
+//    Button scanButton;
+//    Button photoButton;
 
     ImageButton mapButton;
     ImageButton galleryButton;
@@ -67,23 +46,25 @@ public class MainActivity extends AppCompatActivity {
     ImageButton searchButton;
     ImageButton rankingButton;
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_add_player, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_add_player_button:
-                Intent intent = new Intent(this, AddPlayerActivity.class);
-                startActivity(intent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_add_player, menu);
+//        return true;
+//    }
+//
+//    //
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.menu_add_player_button:
+//                Intent intent = new Intent(this, AddPlayerActivity.class);
+//                startActivity(intent);
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
 
 
     @Override
@@ -95,13 +76,17 @@ public class MainActivity extends AppCompatActivity {
         //start populate xml
         ImageView profileCircle = (ImageView) findViewById(R.id.profile_icon);
         //in the future if we want to add profile pictures
-        profileCircle.setImageResource(R.drawable._icon__profile_circle_);
+        profileCircle.setImageResource(R.drawable.profile_icon);
 
+        usernameText = findViewById(R.id.profile_username);
+        userScoreText = findViewById(R.id.profile_score);
+        strongestText = findViewById(R.id.profile_strongest_QR);
+        weakestText = findViewById(R.id.profile_weakest_QR);
+        contactText = findViewById(R.id.profile_contact);
 
-        TextView userText = findViewById(R.id.user_page_user_name);
         Bundle bundle = getIntent().getExtras();
         Database db = new Database();
-        //db.populateDB();
+
         //https://stackoverflow.com/questions/10209814/saving-user-information-in-app-settings
         //Roughly following
         //TODO properly cite
@@ -109,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
             username = bundle.getString("username");
         }
         else{
-
             SharedPreferences settings = getSharedPreferences("UserInfo", 0);
             //If login info saved already
             if(settings.contains("Username")){
@@ -125,6 +109,9 @@ public class MainActivity extends AppCompatActivity {
                                 if(task.isSuccessful()){
                                     username = "Player-" + (task.getResult().getCount()
                                              + 1);
+
+//                                    Intent intent = new Intent(MainActivity.this, AddPlayerActivity.class);
+//                                    startActivity(intent);
                                 }
                                 else{
                                     //TODO add an error message here
@@ -133,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 editor.putString("Username", username);
                                 editor.apply();
-                                userText.setText(username);
+                                usernameText.setText(username);
                                 db.addPlayer(new Player(username));
                             }
                         })
@@ -141,7 +128,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
-        userText.setText(username);
+
+        usernameText.setText(username);
 
 //        photoButton = findViewById(R.id.Photo_Button);
 //        photoButton.setOnClickListener(v -> {
@@ -174,6 +162,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this,Gallery.class);
+                //I think this should change to device ID in the future
+                intent.putExtra("Player ID", username);
                 startActivity(intent);
             }
         });

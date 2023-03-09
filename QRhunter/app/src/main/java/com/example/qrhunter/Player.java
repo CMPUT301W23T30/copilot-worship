@@ -1,10 +1,5 @@
 package com.example.qrhunter;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import androidx.annotation.NonNull;
-
 import java.util.ArrayList;
 
 /*
@@ -15,6 +10,7 @@ public class Player {
     private String username;
     private String email;
     private int number; //TODO : Format number?
+//    private int deviceID; Need to be added later
     private ArrayList<QRCode> qrCodes;
 
     /**
@@ -51,10 +47,8 @@ public class Player {
         this.qrCodes = qrCodes;
     }
 
+
     // Getter and Setter methods for username, email, number, and QRCodes
-
-
-
     public String getUsername() {
         return username;
     }
@@ -67,6 +61,7 @@ public class Player {
 
     public int getNumber() { return number; }
     public void setNumber(int number) { this.number = number; }
+
 
     public ArrayList<QRCode> getQrCodes() { return qrCodes; }
     public void setQrCodes(ArrayList<QRCode> qrCodes) { this.qrCodes = qrCodes; }

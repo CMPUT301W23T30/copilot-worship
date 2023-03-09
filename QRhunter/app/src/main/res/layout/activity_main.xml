@@ -14,46 +14,72 @@
         tools:context=".MainActivity"/>
 
     <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="JANEDOE"
-
-            android:textSize="32dp" android:textAlignment="viewStart"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.242" android:id="@+id/user_page_user_name"
+        android:id="@+id/profile_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="JANEDOE"
+        android:textSize="32dp" android:textAlignment="viewStart"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.242"
     />
     <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" app:srcCompat="@drawable/_icon__profile_circle_"
+            android:layout_height="wrap_content" app:srcCompat="@drawable/profile_icon"
             android:id="@+id/profile_icon"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/user_page_user_name" app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintBottom_toTopOf="@+id/profile_username" app:layout_constraintTop_toTopOf="parent"/>
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="30dp"
             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/user_page_user_name" app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_username" app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintVertical_bias="0.183"
             android:id="@+id/linearLayout">
 
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Total Score"/>
+        <TextView
+            android:id="@+id/profile_score"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="27dp"
-                android:id="@+id/user_page_total_score"
-                android:text="LMAO might want to make this into a fragment">
+                android:layout_marginBottom="30dp"
+                android:text="NA"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Beefiest QR"/>
+        <TextView
+            android:id="@+id/profile_strongest_QR"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:text="NA"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Squishiest QR"/>
+        <TextView
+            android:id="@+id/profile_weakest_QR"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:text="NA"/>
 
-        </TextView>
-
-        <ListView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/user_page_stats_display">
-
-        </ListView>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Contact Info"/>
+        <TextView
+            android:id="@+id/profile_contact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="janedoe@gmail.com"/>
     </LinearLayout>
 
     <include layout="@layout/navbar"/>

@@ -33,19 +33,6 @@
         app:layout_constraintTop_toBottomOf="@+id/usernameEditText"
         app:layout_constraintVertical_bias="0.191" />
 
-    <EditText
-        android:id="@+id/numberEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="number"
-        android:text="0"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailEditText"
-        app:layout_constraintVertical_bias="0.22" />
 
     <Button
         android:id="@+id/submitButton"
@@ -55,7 +42,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/numberEditText"
+        app:layout_constraintTop_toBottomOf="@+id/emailEditText"
         app:layout_constraintVertical_bias="0.305" />
 
     <TextView
@@ -82,15 +69,4 @@
         app:layout_constraintTop_toBottomOf="@+id/usernameEditText"
         app:layout_constraintVertical_bias="1.0" />
 
-    <TextView
-        android:id="@+id/numberLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        android:text="Number"
-        app:layout_constraintBottom_toTopOf="@+id/numberEditText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/numberEditText"
-        app:layout_constraintTop_toBottomOf="@+id/emailEditText" />
 </androidx.constraintlayout.widget.ConstraintLayout>
