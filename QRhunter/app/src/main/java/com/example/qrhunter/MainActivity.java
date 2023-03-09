@@ -1,30 +1,32 @@
 package com.example.qrhunter;
 
 
-import android.content.SharedPreferences;
-
 import android.content.Intent;
-
+import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.*;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
-import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 public class MainActivity extends AppCompatActivity {
     final String TAG = "User Profile Page";
     String username;
+
+    ImageButton mapButton;
+    ImageButton galleryButton;
+    ImageButton addQRButton;
+    ImageButton searchButton;
+    ImageButton rankingButton;
+
 
 
 
@@ -82,8 +84,26 @@ public class MainActivity extends AppCompatActivity {
         }
         userText.setText(username);
 
-        // temp button for gallery
-        Button galleryButton = findViewById(R.id.gallery_button);
+        // NAVBAR Buttons
+        mapButton = findViewById(R.id.map_button);
+        galleryButton = findViewById(R.id.gallery_button);
+        addQRButton = findViewById(R.id.addQR_button);
+        searchButton = findViewById(R.id.search_button);
+        rankingButton = findViewById(R.id.ranking_button);
+
+        /**
+         * onClick Actions for Navbar
+         *
+         * TODO Add in Intents for Camera (addQRButton), Search, and Rankings
+         */
+
+        mapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,MapsActivity.class);
+                startActivity(intent);
+            }
+        });
         galleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,5 +111,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
     }
 }
