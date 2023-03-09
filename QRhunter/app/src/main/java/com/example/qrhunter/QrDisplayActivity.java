@@ -18,7 +18,7 @@ public class QrDisplayActivity extends AppCompatActivity {
         Database db = new Database();
         Bundle bundle = getIntent().getExtras();
         String hash = bundle.getString("hash");
-        TextView qrName = (TextView) findViewById(R.id.qr_name);
+        TextView qrName =  findViewById(R.id.qr_name);
 
         //TODO change this to name after querying from db
         qrName.setText(hash);
