@@ -3,7 +3,9 @@ package com.example.qrhunter;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +22,7 @@ import java.util.List;
 public class Gallery extends AppCompatActivity {
     private ArrayAdapter<GalleryAdapter> galleryAdapter;
     private Iterable<DocumentSnapshot> userQRList;
+    public ImageButton backButton;
     private ArrayList<QRCode> qrCodeArrayList = new ArrayList<QRCode>();
     private String username;
     private ListView galleryView;
@@ -29,6 +32,16 @@ public class Gallery extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
+
+        // Back Button
+        // Goes back to Profile
+        backButton = findViewById(R.id.gallery_back);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         galleryView = findViewById(R.id.gallery_content);
         username = getIntent().getStringExtra("Player ID");
