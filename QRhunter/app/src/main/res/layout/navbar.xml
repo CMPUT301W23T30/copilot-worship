@@ -14,36 +14,36 @@
 
 
         <ImageButton
-            android:id="@+id/map_button"
+            android:id="@+id/navbar_map_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
-            app:srcCompat="@drawable/icon_map" />
+            app:srcCompat="@drawable/navbar_map" />
 
         <ImageButton
-            android:id="@+id/gallery_button"
+            android:id="@+id/navbar_gallery_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
-            app:srcCompat="@drawable/icon_gallery" />
+            app:srcCompat="@drawable/navbar_gallery" />
 
         <LinearLayout
             android:layout_width="50dp"
             android:layout_height="match_parent" />
 
         <ImageButton
-            android:id="@+id/search_button"
+            android:id="@+id/navbar_search_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            app:srcCompat="@drawable/icon_search" />
+            app:srcCompat="@drawable/navbar_search" />
 
         <ImageButton
-            android:id="@+id/ranking_button"
+            android:id="@+id/navbar_ranking_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            app:srcCompat="@drawable/icon_ranking" />
+            app:srcCompat="@drawable/navbar_ranking" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -55,11 +55,11 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <ImageButton
-            android:id="@+id/addQR_button"
+            android:id="@+id/navbar_add_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#00603E3E"
-            app:srcCompat="@drawable/icon__add_square_" />
+            android:background="@color/transparent"
+            app:srcCompat="@drawable/navbar_add" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

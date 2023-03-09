@@ -85,11 +85,11 @@ public class MainActivity extends AppCompatActivity {
         userText.setText(username);
 
         // NAVBAR Buttons
-        mapButton = findViewById(R.id.map_button);
-        galleryButton = findViewById(R.id.gallery_button);
-        addQRButton = findViewById(R.id.addQR_button);
-        searchButton = findViewById(R.id.search_button);
-        rankingButton = findViewById(R.id.ranking_button);
+        mapButton = findViewById(R.id.navbar_map_button);
+        galleryButton = findViewById(R.id.navbar_gallery_button);
+        addQRButton = findViewById(R.id.navbar_add_button);
+        searchButton = findViewById(R.id.navbar_search_button);
+        rankingButton = findViewById(R.id.navbar_ranking_button);
 
         /**
          * onClick Actions for Navbar
