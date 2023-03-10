@@ -6,6 +6,7 @@ import static org.apache.commons.codec.digest.DigestUtils.sha256Hex;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,8 +23,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     final String TAG = "User Profile Page";
@@ -45,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     ImageButton addQRButton;
     ImageButton searchButton;
     ImageButton rankingButton;
+
+    private final FirebaseFirestore fireDB = FirebaseFirestore.getInstance();
 
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
@@ -210,26 +217,62 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Scan QR code
+     * result.hashCode() gives you an INT, result.getResult() gives you a STR
      */
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result->
     {
         if(result.getContents() !=null)
         {
-//            String hashedCode = hasher(result.getContents()); // If this fails alert won't appear, makes it easier to test
+//            String hashedCode = hasher(Integer.toString(result.hashCode())); // If this fails alert won't appear, makes it easier to test
 //            int score = scoreCalculator(hashedCode);
 
-            Log.d("HASHCODE", result.getContents());
+            //Toast.makeText(this,"Scanned: "+ result.hashCode(), Toast.LENGTH_LONG).show();
+            String tempHash = Integer.toString(result.hashCode());
 
             Toast.makeText(this, "make object", Toast.LENGTH_SHORT).show();
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Result");
-            builder.setMessage("Coolio");
+            builder.setMessage("Scanned: " + tempHash);
 //            builder.setMessage(result.getContents());
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
             {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i)
                 {
+                    /**
+                     * Adding QR to Player QRArray
+                     */
+//                    CollectionReference codeCollection = fireDB.collection("QrCodes");
+//                    CollectionReference userCollection = fireDB.collection("Players");
+
+                    //Randomizing Location and Score for now because I'm stupid
+                    Location l = new Location("");
+                    //Incomplete but acceptable locations
+                    l.setLongitude(Math.random() * 180);
+                    l.setLatitude(Math.random() * 90);
+                    int score = (int) Math.floor(Math.random() * ((1000-1))+1);
+
+                    QRCode tempCode = new QRCode(tempHash, tempHash, l, score);
+                    Player tempPlayer = new Player(username);
+
+                    Database db = new Database();
+                    db.addQrCode(tempCode);
+                    db.addScannedCode(tempCode, tempPlayer);
+
+                    Map<String,Object> qrInfo = new HashMap<>();
+                    qrInfo.put("hash", tempHash);
+                    qrInfo.put("score",score);
+                    qrInfo.put("longitude", l.getLongitude());
+                    qrInfo.put("latitude",l.getLatitude());
+                    qrInfo.put("name",tempHash);
+
+                    Map<String,Object> userQRInfo = new HashMap<>();
+                    userQRInfo.put("hash", tempHash);
+
+                    Map<String,Object> userInfo = new HashMap<>();
+                    userInfo.put("username", username);
+
+
                     dialogInterface.dismiss();
                 }
             }).show();

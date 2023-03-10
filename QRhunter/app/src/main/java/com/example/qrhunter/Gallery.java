@@ -97,5 +97,13 @@ public class Gallery extends AppCompatActivity {
                         }
                     }
                 });
+
+//        galleryView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//                String target = view.findViewById("")
+//                userCollection.document("")
+//            }
+//        });
     }
 }
