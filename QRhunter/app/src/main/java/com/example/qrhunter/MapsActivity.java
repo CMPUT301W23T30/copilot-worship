@@ -112,12 +112,12 @@ public class MapsActivity extends FragmentActivity
         // TODO Add Camera activity
         addQRButton = findViewById(R.id.map_add_button);
 
-//        addQRButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
-//        });
+        addQRButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
 
     }
