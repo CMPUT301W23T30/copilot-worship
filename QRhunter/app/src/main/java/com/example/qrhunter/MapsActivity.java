@@ -110,14 +110,17 @@ public class MapsActivity extends FragmentActivity
 
         // Add QR Button implementation + onClick
         // TODO Add Camera activity
-        addQRButton = findViewById(R.id.map_add_button);
+//        addQRButton = findViewById(R.id.map_add_button);
+//
+//        addQRButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//            }
+//        });
 
-        addQRButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
+
 
 
     }
