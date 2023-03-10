@@ -110,14 +110,19 @@ public class MapsActivity extends FragmentActivity
 
         // Add QR Button implementation + onClick
         // TODO Add Camera activity
-        addQRButton = findViewById(R.id.map_add_button);
-
+//        addQRButton = findViewById(R.id.map_add_button);
+//
 //        addQRButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
 //
 //            }
 //        });
+
+        // TODO Add QR code marker on map based on its location from db
+        // All QR codes should be marked on the map and the user should be able to click on them
+        // By clicking the marker, user should be navigated to the QR code's page
+
 
 
     }
