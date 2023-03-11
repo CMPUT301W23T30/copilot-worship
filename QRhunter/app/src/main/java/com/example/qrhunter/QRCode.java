@@ -38,7 +38,7 @@ public class QRCode {
 
         Scanner scanner = null;
         try {
-            scanner = new Scanner(new File("android.resource://com.example.qrhunter/raw/adjectives.txt"));
+            scanner = new Scanner(new File("android.resource://com.example.qrhunter/raw/english_adjectives.txt"));
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }

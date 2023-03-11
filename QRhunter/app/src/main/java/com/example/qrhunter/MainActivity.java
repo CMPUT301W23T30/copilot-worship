@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -250,7 +251,13 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "make object", Toast.LENGTH_SHORT).show();
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Result");
-            builder.setMessage(score + " points");
+
+            Location testLocation = new Location("test");
+            QRCode test = new QRCode(hashedCode, "Test", testLocation, score);
+            String adjective = test.generateRandomName();
+
+
+            builder.setMessage(adjective + score + " points");
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
             {
                 @Override
