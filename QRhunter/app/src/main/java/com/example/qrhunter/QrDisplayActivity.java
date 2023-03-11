@@ -30,6 +30,10 @@ public class QrDisplayActivity extends AppCompatActivity {
         qrName.setText(hash);
 
         Button seeOthers = findViewById(R.id.other_players);
+
+
+        //See other players with this QR Codes
+        //TODO pass the actual player too so we can filter that out
         seeOthers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
