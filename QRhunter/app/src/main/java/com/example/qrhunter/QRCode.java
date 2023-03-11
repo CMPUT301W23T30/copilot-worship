@@ -1,5 +1,7 @@
 package com.example.qrhunter;
 
+import android.app.Activity;
+import android.content.Context;
 import android.location.Location;
 
 import java.io.BufferedReader;
@@ -30,29 +32,6 @@ public class QRCode {
         this.location = location;
         this.score = score;
         this.name = name;
-    }
-
-    public String generateRandomName() {
-
-        final ArrayList<String> adjectivesList = new ArrayList<String>();
-
-        Scanner scanner = null;
-        try {
-            scanner = new Scanner(new File("android.resource://com.example.qrhunter/raw/english_adjectives.txt"));
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        while (scanner.hasNextLine()) {
-            String word = scanner.nextLine();
-            adjectivesList.add(word);
-        }
-        scanner.close();
-
-        Random rand = new Random();
-        String randomAdjective = adjectivesList.get(rand.nextInt(adjectivesList.size()));
-
-        return randomAdjective;
     }
 
 

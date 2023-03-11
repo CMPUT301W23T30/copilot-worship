@@ -43,14 +43,19 @@ import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Random;
+import java.util.Scanner;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -238,6 +243,24 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public String generateRandomName() {
+
+        final ArrayList<String> adjectivesList = new ArrayList<String>();
+        InputStream file = getResources().openRawResource(R.raw.english_adjectives);
+        Scanner scanner = new Scanner(file);
+
+        while (scanner.hasNextLine()) {
+            String word = scanner.nextLine();
+            adjectivesList.add(word);
+        }
+        scanner.close();
+
+        Random rand = new Random();
+        String randomAdjective = adjectivesList.get(rand.nextInt(adjectivesList.size()));
+
+        return randomAdjective;
+    }
+
     /**
      * Scan QR code
      */
@@ -252,10 +275,7 @@ public class MainActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Result");
 
-            Location testLocation = new Location("test");
-            QRCode test = new QRCode(hashedCode, "Test", testLocation, score);
-            String adjective = test.generateRandomName();
-
+            String adjective = generateRandomName();
 
             builder.setMessage(adjective + score + " points");
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
