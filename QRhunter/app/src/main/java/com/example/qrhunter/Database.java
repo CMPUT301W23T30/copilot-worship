@@ -25,12 +25,23 @@ import java.util.Map;
 public class Database {
 
     // Initialize database and collections
+    /**
+     * firestore instance of db
+     */
     private final FirebaseFirestore db;
+    /**
+     * Collection of players
+     */
     private CollectionReference playersCollection;
+    /**
+     * Collection of qr codes
+     */
     private CollectionReference qrCodeCollection;
 
 
-    // Default constructor for Database, creates a new instance of the database and collections
+    /** Default constructor for Database, creates a new instance of the database and collections
+     *
+     */
     public Database(){
         db = FirebaseFirestore.getInstance();
         playersCollection = db.collection("Players");
@@ -71,11 +82,11 @@ public class Database {
      * @param player username of player to remove
      * @return Void task of player being removed
      */
+    //TODO have this remove the player from all QR codes it has too
     public Task<Void> removePlayer(String player){
         return playersCollection
                 .document(player)
                 .delete();
-
     }
 
     /**
@@ -124,6 +135,7 @@ public class Database {
      * @param qrCode QR code to be removed
      * @return Void task of qr code being removed
      */
+    //TODO remove the QR code from all the player qr collection too
     public Task<Void> removeQrCode(@NonNull QRCode qrCode) {
         return qrCodeCollection
                 .document(qrCode.getHash())
