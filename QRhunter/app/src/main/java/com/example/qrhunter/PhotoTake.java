@@ -26,7 +26,8 @@ import java.util.Date;
 public class PhotoTake extends Activity {
 
     /**
-     * Constructor class
+     * Takes photo of an object, return high quality image
+     * Note: NOT DONE
      *
      * @author bohan
      */
