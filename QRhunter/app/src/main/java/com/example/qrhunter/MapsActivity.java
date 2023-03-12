@@ -26,12 +26,16 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Marker;
+
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
 
 
 public class MapsActivity extends FragmentActivity
@@ -50,6 +54,13 @@ public class MapsActivity extends FragmentActivity
     private boolean FollowUserLocation = false;
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    // Radius of the visible area in meters
+    private int visibleRadius = 200;
+
+    // List of markers
+    private List<Marker> markerList = new ArrayList<Marker>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,16 +191,7 @@ public class MapsActivity extends FragmentActivity
                         List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                         for (DocumentSnapshot d : list) {
 
-                            // Since attributes from db are longitude and latitude, we need to create a new Location object
-                            Location QrLocation = new Location("");
-                            QrLocation.setLatitude((Double)d.get("latitude"));
-                            QrLocation.setLongitude((Double)d.get("longitude"));
-                            // Create a new QR code object
-                            QRCode qrCode = new QRCode(
-                                    d.get("hash").toString(),
-                                    d.get("name").toString(),
-                                    QrLocation,
-                                    ((Long)d.get("score")).intValue());
+                            QRCode qrCode = create_QR_Object(d);
 
                             // Mark the QR code on the map if it's within the range of visibility
                             mFusedLocationClient.getLastLocation()
@@ -204,9 +206,10 @@ public class MapsActivity extends FragmentActivity
                                                         currentLocation.getLongitude(),
                                                         qrCode.getLocation().getLatitude(),
                                                         qrCode.getLocation().getLongitude());
-                                                if (distance <= 200) {
+                                                if (distance <= visibleRadius) {
                                                     LatLng qrLocation = new LatLng(qrCode.getLocation().getLatitude(), qrCode.getLocation().getLongitude());
-                                                    mMap.addMarker(new MarkerOptions().position(qrLocation).title(qrCode.getName()));
+                                                    Marker marker = mMap.addMarker(new MarkerOptions().position(qrLocation).title(qrCode.getName()));
+                                                    markerList.add(marker);
                                                 }
                                             }
                                         }
@@ -224,37 +227,7 @@ public class MapsActivity extends FragmentActivity
             LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
         }
-        db.collection("QrCodes").get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-                        for (DocumentSnapshot d : list) {
-
-                            // Since attributes from db are longitude and latitude, we need to create a new Location object
-                            Location QrLocation = new Location("");
-                            QrLocation.setLatitude((Double)d.get("latitude"));
-                            QrLocation.setLongitude((Double)d.get("longitude"));
-                            // Create a new QR code object
-                            QRCode qrCode = new QRCode(
-                                    d.get("hash").toString(),
-                                    d.get("name").toString(),
-                                    QrLocation,
-                                    ((Long)d.get("score")).intValue());
-
-                            // Mark the QR code on the map if it's within the range of visibility
-                               Double distance = distance(
-                                        currentLocation.getLatitude(),
-                                        currentLocation.getLongitude(),
-                                        qrCode.getLocation().getLatitude(),
-                                        qrCode.getLocation().getLongitude());
-                                if (distance <= 200) {
-                                    LatLng qrLocation = new LatLng(qrCode.getLocation().getLatitude(), qrCode.getLocation().getLongitude());
-                                    mMap.addMarker(new MarkerOptions().position(qrLocation).title(qrCode.getName()));
-                                }
-                        }
-                    }
-                });
+        updateMarkers(currentLocation);
     }
 
     // Use the Haversine formula to calculate the distance between two points
@@ -274,6 +247,37 @@ public class MapsActivity extends FragmentActivity
 
         return Math.sqrt(distance);
     }
+    private void updateMarkers(Location currentLocation) {
+        Iterator<Marker> iterator = markerList.iterator();
+        while (iterator.hasNext()) {
+            Marker marker = iterator.next();
+            double distance = distance(
+                    currentLocation.getLatitude(),
+                    currentLocation.getLongitude(),
+                    marker.getPosition().latitude,
+                    marker.getPosition().longitude);
+            if (distance > visibleRadius) {
+                // Remove marker from the map
+                marker.remove();
+                // Remove marker from the list
+                iterator.remove();
+            }
+        }
+    }
+    private QRCode create_QR_Object(DocumentSnapshot d) {
 
+        // Since attributes from db are longitude and latitude, we need to create a new Location object
+        Location QrLocation = new Location("");
+        QrLocation.setLatitude((Double)d.get("latitude"));
+        QrLocation.setLongitude((Double)d.get("longitude"));
+
+        // Create a new QR code object
+        QRCode qrCode = new QRCode(
+                d.get("hash").toString(),
+                d.get("name").toString(),
+                QrLocation,
+                ((Long)d.get("score")).intValue());
+        return qrCode;
+    }
 
 }
