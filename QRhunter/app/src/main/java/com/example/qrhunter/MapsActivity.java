@@ -7,6 +7,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -44,6 +45,7 @@ public class MapsActivity extends FragmentActivity
     private ToggleButton followLocationButton;
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationManager locationManager;
+    private Location currentLocation;
     private static final int PERMISSIONS_REQUEST_LOCATION = 1;
     private boolean FollowUserLocation = false;
 
@@ -161,7 +163,7 @@ public class MapsActivity extends FragmentActivity
                     @Override
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
-                        //  ove the camera to the user's location only if FollowUserLocation is false:
+                        // Move the camera to the user's location only if FollowUserLocation is false:
                         if (location != null) {
                             // Logic to handle location object
                             LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
@@ -171,34 +173,78 @@ public class MapsActivity extends FragmentActivity
                 });
 
         // Retrieve the QR codes from the database
-//        db.collection("QrCodes").get()
-//                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//                        List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-//                        for (DocumentSnapshot d : list) {
-//
-//                            // Since attributes from db are longitude and latitude, we need to create a new Location object
-//                            Location location = new Location("");
-//                            location.setLatitude((Double)d.get("latitude"));
-//                            location.setLongitude((Double)d.get("longitude"));
-//                            // Create a new QR code object
-//                            QRCode qrCode = new QRCode(d.get("hash").toString(), d.get("name").toString(), location, (Integer)d.get("score"));
-//
-//                            // Add the QR code to the map
-//                            LatLng qrLocation = new LatLng(qrCode.getLocation().getLatitude(), qrCode.getLocation().getLongitude());
-//                            mMap.addMarker(new MarkerOptions().position(qrLocation).title(qrCode.getName()));
-//                        }
-//                    }
-//                });
+        db.collection("QrCodes").get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+                        for (DocumentSnapshot d : list) {
+
+                            // Since attributes from db are longitude and latitude, we need to create a new Location object
+                            Location QrLocation = new Location("");
+                            QrLocation.setLatitude((Double)d.get("latitude"));
+                            QrLocation.setLongitude((Double)d.get("longitude"));
+                            // Create a new QR code object
+                            QRCode qrCode = new QRCode(
+                                    d.get("hash").toString(),
+                                    d.get("name").toString(),
+                                    QrLocation,
+                                    ((Long)d.get("score")).intValue());
+
+                            // Mark the QR code on the map if it's within the range of visibility
+                            mFusedLocationClient.getLastLocation()
+                                    .addOnSuccessListener(MapsActivity.this, new OnSuccessListener<Location>() {
+                                        @Override
+                                        public void onSuccess(Location location) {
+                                            // Got last known location. In some rare situations this can be null.
+                                            if (location != null) {
+                                                currentLocation = location;
+                                                Double distance = distance(
+                                                        currentLocation.getLatitude(),
+                                                        currentLocation.getLongitude(),
+                                                        qrCode.getLocation().getLatitude(),
+                                                        qrCode.getLocation().getLongitude());
+                                                if (distance <= 200) {
+                                                    LatLng qrLocation = new LatLng(qrCode.getLocation().getLatitude(), qrCode.getLocation().getLongitude());
+                                                    mMap.addMarker(new MarkerOptions().position(qrLocation).title(qrCode.getName()));
+                                                }
+                                            }
+                                        }
+                                    });
+
+
+                        }
+                    }
+                });
     }
     @Override
     public void onLocationChanged(Location location) {
+        // Update the current location
+        currentLocation = location;
         // Update the map camera to the new location
         if (FollowUserLocation) {
-            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
         }
     }
+
+    // Use the Haversine formula to calculate the distance between two points
+    public static double distance(double lat1, double lon1, double lat2, double lon2) {
+        final int R = 6371; // Radius of the earth
+
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        double distance = R * c * 1000; // convert to meters
+
+        distance = Math.pow(distance, 2);
+
+        return Math.sqrt(distance);
+    }
+
 
 }
