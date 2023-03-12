@@ -5,7 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.journeyapps.barcodescanner.ScanOptions;
 
+
 public class QRScan extends AppCompatActivity {
+
+    /**
+     * Start a new activity to open the camera and scan QR/bar codes
+     *
+     * @param barLaucher
+     */
     public void scanCode(ActivityResultLauncher<ScanOptions> barLaucher) {
         ScanOptions options = new ScanOptions();
         options.setPrompt("Volume up to flash on");
