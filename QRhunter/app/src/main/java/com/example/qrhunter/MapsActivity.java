@@ -11,12 +11,17 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import androidx.core.app.ActivityCompat;
@@ -58,6 +63,7 @@ public class MapsActivity extends FragmentActivity
     private Button backButton;
     private Button myLocationButton;
     private Button searchButton;
+    private Button searchGoButton;
     private EditText searchBar;
     private ToggleButton followLocationButton;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -162,15 +168,26 @@ public class MapsActivity extends FragmentActivity
         // Animate the input bar expanding from the search button
         searchButton = findViewById(R.id.map_search_button);
         searchBar = findViewById(R.id.map_search_bar);
-        searchBar.setScaleX(0.5f); // Set the initial scale to half the size of the button
+        searchGoButton = findViewById(R.id.map_search_go_button);
+        // Set the initial scale to half
+        searchBar.setScaleX(0.5f);
         searchBar.setScaleY(0.5f);
+        searchGoButton.setScaleX(0.5f);
+        searchGoButton.setScaleY(0.5f);
+
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                searchButton.setVisibility(View.INVISIBLE);
-                backButton.setVisibility(View.INVISIBLE);
+                searchButton.setVisibility(View.GONE);
+                backButton.setVisibility(View.GONE);
                 searchBar.setVisibility(View.VISIBLE);
+                searchGoButton.setVisibility(View.VISIBLE);
                 searchBar.animate()
+                        .alpha(1.0f)
+                        .scaleX(1.0f)
+                        .scaleY(1.0f)
+                        .setDuration(200);
+                searchGoButton.animate()
                         .alpha(1.0f)
                         .scaleX(1.0f)
                         .scaleY(1.0f)
