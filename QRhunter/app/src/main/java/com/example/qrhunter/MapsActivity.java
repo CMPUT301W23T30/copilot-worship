@@ -164,36 +164,7 @@ public class MapsActivity extends FragmentActivity
 
         // TODO add functionality to the locate button to rotate the camera upright
 
-        // TODO add functionality to search nearby QR codes using location
-        // Animate the input bar expanding from the search button
-        searchButton = findViewById(R.id.map_search_button);
-        searchBar = findViewById(R.id.map_search_bar);
-        searchGoButton = findViewById(R.id.map_search_go_button);
-        // Set the initial scale to half
-        searchBar.setScaleX(0.5f);
-        searchBar.setScaleY(0.5f);
-        searchGoButton.setScaleX(0.5f);
-        searchGoButton.setScaleY(0.5f);
 
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchButton.setVisibility(View.GONE);
-                backButton.setVisibility(View.GONE);
-                searchBar.setVisibility(View.VISIBLE);
-                searchGoButton.setVisibility(View.VISIBLE);
-                searchBar.animate()
-                        .alpha(1.0f)
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(200);
-                searchGoButton.animate()
-                        .alpha(1.0f)
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(200);
-            }
-        });
     }
 
 
