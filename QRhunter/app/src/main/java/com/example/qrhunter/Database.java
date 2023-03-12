@@ -101,7 +101,7 @@ public class Database {
         qrInfo.put("hash", qrCode.getHash());
         qrInfo.put("score",qrCode.getScore());
         qrInfo.put("longitude", qrCode.getLocation().getLongitude());
-        qrInfo.put("latitude", qrCode.getLocation().getLongitude());
+        qrInfo.put("latitude", qrCode.getLocation().getLatitude());
         qrInfo.put("name", qrCode.getName());
         return qrCodeCollection
                 .document(qrCode.getHash())
