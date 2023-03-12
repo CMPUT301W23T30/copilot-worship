@@ -24,7 +24,13 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.List;
 
 
 public class MapsActivity extends FragmentActivity
@@ -41,6 +47,7 @@ public class MapsActivity extends FragmentActivity
     private static final int PERMISSIONS_REQUEST_LOCATION = 1;
     private boolean FollowUserLocation = false;
 
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +62,8 @@ public class MapsActivity extends FragmentActivity
                 .beginTransaction()
                 .replace(R.id.map_container, mapFragment)
                 .commit();
+
+
 
         // Back Button
         // Goes back to Profile
@@ -124,6 +133,9 @@ public class MapsActivity extends FragmentActivity
         // By clicking the marker, user should be navigated to the QR code's page
 
 
+        // TODO add functionality to the locate button to rotate the camera upright
+
+        // TODO Set a range of visibility for the QR codes on the map
 
     }
 
@@ -157,6 +169,28 @@ public class MapsActivity extends FragmentActivity
                         }
                     }
                 });
+
+        // Retrieve the QR codes from the database
+//        db.collection("QrCodes").get()
+//                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                        List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+//                        for (DocumentSnapshot d : list) {
+//
+//                            // Since attributes from db are longitude and latitude, we need to create a new Location object
+//                            Location location = new Location("");
+//                            location.setLatitude((Double)d.get("latitude"));
+//                            location.setLongitude((Double)d.get("longitude"));
+//                            // Create a new QR code object
+//                            QRCode qrCode = new QRCode(d.get("hash").toString(), d.get("name").toString(), location, (Integer)d.get("score"));
+//
+//                            // Add the QR code to the map
+//                            LatLng qrLocation = new LatLng(qrCode.getLocation().getLatitude(), qrCode.getLocation().getLongitude());
+//                            mMap.addMarker(new MarkerOptions().position(qrLocation).title(qrCode.getName()));
+//                        }
+//                    }
+//                });
     }
     @Override
     public void onLocationChanged(Location location) {
