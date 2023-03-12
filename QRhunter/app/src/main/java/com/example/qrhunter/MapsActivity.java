@@ -166,5 +166,4 @@ public class MapsActivity extends FragmentActivity
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
         }
     }
-
 }
