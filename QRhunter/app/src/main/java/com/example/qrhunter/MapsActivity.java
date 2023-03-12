@@ -1,6 +1,9 @@
 package com.example.qrhunter;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -9,8 +12,10 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ToggleButton;
 
@@ -27,6 +32,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.MapFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import com.google.android.gms.maps.SupportMapFragment;
+
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -46,6 +57,8 @@ public class MapsActivity extends FragmentActivity
     private Button addQRButton;
     private Button backButton;
     private Button myLocationButton;
+    private Button searchButton;
+    private EditText searchBar;
     private ToggleButton followLocationButton;
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationManager locationManager;
@@ -67,6 +80,7 @@ public class MapsActivity extends FragmentActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
+
         // Create a new SupportMapFragment
         SupportMapFragment mapFragment = new SupportMapFragment();
 
@@ -76,7 +90,8 @@ public class MapsActivity extends FragmentActivity
                 .replace(R.id.map_container, mapFragment)
                 .commit();
 
-
+        // Set the callback for when the map is ready
+        mapFragment.getMapAsync(this);
 
         // Back Button
         // Goes back to Profile
@@ -88,8 +103,7 @@ public class MapsActivity extends FragmentActivity
             }
         });
 
-        // Set the callback for when the map is ready
-        mapFragment.getMapAsync(this);
+
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.ACCESS_FINE_LOCATION }, PERMISSIONS_REQUEST_LOCATION);
@@ -141,15 +155,28 @@ public class MapsActivity extends FragmentActivity
 //            }
 //        });
 
-        // TODO Add QR code marker on map based on its location from db
-        // All QR codes should be marked on the map and the user should be able to click on them
-        // By clicking the marker, user should be navigated to the QR code's page
-
 
         // TODO add functionality to the locate button to rotate the camera upright
 
-        // TODO Set a range of visibility for the QR codes on the map
-
+        // TODO add functionality to search nearby QR codes using location
+        // Animate the input bar expanding from the search button
+        searchButton = findViewById(R.id.map_search_button);
+        searchBar = findViewById(R.id.map_search_bar);
+        searchBar.setScaleX(0.5f); // Set the initial scale to half the size of the button
+        searchBar.setScaleY(0.5f);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchButton.setVisibility(View.INVISIBLE);
+                backButton.setVisibility(View.INVISIBLE);
+                searchBar.setVisibility(View.VISIBLE);
+                searchBar.animate()
+                        .alpha(1.0f)
+                        .scaleX(1.0f)
+                        .scaleY(1.0f)
+                        .setDuration(200);
+            }
+        });
     }
 
 
