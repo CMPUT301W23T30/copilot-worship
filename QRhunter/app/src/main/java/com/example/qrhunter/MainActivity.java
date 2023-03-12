@@ -1,20 +1,13 @@
 package com.example.qrhunter;
 
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.activity.result.ActivityResultLauncher;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,38 +15,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 
-import android.os.Bundle;
 import android.widget.Toast;
 
 import com.google.common.hash.Hashing;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -243,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public String generateRandomName() {
+    public String generateRandomAdjective() {
 
         final ArrayList<String> adjectivesList = new ArrayList<String>();
         InputStream file = getResources().openRawResource(R.raw.english_adjectives);
@@ -257,9 +233,13 @@ public class MainActivity extends AppCompatActivity {
 
         Random rand = new Random();
         String randomAdjective = adjectivesList.get(rand.nextInt(adjectivesList.size()));
+        String finalRandomAdjective = randomAdjective.substring(0, 1).toUpperCase() + randomAdjective.substring(1);
 
-        return randomAdjective;
+        return finalRandomAdjective;
     }
+
+//    public String generateRandomName() {
+//    }
 
     /**
      * Scan QR code
@@ -275,9 +255,9 @@ public class MainActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Result");
 
-            String adjective = generateRandomName();
+            String adjective = generateRandomAdjective();
 
-            builder.setMessage(adjective + score + " points");
+            builder.setMessage(adjective + " " + score + " points");
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
             {
                 @Override
