@@ -35,6 +35,7 @@ import androidx.core.content.FileProvider;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.google.common.hash.Hashing;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.journeyapps.barcodescanner.ScanContract;
@@ -42,15 +43,17 @@ import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
-
-import static org.apache.commons.codec.digest.DigestUtils.sha256Hex;
 
 public class MainActivity extends AppCompatActivity {
     final String TAG = "User Profile Page";
@@ -167,6 +170,14 @@ public class MainActivity extends AppCompatActivity {
          * the user username
          */
 
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,SearchPlayerActivity.class);
+                startActivity(intent);
+            }
+        });
+
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -198,7 +209,10 @@ public class MainActivity extends AppCompatActivity {
 
     // TODO: to fix!!!
     private String hasher(String unhashedQRCode) {
-        return sha256Hex(unhashedQRCode);
+        final String hashed = Hashing.sha256()
+                .hashString(unhashedQRCode, StandardCharsets.UTF_8)
+                .toString();
+        return hashed;
     }
 
     private int scoreCalculator(String hashedQRCode) {
@@ -230,13 +244,13 @@ public class MainActivity extends AppCompatActivity {
     {
         if(result.getContents() !=null)
         {
-//            String hashedCode = hasher(result.getContents()); // If this fails alert won't appear, makes it easier to test
-//            int score = scoreCalculator(hashedCode);
+            String hashedCode = hasher(result.getContents()); // If this fails alert won't appear, makes it easier to test
+            int score = scoreCalculator(hashedCode);
 
             Toast.makeText(this, "make object", Toast.LENGTH_SHORT).show();
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Result");
-            builder.setMessage(result.getContents());
+            builder.setMessage(score + " points");
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
             {
                 @Override
