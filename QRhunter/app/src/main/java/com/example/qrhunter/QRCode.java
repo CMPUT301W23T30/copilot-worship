@@ -2,7 +2,7 @@ package com.example.qrhunter;
 
 import android.location.Location;
 
-/*
+/**
  * This class represents a QR Code
  */
 public class QRCode {

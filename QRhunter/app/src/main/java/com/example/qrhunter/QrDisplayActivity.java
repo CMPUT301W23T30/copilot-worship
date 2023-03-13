@@ -14,6 +14,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * This class displays a QR Code in more detail
+ * With the ability to see others that have scanned the same QR Code
+ *
+ * Outstanding issues:
+ *  Currently Displays very minimal information about the QR Code
+ */
 public class QrDisplayActivity extends AppCompatActivity {
 
     @Override
@@ -30,6 +37,7 @@ public class QrDisplayActivity extends AppCompatActivity {
         qrName.setText(hash);
 
         Button seeOthers = findViewById(R.id.other_players);
+        //Find other players that have scanned this QR Code
         seeOthers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -7,18 +7,33 @@ import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 
-/*
+/**
  * This class represents a user of the app
+ *
  */
 public class Player {
 
+    /**
+     * Player username
+     */
     private String username;
+    /**
+     * Players email
+     */
     private String email;
-    private int number; //TODO : Format number?
+    /**
+     * Players number
+     */
+    private int number;
+    /**
+     * QR Codes associated with the player
+     */
     private ArrayList<QRCode> qrCodes;
 
     /**
      * Test constructor with invalid username for testing
+     * provides us with an invalid username (above 20 characters, so that we are sure
+     * it is not in the database)
      */
     public Player(){
         this.username = "qwertyuiopasdfghjklzxcvbnm";//Invalid username
@@ -52,7 +67,6 @@ public class Player {
     }
 
     // Getter and Setter methods for username, email, number, and QRCodes
-
 
 
     public String getUsername() {
