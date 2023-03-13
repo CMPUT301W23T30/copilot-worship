@@ -22,6 +22,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Gallery Activity
+ * Displays the QRCodes owned by a Player using GalleryAdapter
+ * Currently displays the QRCodes Name, Location, and Score
+ */
 public class Gallery extends AppCompatActivity {
     private String username;
     private ArrayAdapter<GalleryAdapter> galleryAdapter;
@@ -127,7 +132,7 @@ public class Gallery extends AppCompatActivity {
      * Deletes Player from specific QrCodes Player Collection
      * @param hash
      */
-    public void DeleteQR(String hash){
+    private void DeleteQR(String hash){
         Database deleteDB = new Database();
         deleteDB.removeQrCodesFromPlayer(username,hash);
         deleteDB.removePlayerFromQRCode(username,hash);
