@@ -14,6 +14,9 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 
 public class GalleryAdapter extends ArrayAdapter<QRCode> {
+    /**
+     * TODO make UI bigger and make name,score,location information obvious
+     */
     public GalleryAdapter(Context context, ArrayList<QRCode> visits) {
         super(context, 0, visits);
     }

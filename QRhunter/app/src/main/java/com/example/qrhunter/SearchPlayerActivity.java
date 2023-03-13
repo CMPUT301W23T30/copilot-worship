@@ -15,6 +15,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activity for SearchPlayer
+ * @author X
+ */
 public class SearchPlayerActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
@@ -23,6 +27,12 @@ public class SearchPlayerActivity extends AppCompatActivity {
     private List<SearchModel> userList = new ArrayList<>();
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    /**
+     * Landing screen for SearchPlayer, populates recyclerview with players according to SearchModel
+     * Shown are the profile picture and name
+     * @author X
+     * TODO maybe add their total score and some flavour elements
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +61,10 @@ public class SearchPlayerActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Override to call query function whenever input box changes
+     * @author X
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -75,6 +89,12 @@ public class SearchPlayerActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * Queries database with provided string and updates recyclerview
+     * @param str string fragment you want to search
+     * @author X
+     * TODO implement SQL-like *LIKE* case matching/blank space sanitation
+     */
     private void txtSearch(String str){
         userList.clear();
         db.collection("Players")

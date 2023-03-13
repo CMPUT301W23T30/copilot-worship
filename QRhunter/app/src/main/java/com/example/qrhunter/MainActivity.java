@@ -1,61 +1,45 @@
 package com.example.qrhunter;
 
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.widget.Button;
-import android.widget.ImageView;
-
-import androidx.activity.result.ActivityResultLauncher;
-
-import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-
-import android.os.Bundle;
-import android.widget.Toast;
-
-import com.google.common.hash.Hashing;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.journeyapps.barcodescanner.ScanContract;
-import com.journeyapps.barcodescanner.ScanOptions;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.common.hash.Hashing;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 
+import java.nio.charset.StandardCharsets;
+
+/**
+ * User login page
+ * @author Sean X
+ *
+ * Outstanding Issues
+ * Move code from here that doesnt belong to proper classes
+ * Properly Cite the method to store usernames
+ */
 public class MainActivity extends AppCompatActivity {
+    //Tag for logging any issues
     final String TAG = "User Profile Page";
     String username;
 
@@ -70,12 +54,25 @@ public class MainActivity extends AppCompatActivity {
     ImageButton searchButton;
     ImageButton rankingButton;
 
+
+    /**
+     * Inflate the menu; this adds items to the action bar if it is present.
+     * @param menu
+     * @return true
+     * @author: Maarij
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_add_player, menu);
         return true;
     }
 
+    /**
+     * Handles action bar item clicks here. Starts the AddPlayerActivity when the add player button is clicked.
+     * @param item
+     * @return true if the button is clicked, false otherwise
+     * @author: Maarij
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -88,23 +85,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        //start populate xml
-        ImageView profileCircle = (ImageView) findViewById(R.id.profile_icon);
-        //in the future if we want to add profile pictures
-        profileCircle.setImageResource(R.drawable._icon__profile_circle_);
-
-
-        TextView userText = findViewById(R.id.user_page_user_name);
-        Bundle bundle = getIntent().getExtras();
-        Database db = new Database();
-        //db.populateDB();
+    /**
+     * Handles doing the players username according to the following specs
+     *
+     * - If new user, assign a unique username then save it to phone
+     * - If old user, set the name to the saved username on the phone
+     * - If this is just displaying a user (that is a username was sent through a bundle
+     * then just display the user)
+     *
+     * TODO have this return whether the user is the current user or not so we can re use this for
+     * other things apart from the main page
+     *
+     * @param bundle bundle of data that will include a username if is sent through another activity
+     * @param db Database instance to query from
+     * @param userText User text to set the username too
+     */
+    public void getUsername(Bundle bundle, Database db, TextView userText){
         //https://stackoverflow.com/questions/10209814/saving-user-information-in-app-settings
         //Roughly following
         //TODO properly cite
@@ -129,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AggregateQuerySnapshot> task) {
                                 if(task.isSuccessful()){
                                     username = "Player-" + (task.getResult().getCount()
-                                             + 1);
+                                            + 1);
                                 }
                                 else{
                                     //TODO add an error message here
@@ -146,6 +142,27 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
+    }
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        //start populate xml
+        ImageView profileCircle = (ImageView) findViewById(R.id.profile_icon);
+        //in the future if we want to add profile pictures
+        profileCircle.setImageResource(R.drawable._icon__profile_circle_);
+
+
+        TextView userText = findViewById(R.id.user_page_user_name);
+        Bundle bundle = getIntent().getExtras();
+        Database db = new Database();
+        //db.populateDB(); Run only when we need to redo db after a purge
+        getUsername(bundle, db, userText);
+
 
 
 //        photoButton = findViewById(R.id.Photo_Button);
@@ -199,15 +216,23 @@ public class MainActivity extends AppCompatActivity {
         addQRButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                Bundle bundle = new Bundle();
+//                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+
                 Toast.makeText(MainActivity.this, "Start Scanning", Toast.LENGTH_SHORT).show();
                 QRScan newClass = new QRScan();
-                newClass.scanCode(barLaucher);
+                newClass.scanCode(barLauncher);
             }
         });
 
     }
 
-    // TODO: to fix!!!
+    /**
+     * This method hashes the QR code to SHA256 and returns the hashed hex string
+     * @param unhashedQRCode the unhashed QR code
+     * @return the hashed QR code (String)
+     * @author Maarij
+     */
     private String hasher(String unhashedQRCode) {
         final String hashed = Hashing.sha256()
                 .hashString(unhashedQRCode, StandardCharsets.UTF_8)
@@ -215,6 +240,12 @@ public class MainActivity extends AppCompatActivity {
         return hashed;
     }
 
+    /**
+     * This method calculates the score of the QR code based on the number of contiguous repeated numbers or characters
+     * @param hashedQRCode the hashed QR code
+     * @return the score of the QR code (int)
+     * @author Maarij
+     */
     private int scoreCalculator(String hashedQRCode) {
         // Find contiguous repeated numbers or characters in hex string
         // Each number or character is equal to number^(n-1) points where n is the number of times it is repeated
@@ -240,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Scan QR code
      */
-    ActivityResultLauncher<ScanOptions> barLaucher = registerForActivityResult(new ScanContract(), result->
+    ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result->
     {
         if(result.getContents() !=null)
         {
@@ -251,14 +282,32 @@ public class MainActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Result");
             builder.setMessage(score + " points");
+
+            // Set Random Location for now
+            Location l = new Location("");
+            //Incomplete but acceptable locations
+            l.setLongitude(Math.random() * 180);
+            l.setLatitude(Math.random() * 90);
+
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
             {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i)
                 {
+                    AddQR(new QRCode(hashedCode, hashedCode, l,score));
                     dialogInterface.dismiss();
                 }
             }).show();
         }
     });
+
+    /**
+     * This method adds a QR code to the database
+     * @param newQR the QR code to be added
+     */
+    public void AddQR(QRCode newQR){
+        Database db = new Database();
+        db.addQrCode(newQR);
+        db.addScannedCode(newQR, new Player(username));
+    }
 }

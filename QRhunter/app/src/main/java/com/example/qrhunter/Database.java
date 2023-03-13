@@ -10,17 +10,18 @@ import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.checkerframework.checker.units.qual.A;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * This class represents the database the app uses
+ *
+ *  Outstanding issues:
+ *      - TODO integrate proper deletion for player nad qr c
+ *        ie remove player from the qr collection once player deleted
+ *
  */
 public class Database {
 
@@ -80,7 +81,7 @@ public class Database {
 
     /**
      * Returns a task of QuerySnapshot for finding all the players associated with a qr code
-     * @param qrCode Name of the QRCode to be found
+     * @param hash Name of the QRCode to be found
      * @return Task of Query with the result
      */
     public Task<QuerySnapshot> getPlayersFromQRCode(String hash){
@@ -89,6 +90,19 @@ public class Database {
                 .collection("Players")
                 .get()
         ;
+    }
+
+    /**
+     * Deletes Player from a QR Code's Players collection
+     * @param username
+     * @param hash
+     */
+    public void removePlayerFromQRCode(String username, String hash){
+        qrCodeCollection
+                .document(hash)
+                .collection("Players")
+                .document(username)
+                .delete();
     }
 
     /**
@@ -140,6 +154,19 @@ public class Database {
                 .document(player.getUsername())
                 .collection("QRCodes")
                 .get();
+    }
+
+    /**
+     * Removes specified QR from Player QRCode Collection
+     * @param userName
+     * @param hash
+     */
+    public void removeQrCodesFromPlayer(String userName, String hash){
+        playersCollection
+                .document(userName)
+                .collection("QRCodes")
+                .document(hash)
+                .delete();
     }
 
     /**
@@ -216,8 +243,7 @@ public class Database {
 
         }
     }
-    //TODO integrate proper deletion for player nad qr c
-    //ie remove player from the qr collection once player deleted
+
 
 
 }
