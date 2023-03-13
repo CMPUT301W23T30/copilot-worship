@@ -16,6 +16,18 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * Adapter for the Player Gallery that displays Users with the same QR Code as
+ *
+ * Outstanding Issues:
+ *  See if we can pass a query to an activity so we can recycle them for different queries
+ *
+ *  Make this look good
+ *
+ *  Make this exclude the current player from the query to truly see others with the qr code
+ *  and not just everyone
+ *
+ */
 public class PlayerGalleryActivity extends AppCompatActivity {
 
         private PlayerGalleryAdapter galleryAdapter;
@@ -38,7 +50,8 @@ public class PlayerGalleryActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         for(QueryDocumentSnapshot doc : queryDocumentSnapshots){
-                            //TODO see if we need to get the qr codes?
+                            //This page will not display all the QR Codes the player
+                            // has so we can just set it to a new arrayList
                             Object number = doc.get("number");
                             if(number == null){number = "0";}
                             Player p = new Player(doc.getString("username"),

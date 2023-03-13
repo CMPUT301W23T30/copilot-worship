@@ -55,7 +55,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
 
+/**
+ * User login page
+ * @author Sean X
+ *
+ * Outstanding Issues
+ * Move code from here that doesnt belong to proper classes
+ * Properly Cite the method to store usernames
+ */
 public class MainActivity extends AppCompatActivity {
+    //Tag for logging any issues
     final String TAG = "User Profile Page";
     String username;
 
@@ -69,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
     ImageButton addQRButton;
     ImageButton searchButton;
     ImageButton rankingButton;
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -88,23 +98,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        //start populate xml
-        ImageView profileCircle = (ImageView) findViewById(R.id.profile_icon);
-        //in the future if we want to add profile pictures
-        profileCircle.setImageResource(R.drawable._icon__profile_circle_);
-
-
-        TextView userText = findViewById(R.id.user_page_user_name);
-        Bundle bundle = getIntent().getExtras();
-        Database db = new Database();
-        //db.populateDB();
+    /**
+     * Handles doing the players username according to the following specs
+     *
+     * - If new user, assign a unique username then save it to phone
+     * - If old user, set the name to the saved username on the phone
+     * - If this is just displaying a user (that is a username was sent through a bundle
+     * then just display the user)
+     *
+     * TODO have this return whether the user is the current user or not
+     *
+     * @param bundle bundle of data that will include a username if is sent through another activity
+     * @param db Database instance to query from
+     * @param userText User text to set the username too
+     */
+    public void getUsername(Bundle bundle, Database db, TextView userText){
         //https://stackoverflow.com/questions/10209814/saving-user-information-in-app-settings
         //Roughly following
         //TODO properly cite
@@ -129,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AggregateQuerySnapshot> task) {
                                 if(task.isSuccessful()){
                                     username = "Player-" + (task.getResult().getCount()
-                                             + 1);
+                                            + 1);
                                 }
                                 else{
                                     //TODO add an error message here
@@ -146,6 +154,27 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
+    }
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        //start populate xml
+        ImageView profileCircle = (ImageView) findViewById(R.id.profile_icon);
+        //in the future if we want to add profile pictures
+        profileCircle.setImageResource(R.drawable._icon__profile_circle_);
+
+
+        TextView userText = findViewById(R.id.user_page_user_name);
+        Bundle bundle = getIntent().getExtras();
+        Database db = new Database();
+        //db.populateDB(); Run only when we need to redo db after a purge
+        getUsername(bundle, db, userText);
+
 
 
 //        photoButton = findViewById(R.id.Photo_Button);
