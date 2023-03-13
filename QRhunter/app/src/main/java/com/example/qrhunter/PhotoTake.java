@@ -9,20 +9,22 @@ import android.provider.MediaStore;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-
-import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Class for QR Location Camera
+ * Takes a photo and retrieves location of where a QRCode is located
+ * by Bohan
+ *
+ * Outstanding Issues:
+ * Currently not in use
+ */
 public class PhotoTake extends Activity {
     public PhotoTake() {
     }
