@@ -21,6 +21,11 @@ import java.util.Map;
 
 /**
  * This class represents the database the app uses
+ *
+ *  Outstanding issues:
+ *      - TODO integrate proper deletion for player nad qr c
+ *        ie remove player from the qr collection once player deleted
+ *
  */
 public class Database {
 
@@ -216,8 +221,7 @@ public class Database {
 
         }
     }
-    //TODO integrate proper deletion for player nad qr c
-    //ie remove player from the qr collection once player deleted
+
 
 
 }
