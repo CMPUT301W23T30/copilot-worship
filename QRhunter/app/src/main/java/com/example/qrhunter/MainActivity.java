@@ -106,7 +106,8 @@ public class MainActivity extends AppCompatActivity {
      * - If this is just displaying a user (that is a username was sent through a bundle
      * then just display the user)
      *
-     * TODO have this return whether the user is the current user or not
+     * TODO have this return whether the user is the current user or not so we can re use this for
+     * other things apart from the main page
      *
      * @param bundle bundle of data that will include a username if is sent through another activity
      * @param db Database instance to query from
