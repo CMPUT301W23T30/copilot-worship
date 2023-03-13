@@ -150,20 +150,7 @@ public class MapsActivity extends FragmentActivity
 
         // TODO add functionality to the locate button to rotate the camera upright
 
-<<<<<<< HEAD
-=======
         // TODO add functionality that by clicking on markers, users should be navigated to the QR code page
-
-        // Animate the input bar expanding from the search button
-        searchButton = findViewById(R.id.map_search_button);
-        searchBar = findViewById(R.id.map_search_bar);
-        searchGoButton = findViewById(R.id.map_search_go_button);
-        // Set the initial scale to half
-        searchBar.setScaleX(0.5f);
-        searchBar.setScaleY(0.5f);
-        searchGoButton.setScaleX(0.5f);
-        searchGoButton.setScaleY(0.5f);
->>>>>>> main
 
     }
 
