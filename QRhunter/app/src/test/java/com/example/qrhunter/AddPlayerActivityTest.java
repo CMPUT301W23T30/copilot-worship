@@ -1,6 +1,7 @@
 package com.example.qrhunter;
 
 import android.app.Activity;
+import android.widget.EditText;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -33,8 +34,20 @@ public class AddPlayerActivityTest {
 
 
     @Test
-    public void testAddPlayerActivity() {
-        assertCurrentActivity("Wrong Activity", MainActivity.class);
-
+    public void testAddPlayerActivityOpened() {
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        solo.clickOnView(solo.getView(R.id.menu_add_player_button));
+        solo.assertCurrentActivity("Wrong Activity", AddPlayerActivity.class);
     }
+
+    @Test
+    public void testAddPlayerActivitySubmit() {
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        solo.clickOnView(solo.getView(R.id.menu_add_player_button));
+        solo.assertCurrentActivity("Wrong Activity", AddPlayerActivity.class);
+        solo.enterText((EditText) solo.getView(R.id.usernameEditText), "test");
+        solo.enterText((EditText) solo.getView(R.id.emailEditText), "test@test.com");
+        solo.enterText((EditText) solo.getView(R.id.numberEditText), "1234567890");
+        solo.clickOnView(solo.getView(R.id.submitButton));
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
 }
