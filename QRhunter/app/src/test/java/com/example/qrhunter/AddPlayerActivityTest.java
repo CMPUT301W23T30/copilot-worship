@@ -50,4 +50,5 @@ public class AddPlayerActivityTest {
         solo.enterText((EditText) solo.getView(R.id.numberEditText), "1234567890");
         solo.clickOnView(solo.getView(R.id.submitButton));
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+    }
 }
