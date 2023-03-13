@@ -3,17 +3,22 @@ package com.example.qrhunter;
 import android.app.Activity;
 import android.widget.EditText;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.rule.ActivityTestRule;
+
+import com.robotium.solo.Solo;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import com.robotium.solo.Solo;
 
 public class AddPlayerActivityTest {
 
     private Solo solo;
 
     @Rule
-    public ActivityTestRule<AddPlayerActivityTest> rule = new ActivityTestRule<>(MainActivity.class, true, true);
+    public ActivityTestRule<MainActivity> rule = new ActivityTestRule<>(MainActivity.class, true, true);
 
     /**
      * Runs before all tests and creates solo instance.
