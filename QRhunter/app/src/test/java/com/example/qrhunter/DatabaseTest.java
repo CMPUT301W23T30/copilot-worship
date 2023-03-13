@@ -1,7 +1,12 @@
 package com.example.qrhunter;
 
-//DO NOT RUN THIS
-
+/**
+ * This class contains all tests for the db class.
+ * As it is  wrapper for firebase queries,, we can not
+ * test it independantly. these test should NOT be run
+ *
+ */
+/*
 import static org.junit.Assert.assertEquals;
 
 import android.location.Location;
@@ -51,18 +56,21 @@ import static org.mockito.Mockito.when;
 //@RunWith(PowerMockRunner.class)
 //@PowerMockRunnerDelegate(JUnit4.class)
 //@PrepareForTest({ Database.class})
+    /*
 public class DatabaseTest {
 
     /**
      * Holds all documents added to database
      * so we can clear it from the database once we are done
      */
+/*
     final String TAG = "Database Testing";
     ArrayList<String> documents;
     Database db = new Database();
     /**
      *  Test to see if we can search a Player from the username
      */
+/*
     @Test
     public void testGettingPlayerFromUsername(){
         Player p = new Player();
@@ -121,8 +129,8 @@ public class DatabaseTest {
               which are .set() commands that execute whenever you call their respective keys
               (hence the success and failure listeners)
              */
-            HashMap<String, Task<Void>> tasks = db.addScannedCode(testQRCode, testPlayer);
-
+            //HashMap<String, Task<Void>> tasks = db.addScannedCode(testQRCode, testPlayer);
+/*
             // Adds a QRCode to the players collection
             tasks.get("QrToPlayerCol")
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -162,6 +170,7 @@ public class DatabaseTest {
     /**
      * Clears all added documents to the database
      */
+/*
     @After
     public void clearDatabase(){
         for(String p : documents){
@@ -169,3 +178,5 @@ public class DatabaseTest {
         }
     }
 }
+
+ */
