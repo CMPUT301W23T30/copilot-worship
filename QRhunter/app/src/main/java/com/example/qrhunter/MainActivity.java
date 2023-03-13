@@ -1,59 +1,34 @@
 package com.example.qrhunter;
 
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.widget.Button;
-import android.widget.ImageView;
-
-import androidx.activity.result.ActivityResultLauncher;
-
-import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-
-import android.os.Bundle;
-import android.widget.Toast;
-
-import com.google.common.hash.Hashing;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.journeyapps.barcodescanner.ScanContract;
-import com.journeyapps.barcodescanner.ScanOptions;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.common.hash.Hashing;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * User login page
@@ -229,9 +204,12 @@ public class MainActivity extends AppCompatActivity {
         addQRButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                Bundle bundle = new Bundle();
+//                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+
                 Toast.makeText(MainActivity.this, "Start Scanning", Toast.LENGTH_SHORT).show();
                 QRScan newClass = new QRScan();
-                newClass.scanCode(barLaucher);
+                newClass.scanCode(barLauncher);
             }
         });
 
@@ -270,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Scan QR code
      */
-    ActivityResultLauncher<ScanOptions> barLaucher = registerForActivityResult(new ScanContract(), result->
+    ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result->
     {
         if(result.getContents() !=null)
         {
@@ -281,14 +259,28 @@ public class MainActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Result");
             builder.setMessage(score + " points");
+
+            // Set Random Location for now
+            Location l = new Location("");
+            //Incomplete but acceptable locations
+            l.setLongitude(Math.random() * 180);
+            l.setLatitude(Math.random() * 90);
+
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
             {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i)
                 {
+                    AddQR(new QRCode(hashedCode, hashedCode, l,score));
                     dialogInterface.dismiss();
                 }
             }).show();
         }
     });
+
+    public void AddQR(QRCode newQR){
+        Database db = new Database();
+        db.addQrCode(newQR);
+        db.addScannedCode(newQR, new Player(username));
+    }
 }
