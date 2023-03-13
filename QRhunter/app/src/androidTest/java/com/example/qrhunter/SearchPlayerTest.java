@@ -53,5 +53,15 @@ public class SearchPlayerTest {
         solo.assertCurrentActivity("Wrong Activity", SearchPlayerActivity.class);
     }
 
-
+    /**
+     * Enter activity and go back, check if returns correctly
+     * @throws Exception
+     */
+    @Test
+    public void intentGoBack() throws Exception {
+        solo.clickOnView(solo.getView(R.id.navbar_search_button));
+        solo.assertCurrentActivity("Wrong Activity", SearchPlayerActivity.class);
+        solo.goBack();
+        solo.assertCurrentActivity("Go back didn't work", MainActivity.class);
+    }
 }
