@@ -13,6 +13,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * Recyclerview adapter for SearchPlayer
+ * @author X
+ */
 public class SearchPlayerAdapter extends RecyclerView.Adapter<SearchPlayerAdapter.myViewHolder> {
 
     public SearchPlayerAdapter(List<SearchModel> userList, Context context) {
@@ -23,6 +27,14 @@ public class SearchPlayerAdapter extends RecyclerView.Adapter<SearchPlayerAdapte
     private List<SearchModel> userList;
     private Context context;
 
+    /**
+     * Basic binder for SearchPlayerAdapter
+     * @param parent The ViewGroup into which the new View will be added after it is bound to
+     *               an adapter position.
+     * @param viewType The view type of the new View.
+     *
+     * @author X
+     */
     @NonNull
     @NotNull
     @Override
@@ -31,6 +43,13 @@ public class SearchPlayerAdapter extends RecyclerView.Adapter<SearchPlayerAdapte
         return new myViewHolder(view);
     }
 
+    /**
+     * @param holder The ViewHolder which should be updated to represent the contents of the
+     *        item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     * @author X
+     * TODO implement extra player profile features: Profile picture, total score and add them to binder
+     */
     @Override
     public void onBindViewHolder(@NonNull @NotNull myViewHolder holder, int position) {
         SearchModel item = userList.get(position);
@@ -51,6 +70,10 @@ public class SearchPlayerAdapter extends RecyclerView.Adapter<SearchPlayerAdapte
         return userList.size();
     }
 
+    /**
+     * The actual view of the item in the recyclerview
+     * @author X
+     */
     class myViewHolder extends RecyclerView.ViewHolder{
         CircleImageView img;
         TextView username;
