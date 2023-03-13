@@ -1,27 +1,16 @@
 package com.example.qrhunter;
 
 import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import androidx.core.app.ActivityCompat;
@@ -37,11 +26,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.MapFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import com.google.android.gms.maps.SupportMapFragment;
 
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -53,7 +37,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
 
-
+/**
+ * An activity that displays a map showing the place at the device's current location.
+ */
 public class MapsActivity extends FragmentActivity
         implements OnMapReadyCallback,
         LocationListener {
@@ -164,7 +150,8 @@ public class MapsActivity extends FragmentActivity
 
         // TODO add functionality to the locate button to rotate the camera upright
 
-        // TODO add functionality to search nearby QR codes using location
+        // TODO add functionality that by clicking on markers, users should be navigated to the QR code page
+
         // Animate the input bar expanding from the search button
         searchButton = findViewById(R.id.map_search_button);
         searchBar = findViewById(R.id.map_search_bar);
@@ -206,6 +193,7 @@ public class MapsActivity extends FragmentActivity
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
+     * @param googleMap
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -274,6 +262,15 @@ public class MapsActivity extends FragmentActivity
         updateMarkers(currentLocation);
     }
 
+    /**
+     * This method calculate the distance between two points, given their latitude and longitude
+     * it uses the Haversine formula to calculate the distance between two points
+     * @param lat1
+     * @param lon1
+     * @param lat2
+     * @param lon2
+     * @return
+     */
     // Use the Haversine formula to calculate the distance between two points
     public static double distance(double lat1, double lon1, double lat2, double lon2) {
         final int R = 6371; // Radius of the earth
@@ -291,6 +288,12 @@ public class MapsActivity extends FragmentActivity
 
         return Math.sqrt(distance);
     }
+
+    /**
+     * This method updates the markers on the map, removing the ones that are out of range
+     * @param currentLocation
+     */
+    // Update the markers on the map, removing the ones that are out of range
     private void updateMarkers(Location currentLocation) {
         Iterator<Marker> iterator = markerList.iterator();
         while (iterator.hasNext()) {
@@ -308,6 +311,13 @@ public class MapsActivity extends FragmentActivity
             }
         }
     }
+
+    /**
+     * This method creates a QRCode object from a DocumentSnapshot retrieved from the database
+     * @param d the document snapshot retrieved from the database
+     * @return the QRCode object created from the document snapshot
+     */
+    // Create a QRCode object from a DocumentSnapshot which is retrieved from the database
     private QRCode create_QR_Object(DocumentSnapshot d) {
 
         // Since attributes from db are longitude and latitude, we need to create a new Location object
