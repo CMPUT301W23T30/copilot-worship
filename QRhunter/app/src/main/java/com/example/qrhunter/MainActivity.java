@@ -301,6 +301,10 @@ public class MainActivity extends AppCompatActivity {
         }
     });
 
+    /**
+     * This method adds a QR code to the database
+     * @param newQR the QR code to be added
+     */
     public void AddQR(QRCode newQR){
         Database db = new Database();
         db.addQrCode(newQR);
