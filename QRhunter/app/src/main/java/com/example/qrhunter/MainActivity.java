@@ -55,12 +55,24 @@ public class MainActivity extends AppCompatActivity {
     ImageButton rankingButton;
 
 
+    /**
+     * Inflate the menu; this adds items to the action bar if it is present.
+     * @param menu
+     * @return true
+     * @author: Maarij
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_add_player, menu);
         return true;
     }
 
+    /**
+     * Handles action bar item clicks here. Starts the AddPlayerActivity when the add player button is clicked.
+     * @param item
+     * @return true if the button is clicked, false otherwise
+     * @author: Maarij
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -215,7 +227,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    // TODO: to fix!!!
+    /**
+     * This method hashes the QR code to SHA256 and returns the hashed hex string
+     * @param unhashedQRCode the unhashed QR code
+     * @return the hashed QR code (String)
+     * @author Maarij
+     */
     private String hasher(String unhashedQRCode) {
         final String hashed = Hashing.sha256()
                 .hashString(unhashedQRCode, StandardCharsets.UTF_8)
@@ -223,6 +240,12 @@ public class MainActivity extends AppCompatActivity {
         return hashed;
     }
 
+    /**
+     * This method calculates the score of the QR code based on the number of contiguous repeated numbers or characters
+     * @param hashedQRCode the hashed QR code
+     * @return the score of the QR code (int)
+     * @author Maarij
+     */
     private int scoreCalculator(String hashedQRCode) {
         // Find contiguous repeated numbers or characters in hex string
         // Each number or character is equal to number^(n-1) points where n is the number of times it is repeated
