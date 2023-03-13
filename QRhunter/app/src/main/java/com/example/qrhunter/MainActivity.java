@@ -4,6 +4,7 @@ package com.example.qrhunter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -228,19 +229,28 @@ public class MainActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Result");
             builder.setMessage(score + " points");
+
+            // Set Random Location for now
+            Location l = new Location("");
+            //Incomplete but acceptable locations
+            l.setLongitude(Math.random() * 180);
+            l.setLatitude(Math.random() * 90);
+
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
             {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i)
                 {
-                    //AddQR(new QRCode());
+                    AddQR(new QRCode(hashedCode, hashedCode, l,score));
                     dialogInterface.dismiss();
                 }
             }).show();
         }
     });
 
-    public void AddQR(){
-
+    public void AddQR(QRCode newQR){
+        Database db = new Database();
+        db.addQrCode(newQR);
+        db.addScannedCode(newQR, new Player(username));
     }
 }
