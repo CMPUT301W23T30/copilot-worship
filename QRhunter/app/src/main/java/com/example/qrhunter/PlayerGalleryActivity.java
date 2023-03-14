@@ -30,9 +30,9 @@ import java.util.ArrayList;
  */
 public class PlayerGalleryActivity extends AppCompatActivity {
 
-        private PlayerGalleryAdapter galleryAdapter;
-        private ArrayList<Player> playerArrayList = new ArrayList<Player>();
-        private ListView galleryView;
+         PlayerGalleryAdapter galleryAdapter;
+         ArrayList<Player> playerArrayList = new ArrayList<Player>();
+         ListView galleryView;
     //TODO  make better player gallery xml
     @Override
     protected void onCreate(Bundle savedInstanceState) {

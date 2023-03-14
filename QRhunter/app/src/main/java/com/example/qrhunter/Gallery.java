@@ -24,9 +24,9 @@ import java.util.List;
 
 public class Gallery extends AppCompatActivity {
     private String username;
-    private ArrayAdapter<GalleryAdapter> galleryAdapter;
-    private ArrayList<QRCode> qrCodeArrayList = new ArrayList<QRCode>();
-    private ListView galleryView;
+    ArrayAdapter<GalleryAdapter> galleryAdapter;
+     ArrayList<QRCode> qrCodeArrayList = new ArrayList<QRCode>();
+     ListView galleryView;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
