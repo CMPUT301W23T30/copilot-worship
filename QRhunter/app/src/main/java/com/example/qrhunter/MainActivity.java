@@ -82,7 +82,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_add_player_button:
-                Intent intent = new Intent(this, AddPlayerActivity.class);
+                // Intent intent = new Intent(this, AddPlayerActivity.class);
+                Intent intent = new Intent(this, TestImageActivity.class);
                 startActivity(intent);
                 return true;
             default:
@@ -160,10 +161,10 @@ public class MainActivity extends AppCompatActivity {
         ImageView profileCircle = (ImageView) findViewById(R.id.profile_icon);
         //in the future if we want to add profile pictures
 
-        CharacterImage testCharacter = new CharacterImage(this, 30, "arms1.png", "legs1.png", "eyes1.png", "mouth1.png", "hat1.png");
+        CharacterImage testCharacter = new CharacterImage(this, 30, "arms1", "legs1", "eyes1", "mouth1", "hat1");
         profileCircle.setImageBitmap(testCharacter.getCharacterImage());
 
-        profileCircle.setImageResource(R.drawable._icon__profile_circle_);
+        // profileCircle.setImageResource(R.drawable._icon__profile_circle_);
 
 
         TextView userText = findViewById(R.id.user_page_user_name);
