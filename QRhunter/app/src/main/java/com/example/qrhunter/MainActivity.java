@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
         ImageView profileCircle = (ImageView) findViewById(R.id.profile_icon);
         //in the future if we want to add profile pictures
 
-        CharacterImage testCharacter = new CharacterImage(this, 80, "arms1", "legs1", "eyes1", "mouth1", "hat1");
+        CharacterImage testCharacter = new CharacterImage(this, 120, "arms1", "legs1", "eyes1", "mouth1", "hat1");
         profileCircle.setImageBitmap(testCharacter.getCharacterImage());
 
         // profileCircle.setImageResource(R.drawable._icon__profile_circle_);

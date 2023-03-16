@@ -71,12 +71,12 @@ public class CharacterImage {
         Canvas canvas=new Canvas(characterImage);
 
         // Draw bitmaps onto canvas in desired order and positions
-        canvas.drawBitmap(body,0f,radius/2 + hat.getHeight()/4,null);
-        canvas.drawBitmap(arms,arms.getWidth()/2,height/2-arms.getHeight()/2,null);
-        canvas.drawBitmap(legs,radius/4,2*radius,null);
-        canvas.drawBitmap(eyes,radius/4,radius/2 + radius/6,null);
-        canvas.drawBitmap(mouth, radius/4,radius + hat.getHeight()/2,null);
-        canvas.drawBitmap(hat,radius/4,-hat.getHeight()/2,null);
+        canvas.drawBitmap(body,radius,radius + radius/2 + hat.getHeight()/4,null);
+        canvas.drawBitmap(arms,radius + arms.getWidth()/2,radius + height/2-arms.getHeight()/2,null);
+        canvas.drawBitmap(legs,radius + radius/4,radius + 2*radius,null);
+        canvas.drawBitmap(eyes,radius + radius/4,radius + radius/2 + radius/6,null);
+        canvas.drawBitmap(mouth, radius + radius/4,radius + radius + hat.getHeight()/2,null);
+        canvas.drawBitmap(hat,radius + radius/4,radius-hat.getHeight()/2,null);
 
         return characterImage;
     }
