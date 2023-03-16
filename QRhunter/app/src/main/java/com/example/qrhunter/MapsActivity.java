@@ -148,7 +148,7 @@ public class MapsActivity extends FragmentActivity
 //        });
 
 
-        // TODO add functionality to the locate button to rotate the camera upright
+        // TODO add functionality to the locate button to reset rotate
 
         // TODO add functionality that by clicking on markers, users should be navigated to the QR code page
 
