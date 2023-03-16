@@ -62,20 +62,21 @@ public class CharacterImage {
 
     public Bitmap getCharacterImage() {
         // Create a new bitmap with same dimensions as body bitmap
-        int width = body.getWidth();
-        int height = body.getHeight();
+        int width = 550;
+        int height = 550;
+        int radius = 120;
         Bitmap characterImage = Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888);
 
         // Get canvas for new bitmap
         Canvas canvas=new Canvas(characterImage);
 
         // Draw bitmaps onto canvas in desired order and positions
-        canvas.drawBitmap(body,0f,0f,null);
-        canvas.drawBitmap(arms,width/2-arms.getWidth()/2,height/2-arms.getHeight()/2,null);
-        canvas.drawBitmap(legs,width/2-legs.getWidth()/2,height/2+body.getHeight()/4,null);
-        canvas.drawBitmap(eyes,width/2-eyes.getWidth()/2,height/4,null);
-        canvas.drawBitmap(mouth,width/2-mouth.getWidth()/2,height*3/5,null);
-        canvas.drawBitmap(hat,width/2-hat.getWidth()/2,-hat.getHeight()/4,null);
+        canvas.drawBitmap(body,0f,radius/2 + hat.getHeight()/4,null);
+        canvas.drawBitmap(arms,arms.getWidth()/2,height/2-arms.getHeight()/2,null);
+        canvas.drawBitmap(legs,radius/4,2*radius,null);
+        canvas.drawBitmap(eyes,radius/4,radius/2 + radius/6,null);
+        canvas.drawBitmap(mouth, radius/4,radius + hat.getHeight()/2,null);
+        canvas.drawBitmap(hat,radius/4,-hat.getHeight()/2,null);
 
         return characterImage;
     }
