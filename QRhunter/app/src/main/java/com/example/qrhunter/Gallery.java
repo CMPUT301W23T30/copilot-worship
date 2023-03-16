@@ -4,20 +4,17 @@ package com.example.qrhunter;
 import static android.view.ViewGroup.FOCUS_BLOCK_DESCENDANTS;
 
 import android.content.Intent;
-
-import android.os.Bundle;
-
 import android.location.Location;
-import android.util.Log;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -25,10 +22,16 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Gallery Activity
+ * Displays the QRCodes owned by a Player using GalleryAdapter
+ * Currently displays the QRCodes Name, Location, and Score
+ */
 public class Gallery extends AppCompatActivity {
-    private ArrayAdapter<GalleryAdapter> galleryAdapter;
-    private ArrayList<QRCode> qrCodeArrayList = new ArrayList<QRCode>();
-    private ListView galleryView;
+    private String username;
+    ArrayAdapter<GalleryAdapter> galleryAdapter;
+     ArrayList<QRCode> qrCodeArrayList = new ArrayList<QRCode>();
+     ListView galleryView;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
@@ -38,6 +41,8 @@ public class Gallery extends AppCompatActivity {
 
         galleryView = findViewById(R.id.gallery_content);
         Bundle bundle = getIntent().getExtras();
+        username = bundle.getString("username");
+
         galleryView.setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
         galleryView.setClickable(true);
         galleryView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -47,52 +52,89 @@ public class Gallery extends AppCompatActivity {
                 return false;
             }
         });
+        CollectionReference codeCollection = db.collection("QrCodes");
+        CollectionReference userCollection = db.collection("Players").document(username).collection("QRCodes");
 
-
-        // temp for now to see all qrcodes, will change to see only the selected profile's qr codes
-        db.collection("QrCodes").get()
+        // compares Username to Player collection in QrCodes
+        // probably a smarter way to do this
+        userCollection.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         // ignore empty documents
+                        // grab list of QR codes in Gallery
                         if (!queryDocumentSnapshots.isEmpty()) {
-                            List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-                            for (DocumentSnapshot d : list) {
+                            List<DocumentSnapshot> userList = queryDocumentSnapshots.getDocuments();
+                            for (DocumentSnapshot userDoc : userList) {
 
-                                Location location = new Location("");
-                                location.setLongitude((Double) d.get("longitude"));
-                                location.setLatitude((Double) d.get("latitude"));
-                                QRCode qrCode = new QRCode(
-                                        d.get("hash").toString(),
-                                        d.get("name").toString(),
-                                        location,
-                                        Integer.parseInt(d.get("score").toString()));
+                                // get QR info from Player QRCodes
+                                codeCollection.get()
+                                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                // ignore empty documents
+                                                // find QR info from QrCodes
+                                                if (!queryDocumentSnapshots.isEmpty()){
+                                                    List<DocumentSnapshot> qrList = queryDocumentSnapshots.getDocuments();
+                                                    for (DocumentSnapshot qrDoc : qrList){
 
-                                // after getting data from Firebase we are
-                                // storing that data in our array list
-                                qrCodeArrayList.add(qrCode);
+                                                        if (qrDoc.getId().equals(userDoc.getId())) {
+
+                                                            Location location = new Location("");
+                                                            location.setLongitude((Double) qrDoc.get("longitude"));
+                                                            location.setLatitude((Double) qrDoc.get("latitude"));
+                                                            QRCode qrCode = new QRCode(
+                                                                    qrDoc.get("hash").toString(),
+                                                                    qrDoc.get("name").toString(),
+                                                                    location,
+                                                                    Integer.parseInt(qrDoc.get("score").toString()));
+
+                                                            // after getting data from Firebase we are
+                                                            // storing that data in our array list
+                                                            qrCodeArrayList.add(qrCode);
+
+                                                        }
+                                                    }
+                                                    GalleryAdapter adapter = new GalleryAdapter(Gallery.this,qrCodeArrayList);
+                                                    galleryView.setAdapter(adapter);
+                                                    galleryView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                                                        //TODO make drop down button work w/ this
+                                                        @Override
+                                                        public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                                            Intent intent = new Intent(Gallery.this, QrDisplayActivity.class);
+                                                            Bundle b = new Bundle();
+                                                            b.putString("hash", adapter.getItem(i).getHash());
+                                                            intent.putExtras(b);
+                                                            startActivity(intent);
+                                                            return false;
+                                                        }
+                                                    });
+
+                                                    // TODO Change to swipe later
+                                                    galleryView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                                        @Override
+                                                        public void onItemClick(AdapterView<?> qrCode, View view, int i, long id) {
+                                                            DeleteQR(adapter.getItem(i).getHash());
+                                                            galleryAdapter.notifyDataSetChanged();
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
                             }
-                            GalleryAdapter adapter = new GalleryAdapter(Gallery.this,qrCodeArrayList);
-                            galleryView.setAdapter(adapter);
-                            galleryView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                                //TODO make drop down button work w/ this
-                                @Override
-                                public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                    Intent intent = new Intent(Gallery.this, QrDisplayActivity.class);
-                                    Bundle b = new Bundle();
-                                    b.putString("hash", adapter.getItem(i).getHash());
-                                    intent.putExtras(b);
-                                    startActivity(intent);
-                                    return false;
-                                }
-                            });
-
                         }
                     }
                 });
+    }
 
-
-
-
+    /**
+     * Delete QR from specific Player QRCodes Collection
+     * Deletes Player from specific QrCodes Player Collection
+     * @param hash
+     */
+    private void DeleteQR(String hash){
+        Database deleteDB = new Database();
+        deleteDB.removeQrCodesFromPlayer(username,hash);
+        deleteDB.removePlayerFromQRCode(username,hash);
     }
 }

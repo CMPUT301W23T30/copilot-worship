@@ -16,12 +16,32 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
+/**
+ * Adapter for the gallery that displays users that have scanned a QR Code
+ *
+ *  Outstanding Issues:
+ *  Display more than just the player name
+ *  make it look good
+ *
+ */
 //TODO have this display more than just the player name
 public class PlayerGalleryAdapter extends ArrayAdapter<Player> {
+    /**
+     * Constructor for the adapter
+     * @param context Current context of the app
+     * @param players ArrayList of players to display
+     */
     public PlayerGalleryAdapter(Context context, ArrayList<Player> players) {
         super(context, 0, players);
     }
 
+    /**
+     *  Returns the View of an item in the adapter
+     * @param position Position of the item
+     * @param convertView
+     * @param parent
+     * @return View of the item
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -36,6 +56,7 @@ public class PlayerGalleryAdapter extends ArrayAdapter<Player> {
         Player player = getItem(position);
         TextView username = view.findViewById(R.id.player_gallery_item_username);
 
+        //Set information about the user
         username.setText(player.getUsername());
 
         return view;
