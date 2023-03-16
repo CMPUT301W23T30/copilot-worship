@@ -4,6 +4,7 @@ package com.example.qrhunter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,7 +29,11 @@ import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.Scanner;
 
 /**
  * User login page
@@ -154,6 +159,10 @@ public class MainActivity extends AppCompatActivity {
         //start populate xml
         ImageView profileCircle = (ImageView) findViewById(R.id.profile_icon);
         //in the future if we want to add profile pictures
+
+        CharacterImage testCharacter = new CharacterImage(this, 30, "arms1.png", "legs1.png", "eyes1.png", "mouth1.png", "hat1.png");
+        profileCircle.setImageBitmap(testCharacter.getCharacterImage());
+
         profileCircle.setImageResource(R.drawable._icon__profile_circle_);
 
 
