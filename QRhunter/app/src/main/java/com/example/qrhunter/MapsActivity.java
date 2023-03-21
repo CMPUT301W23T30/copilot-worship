@@ -23,6 +23,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Marker;
@@ -62,6 +63,9 @@ public class MapsActivity extends FragmentActivity
 
     // Radius of the visible area in meters
     private int visibleRadius = 200;
+
+    // Set a indication for locating and rotating
+    private int locateAndRotate = 0;
 
     // List of markers
     private List<Marker> markerList = new ArrayList<Marker>();
@@ -106,18 +110,31 @@ public class MapsActivity extends FragmentActivity
         myLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mFusedLocationClient.getLastLocation()
-                        .addOnSuccessListener(MapsActivity.this, new OnSuccessListener<Location>() {
-                            @Override
-                            public void onSuccess(Location location) {
-                                // Got last known location. In some rare situations this can be null.
-                                if (location != null) {
-                                    // Logic to handle location object
-                                    LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
+                if (locateAndRotate == 0) {
+                    mFusedLocationClient.getLastLocation()
+                            .addOnSuccessListener(MapsActivity.this, new OnSuccessListener<Location>() {
+                                @Override
+                                public void onSuccess(Location location) {
+                                    // Got last known location. In some rare situations this can be null.
+                                    if (location != null) {
+                                        // Logic to handle location object
+                                        LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
+                                    }
                                 }
-                            }
-                        });
+                            });
+                } else {
+                    CameraPosition current = mMap.getCameraPosition();
+                    CameraPosition newPosition = new CameraPosition.Builder(current)
+                            .bearing(0)
+                            .build();
+                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(newPosition));
+                }
+                locateAndRotate++;
+                if (locateAndRotate > 1){
+                    locateAndRotate = 0;
+                }
+
             }
         });
         followLocationButton = findViewById(R.id.map_follow_button);
@@ -149,8 +166,6 @@ public class MapsActivity extends FragmentActivity
 
 
         // TODO add functionality to the locate button to reset rotate
-
-        // TODO add functionality that by clicking on markers, users should be navigated to the QR code page
 
     }
 
