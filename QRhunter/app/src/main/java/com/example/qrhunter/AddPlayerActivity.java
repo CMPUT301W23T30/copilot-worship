@@ -49,7 +49,8 @@ public class AddPlayerActivity extends AppCompatActivity {
             // all the documents and re add it
             // To do that we have to reconstruct the player object for deletion and addition
 
-
+            //TODO make sure we dont delete and re insert if username was not changed
+            //in that case just update what was updated
             //TODO make sure new username is unique!
             //TODO maybe once add player can handle QR Codes, we might wanna revamp this
             Bundle bundle = getIntent().getExtras();
