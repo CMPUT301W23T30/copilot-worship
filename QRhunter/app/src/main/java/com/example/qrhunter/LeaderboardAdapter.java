@@ -36,14 +36,31 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         return new LeaderboardAdapter.myViewHolder(view);
     }
 
+    /**
+     * @param holder The ViewHolder which should be updated to represent the contents of the
+     *        item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     * @author X
+     * TODO implement extra player profile features: Profile picture, total score and add them to binder
+     */
     @Override
     public void onBindViewHolder(@NonNull @NotNull LeaderboardAdapter.myViewHolder holder, int position) {
+        LeaderboardModel item = userList.get(position);
 
+//      holder.img.setImageResource(item.getPfp());
+        holder.username.setText(item.getUsername());
+
+//        Glide.with(holder.img.getContext())
+//                .load(SearchModel.getPfp())
+//                .placeholder(R.drawable._icon__profile_circle_)
+//                .circleCrop()
+//                .error(com.google.android.gms.base.R.drawable.common_google_signin_btn_icon_dark_normal)
+//                .into(holder.img);
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return userList.size();
     }
     /**
      * The actual view of the item in the recyclerview
@@ -53,11 +70,14 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         CircleImageView img;
         TextView username;
 
+        TextView ranking;
+
         public myViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
 
             img = (CircleImageView)itemView.findViewById(R.id.profile_picture);
             username = (TextView)itemView.findViewById(R.id.profile_name);
+            ranking = (TextView)itemView.findViewById(R.id.ranking_number);
         }
     }
 }
