@@ -2,6 +2,7 @@ package com.example.qrhunter;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -164,8 +165,8 @@ public class MapsActivity extends FragmentActivity
 //            }
 //        });
 
+        // TODO add functionality to navigate to QR code's detailed page
 
-        // TODO add functionality to the locate button to reset rotate
 
     }
 
@@ -318,5 +319,21 @@ public class MapsActivity extends FragmentActivity
                 QrLocation,
                 ((Long)d.get("score")).intValue());
         return qrCode;
+    }
+
+    /**
+     * This method is called when the user clicks on a marker
+     * @param marker
+     * @return false
+     */
+    // When clicking on a marker, navigate to the QR code's detailed page
+    public boolean onMarkerClick(Marker marker) {
+        // Get the QR code's hash from the marker's title
+        String hash = marker.getTitle();
+        // Navigate to the QR code's detailed page
+        Intent intent = new Intent(this, QrDisplayActivity.class);
+        intent.putExtra("hash", hash);
+        startActivity(intent);
+        return false;
     }
 }
