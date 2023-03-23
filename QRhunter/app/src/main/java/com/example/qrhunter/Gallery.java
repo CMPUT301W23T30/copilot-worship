@@ -58,7 +58,7 @@ public class Gallery extends AppCompatActivity {
             }
         });
         CollectionReference codeCollection = db.collection("QrCodes");
-        CollectionReference userCollection = db.collection("Players").document("Player-15").collection("QRCodes");
+        CollectionReference userCollection = db.collection("Players").document(username).collection("QRCodes");
 
         // compares Username to Player collection in QrCodes
         userCollection.get()
