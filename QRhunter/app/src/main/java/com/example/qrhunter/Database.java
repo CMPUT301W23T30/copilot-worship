@@ -9,7 +9,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
@@ -62,6 +65,7 @@ public class Database {
         playerInfo.put("number", player.getNumber());
         playerInfo.put("username", player.getUsername());
 
+        playerInfo.put("totalScore", player.getTotalScore());
         return playersCollection
                 .document(player.getUsername())
                 .set(playerInfo);
@@ -145,14 +149,20 @@ public class Database {
     }
 
     /**
-     * Returns a task of QuerySnapshot for finding a QR code in the player collection
+     * Returns a task of QuerySnapshot for finding all QR codes in the player collection
      * @param player Username of the player to be found
      * @return Task of Query with the result
      */
-    public Task<QuerySnapshot> getQrCodesFromPlayer(Player player) {
+    public Task<QuerySnapshot> getQrCodesFromPlayer(String player) {
         return playersCollection
-                .document(player.getUsername())
+                .document(player)
                 .collection("QRCodes")
+                .get();
+    }
+
+    public Task<DocumentSnapshot> getPlayer(String username) {
+        return playersCollection
+                .document(username)
                 .get();
     }
 
@@ -171,10 +181,11 @@ public class Database {
 
     /**
      * Adds a Player and the scanned QR code to the database
+     * Also updates the players total score in the db
      * Returns a map of tasks for the caller to handle
      * @param qrCode qrcode to be added
      * @param player Player that scanned the qr code
-     * @return A map with the tasks {QrToPlayerCol, PlayerToQrCol}
+     * @return A map with the tasks {QrToPlayerCol, PlayerToQrCol, updateTotalScore}
      */
     public HashMap<String, Task<Void>> addScannedCode(@NonNull QRCode qrCode, @NonNull Player player){
         HashMap<String, Task<Void>> tasks = new HashMap<>();
@@ -186,6 +197,7 @@ public class Database {
                 .collection("QRCodes")
                 .document(qrCode.getHash())
                 .set(qrInfo));
+        tasks.put("updateTotalScore", addPlayer(player));
         playerInfo.put("username", player.getUsername());
         tasks.put("PlayerToQrCol", qrCodeCollection
                 .document(qrCode.getHash())
@@ -203,8 +215,22 @@ public class Database {
         return qrCodeCollection.count()
                 .get(AggregateSource.SERVER);
     }
-    //Test method for popualting DB
+
+    /**
+     *  Returns task of global top "n" qr codes
+     * @param n
+     * @return
+     */
+    public Task<QuerySnapshot> getTopNScores(int n){
+        return qrCodeCollection
+                .orderBy("score", Query.Direction.ASCENDING)
+                .limit(n)
+                .get();
+    }
+
+    //Test method for popualting DB MUST Call pOPULATE SCORE WHEN DONE
     //TODO DELETE THIS
+
     public void populateDB(){
         populatePlayer(20, 20);
     }
@@ -237,6 +263,7 @@ public class Database {
                 @Override
                 public void onSuccess(Void unused) {
                     String username = "Player-" + count;
+
                     addScannedCode(qr, new Player(username));
                 }
             });
@@ -244,6 +271,30 @@ public class Database {
         }
     }
 
+    //Get all the scores and stuff
+    public void populateScore(int count){
+        for(int i = 1; i <= count; i++ ){
 
+            int finalI = i;
+            playersCollection.document("Player-" + i)
+                    .collection("QRCodes")
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            Player p = new Player("Player-" + finalI);
+                            for(QueryDocumentSnapshot doc : queryDocumentSnapshots ){
+
+                                QRCode qr = new QRCode(doc.getString("hash"), null, null, Integer.parseInt(doc.getString("hash")))
+                                        ;
+
+
+                                p.getQrCodes().add(qr);
+                            }
+                            addPlayer(p);
+                        }
+                    });
+        }
+}
 
 }
