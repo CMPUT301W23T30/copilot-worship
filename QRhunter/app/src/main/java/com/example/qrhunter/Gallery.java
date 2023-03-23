@@ -10,10 +10,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -29,10 +31,12 @@ import java.util.List;
  */
 public class Gallery extends AppCompatActivity {
     private String username;
+    TextView textView;
     ArrayAdapter<GalleryAdapter> galleryAdapter;
      ArrayList<QRCode> qrCodeArrayList = new ArrayList<QRCode>();
      ListView galleryView;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private Task<QuerySnapshot> querySnapshotTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +46,7 @@ public class Gallery extends AppCompatActivity {
         galleryView = findViewById(R.id.gallery_content);
         Bundle bundle = getIntent().getExtras();
         username = bundle.getString("username");
+        textView = findViewById((R.id.gallery_name));
 
         galleryView.setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
         galleryView.setClickable(true);
@@ -53,10 +58,9 @@ public class Gallery extends AppCompatActivity {
             }
         });
         CollectionReference codeCollection = db.collection("QrCodes");
-        CollectionReference userCollection = db.collection("Players").document(username).collection("QRCodes");
+        CollectionReference userCollection = db.collection("Players").document("Player-15").collection("QRCodes");
 
         // compares Username to Player collection in QrCodes
-        // probably a smarter way to do this
         userCollection.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
