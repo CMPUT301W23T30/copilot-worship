@@ -32,7 +32,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
     @NotNull
     @Override
     public myViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_player_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.leaderboard_item,parent,false);
         return new LeaderboardAdapter.myViewHolder(view);
     }
 
@@ -49,6 +49,8 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
 
 //      holder.img.setImageResource(item.getPfp());
         holder.username.setText(item.getUsername());
+
+        holder.ranking.setText(item.getRanking().toString());
 
 //        Glide.with(holder.img.getContext())
 //                .load(SearchModel.getPfp())

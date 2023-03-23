@@ -14,9 +14,9 @@ import java.util.List;
 
 public class LeaderboardActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
-    private SearchPlayerAdapter adapter;
+    private LeaderboardAdapter adapter;
 
-    private List<SearchModel> userList = new ArrayList<>();
+    private List<LeaderboardModel> userList = new ArrayList<>();
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
@@ -33,15 +33,17 @@ public class LeaderboardActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+                        Integer ranking = 1;
                         for (DocumentSnapshot d : list) {
 
-                            SearchModel user = new SearchModel(d.get("username").toString());
+                            LeaderboardModel user = new LeaderboardModel(d.get("username").toString(),ranking);
 
                             // after getting data from Firebase we are
                             // storing that data in our array list
                             userList.add(user);
+                            ranking++;
                         }
-                        adapter = new SearchPlayerAdapter(userList, LeaderboardActivity.this);
+                        adapter = new LeaderboardAdapter(userList, LeaderboardActivity.this);
                         recyclerView.setAdapter(adapter);
                     }
                 });
