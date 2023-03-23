@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -147,13 +148,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        photoButton = findViewById(R.id.Photo_Button);
+        photoButton.setOnClickListener(v -> {
+            Toast.makeText(MainActivity.this, "Open Camera", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            PhotoTakeNew test = new PhotoTakeNew(intent);
+            Bitmap image = test.takePhoto();
 
-//        photoButton = findViewById(R.id.Photo_Button);
-//        photoButton.setOnClickListener(v -> {
-//            Toast.makeText(MainActivity.this, "Open Camera", Toast.LENGTH_SHORT).show();
-//            PhotoTake newClass = new PhotoTake();
-//            newClass.takePhoto();
-//        });
+        });
 
         // NAVBAR Buttons
         mapButton = findViewById(R.id.navbar_map_button);
