@@ -83,9 +83,11 @@ public class AddPlayerActivity extends AppCompatActivity {
                                     editor.clear();
                                     editor.putString("Username", username);
                                     editor.apply();
+                                    Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
+                                    startActivity(intent);
                                 }
                             });
-            finish();
+            //finish();
         });
     }
 }
