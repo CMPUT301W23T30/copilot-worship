@@ -10,6 +10,7 @@ import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
@@ -203,6 +204,19 @@ public class Database {
         return qrCodeCollection.count()
                 .get(AggregateSource.SERVER);
     }
+
+    /**
+     *  Returns task of global top "n" qr codes
+     * @param n
+     * @return
+     */
+    public Task<QuerySnapshot> getTopNScores(int n){
+        return qrCodeCollection
+                .orderBy("score", Query.Direction.ASCENDING)
+                .limit(n)
+                .get();
+    }
+
     //Test method for popualting DB
     //TODO DELETE THIS
     public void populateDB(){

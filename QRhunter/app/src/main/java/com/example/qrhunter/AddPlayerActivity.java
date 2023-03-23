@@ -8,8 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 /**
- * This class is used to add a new player to the database.
- * When it's complete it will eventually become the login screen.
+ * This class is used to edit player information
  * It is called from the MainActivity class.
  * @author: Maarij
  */
@@ -35,6 +34,7 @@ public class AddPlayerActivity extends AppCompatActivity {
         intent.putExtra("number", number);
 
         submitButton.setOnClickListener(v -> {
+            
             finish();
         });
     }
