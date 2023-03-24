@@ -73,7 +73,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/user_profile_info"
+        android:id="@+id/user_page_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
@@ -91,18 +91,16 @@
             android:layout_margin="10dp"
             android:text="BEEFIEST QR"
             android:textAlignment="textEnd"
-            android:textStyle="bold">
-
-        </TextView>
+            android:textStyle="bold"/>
 
         <TextView
-            android:id="@+id/user_profile_strongest"
+            android:id="@+id/user_page_strongest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:text="N/A"
             android:textAlignment="textEnd"
-            android:textSize="24sp"></TextView>
+            android:textSize="24sp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -110,18 +108,17 @@
             android:layout_margin="10dp"
             android:text="SQUISHIEST QR"
             android:textAlignment="textEnd"
-            android:textStyle="bold">
+            android:textStyle="bold"/>
 
-        </TextView>
 
         <TextView
-            android:id="@+id/user_profile_weakest"
+            android:id="@+id/user_page_weakest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:text="N/A"
             android:textAlignment="textEnd"
-            android:textSize="24sp"></TextView>
+            android:textSize="24sp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -129,18 +126,28 @@
             android:layout_margin="10dp"
             android:text="CONTACT INFO"
             android:textAlignment="textEnd"
-            android:textStyle="bold">
+            android:textStyle="bold"/>
 
-        </TextView>
 
         <TextView
-            android:id="@+id/user_profile_contact"
+            android:id="@+id/user_page_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:text="N/A"
             android:textAlignment="textEnd"
-            android:textSize="24sp"></TextView>
+            android:textSize="20sp"/>
+        <TextView
+            android:id="@+id/user_page_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="N/A"
+            android:textAlignment="textEnd"
+            android:textSize="20sp"/>
     </LinearLayout>
 
 

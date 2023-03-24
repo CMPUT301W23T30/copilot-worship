@@ -163,6 +163,14 @@ public class MainActivity extends AppCompatActivity {
         //db.populateDB(); Run only when we need to redo db after a purge
         getUsername(bundle, db, userText);
 
+        //contact information
+        TextView userEmail = findViewById(R.id.user_page_email);
+        userEmail.setText(db.getPlayerEmail(username));
+
+        TextView userPhone = findViewById(R.id.user_page_phone);
+        userPhone.setText(db.getPlayerPhone(username));
+
+
 
 
 //        photoButton = findViewById(R.id.Photo_Button);

@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -29,6 +30,8 @@ public class Database {
     private final FirebaseFirestore db;
     private CollectionReference playersCollection;
     private CollectionReference qrCodeCollection;
+    private QuerySnapshot playerSnapshotResult;
+    private Task<QuerySnapshot> playerSnapshot;
 
 
     // Default constructor for Database, creates a new instance of the database and collections
@@ -76,6 +79,40 @@ public class Database {
         return playersCollection
                 .document(player)
                 .delete();
+
+    }
+
+    /**
+     * Returns email of player by username
+     * @param username Username of player
+     * @return The email of the player
+     */
+    public String getPlayerEmail(String username){
+        Player player = new Player(username);
+        playersCollection
+                .document(username)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot doc) {
+                        player.setEmail(doc.get("email").toString());
+                    }
+                });
+        return player.getEmail();
+    }
+
+    public String getPlayerPhone(String username){
+        Player player = new Player(username);
+        playersCollection
+                .document(username)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot doc) {
+                        player.setNumber((Integer) doc.get("number"));
+                    }
+                });
+        return String.valueOf(player.getNumber());
 
     }
 
