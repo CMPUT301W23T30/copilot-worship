@@ -312,12 +312,18 @@ public class MapsActivity extends FragmentActivity
         QrLocation.setLatitude((Double)d.get("latitude"));
         QrLocation.setLongitude((Double)d.get("longitude"));
 
+        Long score = null;
+        Object scoreObj = d.get("score");
+        if (scoreObj != null && scoreObj instanceof Long) {
+            score = (Long) scoreObj;
+        }
+
         // Create a new QR code object
         QRCode qrCode = new QRCode(
                 d.get("hash").toString(),
                 d.get("name").toString(),
                 QrLocation,
-                ((Long)d.get("score")).intValue());
+                score != null ? score.intValue() : 0);
         return qrCode;
     }
 
