@@ -4,6 +4,7 @@ package com.example.qrhunter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,7 +28,11 @@ import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.Scanner;
 
 /**
  * User login page
@@ -76,7 +81,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_add_player_button:
-                Intent intent = new Intent(this, AddPlayerActivity.class);
+                // Intent intent = new Intent(this, AddPlayerActivity.class);
+                Intent intent = new Intent(this, TestImageActivity.class);
                 startActivity(intent);
                 return true;
             default:
@@ -153,7 +159,11 @@ public class MainActivity extends AppCompatActivity {
         //start populate xml
         ImageView profileCircle = (ImageView) findViewById(R.id.profile_icon);
         //in the future if we want to add profile pictures
-        profileCircle.setImageResource(R.drawable._icon__profile_circle_);
+
+        CharacterImage testCharacter = characterCreator();
+        profileCircle.setImageBitmap(testCharacter.getCharacterImage());
+
+        // profileCircle.setImageResource(R.drawable._icon__profile_circle_);
 
 
         TextView userText = findViewById(R.id.user_page_user_name);
@@ -288,6 +298,17 @@ public class MainActivity extends AppCompatActivity {
 
 //    public String generateRandomName() {
 //    }
+
+    private CharacterImage characterCreator() {
+        String armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName;
+        armsFileName = "arms" + (int) (Math.random() * 10 + 1);
+        legsFileName = "legs" + (int) (Math.random() * 10 + 1);
+//        eyesFileName = "eyes" + (int) (Math.random() * 8 + 1);
+//        mouthFileName = "mouth" + (int) (Math.random() * 8 + 1);
+        hatFileName = "hat" + (int) (Math.random() * 10 + 1);
+        CharacterImage testCharacter = new CharacterImage(this, 120, armsFileName, legsFileName, "eyes1", "mouth1", hatFileName);
+        return testCharacter;
+    }
 
     /**
      * Scan QR code
