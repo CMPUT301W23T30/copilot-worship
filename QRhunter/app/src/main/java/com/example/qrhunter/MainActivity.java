@@ -29,6 +29,8 @@ import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * User login page
@@ -43,7 +45,10 @@ public class MainActivity extends AppCompatActivity {
     final String TAG = "User Profile Page";
     String username;
 
-
+    TextView beefyQR;
+    TextView squishyQR;
+    TextView userEmail;
+    TextView userPhone;
 
     Button scanButton;
     Button photoButton;
@@ -156,29 +161,54 @@ public class MainActivity extends AppCompatActivity {
         //in the future if we want to add profile pictures
         profileCircle.setImageResource(R.drawable._icon__profile_circle_);
 
-
         TextView userText = findViewById(R.id.user_page_user_name);
         Bundle bundle = getIntent().getExtras();
         Database db = new Database();
         //db.populateDB(); Run only when we need to redo db after a purge
         getUsername(bundle, db, userText);
 
-        //contact information
+        // Player Information
+        TextView totalScore = findViewById(R.id.user_page_total_score);
+        TextView beefyQR = findViewById(R.id.user_page_strongest);
+        TextView squishyQR = findViewById(R.id.user_page_weakest);
         TextView userEmail = findViewById(R.id.user_page_email);
-        userEmail.setText(db.getPlayerEmail(username));
-
         TextView userPhone = findViewById(R.id.user_page_phone);
-        userPhone.setText(db.getPlayerPhone(username));
 
 
+        db.getPlayerContact(username, new PlayerContactListener() {
+            @Override
+            public void playerContactCallback(Bundle bundle) {
+                userEmail.setText(bundle.getString("email"));
+                userPhone.setText(bundle.getString("number"));
+            }
+        });
+        //TODO change back to username
+        db.getPlayerStats(username, new PlayerStatsListener() {
 
+            @Override
+            public void playerStatsCallback(Bundle bundle) {
+                Integer total = 0;
+                ArrayList<Integer> qrScore = new ArrayList<>();
 
-//        photoButton = findViewById(R.id.Photo_Button);
-//        photoButton.setOnClickListener(v -> {
-//            Toast.makeText(MainActivity.this, "Open Camera", Toast.LENGTH_SHORT).show();
-//            PhotoTake newClass = new PhotoTake();
-//            newClass.takePhoto();
-//        });
+                Log.d("TASK", "SCORES" + bundle.getStringArrayList("HashList"));
+
+                for (String hash : bundle.getStringArrayList("HashList")){
+                    Integer score = scoreCalculator(hash);
+                    qrScore.add(score);
+                    Log.d("CALLBACK", "Hash: " + hash);
+                    Log.d("CALLBACK", "Score: " + score);
+                    total = total + score;
+                }
+
+                // Leave as default N/A if no QRs in Player collection
+                if (total != 0) {
+                    totalScore.setText(String.valueOf(total));
+                    beefyQR.setText(String.valueOf(Collections.max(qrScore)));
+                    squishyQR.setText(String.valueOf(Collections.min(qrScore)));
+                }
+
+            }
+        });
 
         // NAVBAR Buttons
         mapButton = findViewById(R.id.navbar_map_button);
@@ -245,6 +275,8 @@ public class MainActivity extends AppCompatActivity {
         final String hashed = Hashing.sha256()
                 .hashString(unhashedQRCode, StandardCharsets.UTF_8)
                 .toString();
+        Log.d("HASHER", "Unhashed: " + unhashedQRCode);
+        Log.d("HASHER", "Hash: " + hashed);
         return hashed;
     }
 
@@ -271,7 +303,8 @@ public class MainActivity extends AppCompatActivity {
                 prev = hashedQRCode.substring(i, i + 1);
             }
         }
-
+        Log.d("CALCULATOR", "Hash: " + hashedQRCode);
+        Log.d("CALCULATOR", "Score: " + score);
         return score;
 
     }
@@ -302,6 +335,8 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i)
                 {
+                    Log.d("ADDQR", "Hash: " + hashedCode);
+                    Log.d("ADDQR", "Score: " + score);
                     AddQR(new QRCode(hashedCode, hashedCode, l,score));
                     dialogInterface.dismiss();
                 }
@@ -318,4 +353,6 @@ public class MainActivity extends AppCompatActivity {
         db.addQrCode(newQR);
         db.addScannedCode(newQR, new Player(username));
     }
+
+
 }
