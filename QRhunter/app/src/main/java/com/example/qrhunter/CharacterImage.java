@@ -69,7 +69,6 @@ public class CharacterImage {
 
         // Get canvas for new bitmap
         Canvas canvas=new Canvas(characterImage);
-        canvas.drawColor(Color.LTGRAY);
 
         // Draw bitmaps onto canvas in desired order and positions
         canvas.drawBitmap(body,radius - radius/8,radius/2 + hat.getHeight()/4,null);

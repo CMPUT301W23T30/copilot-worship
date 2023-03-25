@@ -281,11 +281,11 @@ public class MainActivity extends AppCompatActivity {
     private CharacterImage characterCreator() {
         String armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName;
         armsFileName = "arms" + (int) (Math.random() * 10 + 1);
-//        legsFileName = "legs" + (int) (Math.random() * 8 + 1);
+        legsFileName = "legs" + (int) (Math.random() * 10 + 1);
 //        eyesFileName = "eyes" + (int) (Math.random() * 8 + 1);
 //        mouthFileName = "mouth" + (int) (Math.random() * 8 + 1);
 //        hatFileName = "hat" + (int) (Math.random() * 8 + 1);
-        CharacterImage testCharacter = new CharacterImage(this, 120, armsFileName, "legs1", "eyes1", "mouth1", "hat1");
+        CharacterImage testCharacter = new CharacterImage(this, 120, armsFileName, legsFileName, "eyes1", "mouth1", "hat1");
         return testCharacter;
     }
 
