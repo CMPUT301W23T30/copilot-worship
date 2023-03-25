@@ -284,8 +284,8 @@ public class MainActivity extends AppCompatActivity {
         legsFileName = "legs" + (int) (Math.random() * 10 + 1);
 //        eyesFileName = "eyes" + (int) (Math.random() * 8 + 1);
 //        mouthFileName = "mouth" + (int) (Math.random() * 8 + 1);
-//        hatFileName = "hat" + (int) (Math.random() * 8 + 1);
-        CharacterImage testCharacter = new CharacterImage(this, 120, armsFileName, legsFileName, "eyes1", "mouth1", "hat1");
+        hatFileName = "hat" + (int) (Math.random() * 10 + 1);
+        CharacterImage testCharacter = new CharacterImage(this, 120, armsFileName, legsFileName, "eyes1", "mouth1", hatFileName);
         return testCharacter;
     }
 
