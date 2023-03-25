@@ -312,6 +312,7 @@ public class MapsActivity extends FragmentActivity
         QrLocation.setLatitude((Double)d.get("latitude"));
         QrLocation.setLongitude((Double)d.get("longitude"));
 
+        // Handle the situation where the score is null
         Long score = null;
         Object scoreObj = d.get("score");
         if (scoreObj != null && scoreObj instanceof Long) {
