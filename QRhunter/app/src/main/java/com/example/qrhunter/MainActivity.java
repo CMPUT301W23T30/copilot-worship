@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -277,23 +278,37 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public String generateRandomAdjective() {
+    public String generateRandomName() {
 
         final ArrayList<String> adjectivesList = new ArrayList<String>();
-        InputStream file = getResources().openRawResource(R.raw.english_adjectives);
-        Scanner scanner = new Scanner(file);
+        final ArrayList<String> nounsList = new ArrayList<String>();
 
-        while (scanner.hasNextLine()) {
-            String word = scanner.nextLine();
+        InputStream adjectivesFile = getResources().openRawResource(R.raw.english_adjectives);
+        InputStream nounsFile = getResources().openRawResource(R.raw.nouns_list);
+
+        Scanner adjectivesScanner = new Scanner(adjectivesFile);
+        Scanner nounsScanner = new Scanner(nounsFile);
+
+        while (adjectivesScanner.hasNextLine()) {
+            String word = adjectivesScanner.nextLine();
             adjectivesList.add(word);
         }
-        scanner.close();
+        adjectivesScanner.close();
+
+        while (nounsScanner.hasNextLine()) {
+            String word = nounsScanner.nextLine();
+            nounsList.add(word);
+        }
+        nounsScanner.close();
 
         Random rand = new Random();
-        String randomAdjective = adjectivesList.get(rand.nextInt(adjectivesList.size()));
-        String finalRandomAdjective = randomAdjective.substring(0, 1).toUpperCase() + randomAdjective.substring(1);
 
-        return finalRandomAdjective;
+        String randomAdjective = adjectivesList.get(rand.nextInt(adjectivesList.size()));
+        randomAdjective = randomAdjective.substring(0, 1).toUpperCase() + randomAdjective.substring(1);
+        String randomNoun = nounsList.get(rand.nextInt(nounsList.size()));
+
+        return randomAdjective + " " + randomNoun;
+
     }
 
 //    public String generateRandomName() {
@@ -324,9 +339,9 @@ public class MainActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Result");
 
-            String adjective = generateRandomAdjective();
+            String name = generateRandomName();
 
-            builder.setMessage(adjective + " " + score + " points");
+            builder.setMessage(name + " " + score + " points");
 
             // Set Random Location for now
             Location l = new Location("");
