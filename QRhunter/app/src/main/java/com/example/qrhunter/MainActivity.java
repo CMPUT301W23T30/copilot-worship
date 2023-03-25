@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
         ImageView profileCircle = (ImageView) findViewById(R.id.profile_icon);
         //in the future if we want to add profile pictures
 
-        CharacterImage testCharacter = new CharacterImage(this, 120, "arms1", "legs1", "eyes1", "mouth1", "hat1");
+        CharacterImage testCharacter = characterCreator();
         profileCircle.setImageBitmap(testCharacter.getCharacterImage());
 
         // profileCircle.setImageResource(R.drawable._icon__profile_circle_);
@@ -276,6 +276,17 @@ public class MainActivity extends AppCompatActivity {
 
         return score;
 
+    }
+
+    private CharacterImage characterCreator() {
+        String armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName;
+        armsFileName = "arms" + (int) (Math.random() * 10 + 1);
+//        legsFileName = "legs" + (int) (Math.random() * 8 + 1);
+//        eyesFileName = "eyes" + (int) (Math.random() * 8 + 1);
+//        mouthFileName = "mouth" + (int) (Math.random() * 8 + 1);
+//        hatFileName = "hat" + (int) (Math.random() * 8 + 1);
+        CharacterImage testCharacter = new CharacterImage(this, 120, armsFileName, "legs1", "eyes1", "mouth1", "hat1");
+        return testCharacter;
     }
 
     /**
