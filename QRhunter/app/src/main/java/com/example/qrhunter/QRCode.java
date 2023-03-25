@@ -1,5 +1,7 @@
 package com.example.qrhunter;
 
+import android.app.Activity;
+import android.content.Context;
 import android.location.Location;
 
 /**
@@ -22,10 +24,8 @@ public class QRCode {
         this.name = name;
     }
 
+
     // Getter and Setter methods for hash, location, and score
-
-
-
 
     public String getHash() {
         return hash;

@@ -232,7 +232,7 @@ public class Database {
             l.setLatitude(Math.random() * 90);
             int score = (int) Math.floor(Math.random() * count2);
             String hashname = "" + score;
-            QRCode qr = new QRCode(hashname,hashname, l, score );
+            QRCode qr = new QRCode(hashname,hashname, l, score);
             addQrCode(qr).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void unused) {

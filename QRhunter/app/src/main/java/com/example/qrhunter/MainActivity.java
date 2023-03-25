@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -278,6 +277,28 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public String generateRandomAdjective() {
+
+        final ArrayList<String> adjectivesList = new ArrayList<String>();
+        InputStream file = getResources().openRawResource(R.raw.english_adjectives);
+        Scanner scanner = new Scanner(file);
+
+        while (scanner.hasNextLine()) {
+            String word = scanner.nextLine();
+            adjectivesList.add(word);
+        }
+        scanner.close();
+
+        Random rand = new Random();
+        String randomAdjective = adjectivesList.get(rand.nextInt(adjectivesList.size()));
+        String finalRandomAdjective = randomAdjective.substring(0, 1).toUpperCase() + randomAdjective.substring(1);
+
+        return finalRandomAdjective;
+    }
+
+//    public String generateRandomName() {
+//    }
+
     private CharacterImage characterCreator() {
         String armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName;
         armsFileName = "arms" + (int) (Math.random() * 10 + 1);
@@ -302,7 +323,10 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "make object", Toast.LENGTH_SHORT).show();
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Result");
-            builder.setMessage(score + " points");
+
+            String adjective = generateRandomAdjective();
+
+            builder.setMessage(adjective + " " + score + " points");
 
             // Set Random Location for now
             Location l = new Location("");
