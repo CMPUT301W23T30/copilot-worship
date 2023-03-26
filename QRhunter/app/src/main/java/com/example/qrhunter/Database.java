@@ -9,7 +9,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
@@ -145,14 +147,20 @@ public class Database {
     }
 
     /**
-     * Returns a task of QuerySnapshot for finding a QR code in the player collection
+     * Returns a task of QuerySnapshot for finding all QR codes in the player collection
      * @param player Username of the player to be found
      * @return Task of Query with the result
      */
-    public Task<QuerySnapshot> getQrCodesFromPlayer(Player player) {
+    public Task<QuerySnapshot> getQrCodesFromPlayer(String player) {
         return playersCollection
-                .document(player.getUsername())
+                .document(player)
                 .collection("QRCodes")
+                .get();
+    }
+
+    public Task<DocumentSnapshot> getPlayer(String username) {
+        return playersCollection
+                .document(username)
                 .get();
     }
 
@@ -203,8 +211,22 @@ public class Database {
         return qrCodeCollection.count()
                 .get(AggregateSource.SERVER);
     }
+
+    /**
+     *  Returns task of global top "n" qr codes
+     * @param n
+     * @return
+     */
+    public Task<QuerySnapshot> getTopNScores(int n){
+        return qrCodeCollection
+                .orderBy("score", Query.Direction.ASCENDING)
+                .limit(n)
+                .get();
+    }
+
     //Test method for popualting DB
     //TODO DELETE THIS
+
     public void populateDB(){
         populatePlayer(20, 20);
     }
