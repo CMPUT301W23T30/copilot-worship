@@ -1,5 +1,6 @@
 package com.example.qrhunter;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +29,9 @@ public class LeaderboardActivity extends AppCompatActivity {
     private TextView firstScore;
     private TextView secondScore;
     private TextView thirdScore;
+    private String firstUsernameStr;
+    private String secondUsernameStr;
+    private String thirdUsernameStr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,15 +57,18 @@ public class LeaderboardActivity extends AppCompatActivity {
 
                         // extract the top 3
                         DocumentSnapshot d1 = list.get(0);
-                        firstUsername.setText(d1.get("username").toString());
+                        firstUsernameStr = d1.get("username").toString();
+                        firstUsername.setText(firstUsernameStr);
                         firstScore.setText(d1.get("totalScore").toString());
                         list.remove(0);
                         d1 = list.get(0);
-                        secondUsername.setText(d1.get("username").toString());
+                        secondUsernameStr = d1.get("username").toString();
+                        secondUsername.setText(secondUsernameStr);
                         secondScore.setText(d1.get("totalScore").toString());
                         list.remove(0);
                         d1 = list.get(0);
-                        thirdUsername.setText(d1.get("username").toString());
+                        thirdUsernameStr = d1.get("username").toString();
+                        thirdUsername.setText(thirdUsernameStr);
                         thirdScore.setText(d1.get("totalScore").toString());
                         list.remove(0);
 
@@ -80,11 +87,26 @@ public class LeaderboardActivity extends AppCompatActivity {
     }
 
     public void onClickFirst(View view) {
+        Bundle bundle = new Bundle();
+        Intent intent = new Intent(LeaderboardActivity.this, MainActivity.class);
+        bundle.putString("username", firstUsernameStr);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     public void onClickSecond(View view) {
+        Bundle bundle = new Bundle();
+        Intent intent = new Intent(LeaderboardActivity.this, MainActivity.class);
+        bundle.putString("username", secondUsernameStr);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     public void onClickThird(View view) {
+        Bundle bundle = new Bundle();
+        Intent intent = new Intent(LeaderboardActivity.this, MainActivity.class);
+        bundle.putString("username", thirdUsernameStr);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }
