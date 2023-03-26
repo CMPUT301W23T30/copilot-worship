@@ -157,17 +157,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //start populate xml
+
         ImageView profileCircle = (ImageView) findViewById(R.id.profile_icon);
-        //in the future if we want to add profile pictures
+        TextView userText = findViewById(R.id.user_page_user_name);
+        TextView smallerTextView = findViewById(R.id.user_page_total_score);
 
         CharacterImage testCharacter = characterCreator();
         profileCircle.setImageBitmap(testCharacter.getCharacterImage());
 
+        smallerTextView.setText(generateRandomName());
+
         // profileCircle.setImageResource(R.drawable._icon__profile_circle_);
 
-
-        TextView userText = findViewById(R.id.user_page_user_name);
         Bundle bundle = getIntent().getExtras();
         Database db = new Database();
         //db.populateDB(); Run only when we need to redo db after a purge
@@ -310,9 +311,6 @@ public class MainActivity extends AppCompatActivity {
         return randomAdjective + " " + randomNoun;
 
     }
-
-//    public String generateRandomName() {
-//    }
 
     private CharacterImage characterCreator() {
         String armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName;
