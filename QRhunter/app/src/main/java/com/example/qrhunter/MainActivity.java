@@ -30,8 +30,10 @@ import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -171,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
         TextView userText = findViewById(R.id.user_page_user_name);
         TextView smallerTextView = findViewById(R.id.user_page_total_score);
 
-        CharacterImage testCharacter = characterCreator();
+        CharacterImage testCharacter = characterCreator("2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824");
         profileCircle.setImageBitmap(testCharacter.getCharacterImage());
 
         smallerTextView.setText(generateRandomName());
@@ -249,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
         profileCircle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CharacterImage testCharacter = characterCreator();
+                CharacterImage testCharacter = characterCreator("2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824");
                 profileCircle.setImageBitmap(testCharacter.getCharacterImage());
                 smallerTextView.setText(generateRandomName());
             }
@@ -331,14 +333,26 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private CharacterImage characterCreator() {
+    private CharacterImage characterCreator(String hashedQRCode) {
         String armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName;
-        armsFileName = "arms" + (int) (Math.random() * 10 + 1);
-        legsFileName = "legs" + (int) (Math.random() * 10 + 1);
-        eyesFileName = "eyes" + (int) (Math.random() * 10 + 1);
-        mouthFileName = "mouth" + (int) (Math.random() * 10 + 1);
-        hatFileName = "hat" + (int) (Math.random() * 10 + 1);
-        CharacterImage testCharacter = new CharacterImage(this, 120, armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName);
+
+        BigInteger hashedQRCodeBigInt = new BigInteger(hashedQRCode, 16);
+        String firstSixDigitsString = hashedQRCodeBigInt.toString().substring(0, 6);
+
+        armsFileName = "arms" + firstSixDigitsString.substring(0, 1);
+        legsFileName = "legs" + firstSixDigitsString.substring(1, 2);
+        eyesFileName = "eyes" + firstSixDigitsString.substring(2, 3);
+        mouthFileName = "mouth" + firstSixDigitsString.substring(3, 4);
+        hatFileName = "hat" + firstSixDigitsString.substring(4, 5);
+
+//        armsFileName = "arms" + (int) (Math.random() * 10);
+//        legsFileName = "legs" + (int) (Math.random() * 10);
+//        eyesFileName = "eyes" + (int) (Math.random() * 10);
+//        mouthFileName = "mouth" + (int) (Math.random() * 10);
+//        hatFileName = "hat" + (int) (Math.random() * 10);
+
+        CharacterImage testCharacter = new CharacterImage(this, 120, armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName, firstSixDigitsString);
+
         return testCharacter;
     }
 

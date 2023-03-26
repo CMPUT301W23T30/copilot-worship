@@ -6,8 +6,11 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RadialGradient;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+
+import java.util.Random;
 
 public class CharacterImage {
     private Bitmap body;
@@ -18,16 +21,22 @@ public class CharacterImage {
     private Bitmap hat;
 
     public CharacterImage(Context context,int radius,String armsFileName,String legsFileName,
-                     String eyesFileName,String mouthFileName,String hatFileName) {
+                     String eyesFileName,String mouthFileName,String hatFileName, String firstSixDigitsString) {
         // Create a new bitmap for the body with the given radius
         this.body = Bitmap.createBitmap(radius * 2,radius * 2,Bitmap.Config.ARGB_8888);
 
         // Get the canvas for the body bitmap
         Canvas canvas = new Canvas(this.body);
 
-        // Create a paint object with a random color
+        // Create a paint object with a colour based on first five digits of hash code
         Paint paint = new Paint();
-        paint.setColor(Color.rgb((int)(Math.random() * 256),(int)(Math.random() * 256),(int)(Math.random() * 256)));
+//        int redValue = Integer.parseInt(firstSixDigitsString.substring(0,1)) * Integer.parseInt(firstSixDigitsString.substring(1,2)) + 128;
+//        int greenValue = Integer.parseInt(firstSixDigitsString.substring(2,3))  * Integer.parseInt(firstSixDigitsString.substring(3,4)) + 128;
+//        int blueValue = Integer.parseInt(firstSixDigitsString.substring(4,5)) * Integer.parseInt(firstSixDigitsString.substring(5,6)) + 128;
+
+        paint.setColor(Color.rgb((new Random().nextInt(14-6) + 6) * new Random().nextInt(14-6) + 56,(new Random().nextInt(14-6) + 6) * new Random().nextInt(14-6) + 56,(new Random().nextInt(14-6) + 6) * new Random().nextInt(14-6) + 56));
+
+//        paint.setColor(Color.rgb(redValue,greenValue,blueValue));
 
         // Draw a circle onto the canvas to represent the body
         canvas.drawCircle(radius,radius,radius,paint);

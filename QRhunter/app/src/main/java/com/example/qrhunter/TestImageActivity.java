@@ -14,7 +14,5 @@ public class TestImageActivity extends AppCompatActivity {
 
         ImageView testImage = (ImageView) findViewById(R.id.testImage);
 
-        CharacterImage testCharacter = new CharacterImage(this, 120, "arms1", "legs1", "eyes1", "mouth1", "hat1");
-        testImage.setImageBitmap(testCharacter.getCharacterImage());
     }
 }
