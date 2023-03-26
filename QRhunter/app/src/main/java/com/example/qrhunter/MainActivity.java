@@ -80,18 +80,19 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_add_player_button:
-                Intent intent = new Intent(this, AddPlayerActivity.class);
-
-                Bundle b = new Bundle();
-                b.putString("username", username);
-                intent.putExtras(b);
-                startActivity(intent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+//        switch (item.getItemId()) {
+//            case R.id.menu_add_player_button:
+//                Intent intent = new Intent(this, AddPlayerActivity.class);
+//
+//                Bundle b = new Bundle();
+//                b.putString("username", username);
+//                intent.putExtras(b);
+//                startActivity(intent);
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+        return true;
     }
 
     /**
