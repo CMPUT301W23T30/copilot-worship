@@ -174,7 +174,6 @@ public class MainActivity extends AppCompatActivity {
         TextView userEmail = findViewById(R.id.user_page_email);
         TextView userPhone = findViewById(R.id.user_page_phone);
 
-
         db.getPlayerContact(username, new PlayerContactListener() {
             @Override
             public void playerContactCallback(Bundle bundle) {
@@ -190,13 +189,9 @@ public class MainActivity extends AppCompatActivity {
                 Integer total = 0;
                 ArrayList<Integer> qrScore = new ArrayList<>();
 
-                Log.d("TASK", "SCORES" + bundle.getStringArrayList("HashList"));
-
                 for (String hash : bundle.getStringArrayList("HashList")){
                     Integer score = scoreCalculator(hash);
                     qrScore.add(score);
-                    Log.d("CALLBACK", "Hash: " + hash);
-                    Log.d("CALLBACK", "Score: " + score);
                     total = total + score;
                 }
 
