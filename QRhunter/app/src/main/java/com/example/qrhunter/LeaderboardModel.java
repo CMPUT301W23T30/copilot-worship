@@ -2,12 +2,21 @@ package com.example.qrhunter;
 
 public class LeaderboardModel {
 
-    String username;
-    Integer ranking;
+    private String username;
 
-    LeaderboardModel(String username, Integer ranking){
+    public Integer getTotalScore() {
+        return totalScore;
+    }
+
+    public void setTotalScore(Integer totalScore) {
+        this.totalScore = totalScore;
+    }
+
+    private Integer totalScore;
+
+    LeaderboardModel(String username, Integer totalScore){
         this.username = username;
-        this.ranking = ranking;
+        this.totalScore = totalScore;
     }
 
     public String getUsername() {
@@ -18,11 +27,4 @@ public class LeaderboardModel {
         this.username = username;
     }
 
-    public Integer getRanking() {
-        return ranking;
-    }
-
-    public void setRanking(Integer ranking) {
-        this.ranking = ranking;
-    }
 }

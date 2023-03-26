@@ -50,7 +50,8 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
 //      holder.img.setImageResource(item.getPfp());
         holder.username.setText(item.getUsername());
 
-        holder.ranking.setText(item.getRanking().toString());
+        holder.ranking.setText(Integer.toString(position + 1));
+        holder.totalScore.setText(item.getTotalScore().toString());
 
 //        Glide.with(holder.img.getContext())
 //                .load(SearchModel.getPfp())
@@ -71,8 +72,8 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
     class myViewHolder extends RecyclerView.ViewHolder{
         CircleImageView img;
         TextView username;
-
         TextView ranking;
+        TextView totalScore;
 
         public myViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -80,6 +81,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
             img = (CircleImageView)itemView.findViewById(R.id.profile_picture);
             username = (TextView)itemView.findViewById(R.id.profile_name);
             ranking = (TextView)itemView.findViewById(R.id.ranking_number);
+            totalScore = (TextView)itemView.findViewById(R.id.total_score);
         }
     }
 }

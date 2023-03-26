@@ -17,7 +17,7 @@ public class LeaderboardActivity extends AppCompatActivity {
     private LeaderboardAdapter adapter;
 
     private List<LeaderboardModel> userList = new ArrayList<>();
-    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final Database db = new Database();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,20 +28,19 @@ public class LeaderboardActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        db.collection("Players").get()
+        db.getPlayerCollectionTotalScore()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-                        Integer ranking = 1;
+
                         for (DocumentSnapshot d : list) {
 
-                            LeaderboardModel user = new LeaderboardModel(d.get("username").toString(),ranking);
+                            LeaderboardModel user = new LeaderboardModel(d.get("username").toString(),Integer.parseInt(d.get("totalScore").toString()));
 
                             // after getting data from Firebase we are
                             // storing that data in our array list
                             userList.add(user);
-                            ranking++;
                         }
                         adapter = new LeaderboardAdapter(userList, LeaderboardActivity.this);
                         recyclerView.setAdapter(adapter);

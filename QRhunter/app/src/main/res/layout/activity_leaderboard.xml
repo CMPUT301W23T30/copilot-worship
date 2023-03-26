@@ -8,13 +8,49 @@
         tools:context=".SearchPlayerActivity">
 
     <TextView
-            android:text="TextView"
+            android:text="Leaderboard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:id="@+id/textView"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.498" app:layout_constraintVertical_bias="0.068"
-            android:textSize="24sp" tools:text="Leaderboard"/>
+            app:layout_constraintVertical_bias="0.000"
+            android:textSize="24sp" tools:text="Leaderboard" app:layout_constraintHorizontal_bias="0.498"/>
+    <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="125dp" android:layout_height="125dp"
+            android:src="@drawable/_icon__profile_circle_"
+            android:layout_centerVertical="true"
+            android:id="@+id/first_place"
+            app:civ_border_width="2dp"
+            app:civ_border_color="#FF000000" app:layout_constraintBottom_toTopOf="@+id/leaderboard"
+            app:layout_constraintTop_toBottomOf="@+id/textView" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintVertical_bias="0.319">
+
+    </de.hdodenhof.circleimageview.CircleImageView>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="90dp" android:layout_height="90dp"
+            android:src="@drawable/_icon__profile_circle_"
+            android:layout_centerVertical="true"
+            android:id="@+id/second_place"
+            app:civ_border_width="2dp"
+            app:civ_border_color="#FF000000" app:layout_constraintBottom_toTopOf="@+id/leaderboard"
+            app:layout_constraintTop_toBottomOf="@+id/textView" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintVertical_bias="0.533"
+            app:layout_constraintHorizontal_bias="0.115">
+
+    </de.hdodenhof.circleimageview.CircleImageView>
+    <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="90dp" android:layout_height="90dp"
+            android:src="@drawable/_icon__profile_circle_"
+            android:layout_centerVertical="true"
+            android:id="@+id/third_place"
+            app:civ_border_width="2dp"
+            app:civ_border_color="#FF000000" app:layout_constraintBottom_toTopOf="@+id/leaderboard"
+            app:layout_constraintTop_toBottomOf="@+id/textView" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintVertical_bias="0.533"
+            app:layout_constraintHorizontal_bias="0.885">
+
+    </de.hdodenhof.circleimageview.CircleImageView>
     <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="300dp"
@@ -22,5 +58,15 @@
             app:layout_constraintTop_toBottomOf="@+id/textView"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintVertical_bias="1.0"/>
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" app:srcCompat="@drawable/crown" android:id="@+id/imageView"
+            app:layout_constraintBottom_toTopOf="@+id/first_place"
+            app:layout_constraintTop_toBottomOf="@+id/textView" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintVertical_bias="0.736"/>
+    <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                                android:id="@+id/guideline" app:layout_constraintGuide_begin="20dp"
+                                                android:orientation="vertical"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
