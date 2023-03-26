@@ -49,7 +49,7 @@ public class Player {
         this.username = username;
         this.email = "Default email";
         this.number = 0;
-        this.qrCodes = null;
+        this.qrCodes = new ArrayList<>();
     }
 
     /**
@@ -85,4 +85,17 @@ public class Player {
     public ArrayList<QRCode> getQrCodes() { return qrCodes; }
     public void setQrCodes(ArrayList<QRCode> qrCodes) { this.qrCodes = qrCodes; }
 
+    /**
+     * TODO Write tests for this
+     * @return total score of player
+     */
+    public int getTotalScore() {
+        if (qrCodes.size() == 0) {return 0;}
+        int totalScore = 0;
+        for(QRCode qr: qrCodes){
+            totalScore += qr.getScore();
+        }
+
+        return totalScore;
+    }
 }
