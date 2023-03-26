@@ -79,6 +79,11 @@ public class Database {
        });
     }
 
+    /**
+     * Gets an array of the Player's collection of QR codes
+     * @param username Username of the player
+     * @param callback Listener for player info from database
+     */
     public void getPlayerStats(String username, final PlayerStatsListener callback){
         playersCollection.document(username).collection("QRCodes").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
