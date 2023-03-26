@@ -1,8 +1,10 @@
 package com.example.qrhunter;
 
 import android.location.Location;
+import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -10,11 +12,18 @@ import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +41,8 @@ public class Database {
     private final FirebaseFirestore db;
     private CollectionReference playersCollection;
     private CollectionReference qrCodeCollection;
+    private QuerySnapshot playerSnapshotResult;
+    private Task<QuerySnapshot> playerSnapshot;
 
 
     // Default constructor for Database, creates a new instance of the database and collections
@@ -51,6 +62,47 @@ public class Database {
         return playersCollection
                 .whereEqualTo("username", username)
                 .get();
+    }
+
+
+    /**
+     * Gets contact information from Players document
+     * @param username Username of the player to be found
+     * @param callback Listener for player info from database
+     */
+    public void getPlayerContact(String username, final PlayerContactListener callback){
+
+       playersCollection.document(username).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+           @Override
+           public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+
+               Bundle bundle = new Bundle();
+               bundle.putString("email", value.get("email").toString());
+               bundle.putString("number", value.get("number").toString());
+
+               callback.playerContactCallback(bundle);
+           }
+       });
+    }
+
+    /**
+     * Gets an array of the Player's collection of QR codes
+     * @param username Username of the player
+     * @param callback Listener for player info from database
+     */
+    public void getPlayerStats(String username, final PlayerStatsListener callback){
+        playersCollection.document(username).collection("QRCodes").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                ArrayList<String> qrList = new ArrayList<>();
+                for (DocumentSnapshot doc : value.getDocuments()) {
+                    qrList.add(doc.getId());
+                }
+                Bundle bundle = new Bundle();
+                bundle.putStringArrayList("HashList", qrList);
+                callback.playerStatsCallback(bundle);
+            }
+        });
     }
 
 
@@ -109,6 +161,7 @@ public class Database {
                 .delete();
     }
 
+
     /**
      * Adds a QR code to the database
      * @param qrCode QR code to be added
@@ -149,13 +202,15 @@ public class Database {
     }
 
     /**
-     * Returns a task of QuerySnapshot for finding all QR codes in the player collection
-     * @param player Username of the player to be found
+
+     * Returns a task of QuerySnapshot for finding a QR code in the player collection
+     * @param username Username of the player to be found
      * @return Task of Query with the result
      */
-    public Task<QuerySnapshot> getQrCodesFromPlayer(String player) {
+    public Task<QuerySnapshot> getQrCodesFromPlayer(String username) {
         return playersCollection
-                .document(player)
+                .document(username)
+
                 .collection("QRCodes")
                 .get();
     }
