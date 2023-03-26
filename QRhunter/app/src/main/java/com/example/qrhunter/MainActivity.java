@@ -83,6 +83,10 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.menu_add_player_button:
                 Intent intent = new Intent(this, AddPlayerActivity.class);
+
+                Bundle b = new Bundle();
+                b.putString("username", username);
+                intent.putExtras(b);
                 startActivity(intent);
                 return true;
             default:
@@ -149,6 +153,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void getRankingEstimates(Bundle bundle, Database db){
+        if(bundle != null){
+
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         Database db = new Database();
         //db.populateDB(); Run only when we need to redo db after a purge
+        //db.populateScore(20);// Run only after populate db
         getUsername(bundle, db, userText);
 
         // Player Information
