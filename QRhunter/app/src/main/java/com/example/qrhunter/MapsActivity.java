@@ -228,8 +228,6 @@ public class MapsActivity extends FragmentActivity
                                                 if (distance <= visibleRadius) {
                                                     LatLng qrLocation = new LatLng(qrCode.getLocation().getLatitude(), qrCode.getLocation().getLongitude());
                                                     Marker marker = mMap.addMarker(new MarkerOptions().position(qrLocation).title(qrCode.getName()));
-                                                    String hash = qrCode.getHash();
-                                                    marker.setTag(hash);
                                                     markerList.add(marker);
                                                 }
                                             }
@@ -337,12 +335,10 @@ public class MapsActivity extends FragmentActivity
      */
     // When clicking on a marker, navigate to the QR code's detailed page
     public boolean onMarkerClick(Marker marker) {
-        // Get the QR code's hash from the marker's tag
-        String hash = (String) marker.getTag();
+        // Get the QR code's hash from the marker's title
+        String hash = marker.getTitle();
         // Navigate to the QR code's detailed page
         Intent intent = new Intent(this, QrDisplayActivity.class);
-        Bundle b = new Bundle();
-        b.putString("hash", hash);
         intent.putExtra("hash", hash);
         startActivity(intent);
         return false;
