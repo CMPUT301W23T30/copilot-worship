@@ -34,8 +34,12 @@ public class CharacterImage {
 //        int greenValue = Integer.parseInt(firstSixDigitsString.substring(2,3))  * Integer.parseInt(firstSixDigitsString.substring(3,4)) + 128;
 //        int blueValue = Integer.parseInt(firstSixDigitsString.substring(4,5)) * Integer.parseInt(firstSixDigitsString.substring(5,6)) + 128;
 
-        paint.setColor(Color.rgb((new Random().nextInt(14-6) + 6) * new Random().nextInt(14-6) + 56,(new Random().nextInt(14-6) + 6) * new Random().nextInt(14-6) + 56,(new Random().nextInt(14-6) + 6) * new Random().nextInt(14-6) + 56));
-
+        float[] hsl = new float[3];  // Hue-Saturation-Lightness
+        hsl[0] = (float) Math.random() * 360;  // Hue
+        hsl[1] = (float) (0.6 + Math.random() * (0.7 - 0.6));  // Saturation
+        hsl[2] = (float) (0.75 + Math.random() * (0.9 - 0.75));  // Lightness
+//        paint.setColor(Color.rgb((new Random().nextInt(14-6) + 6) * new Random().nextInt(14-6) + 56,(new Random().nextInt(14-6) + 6) * new Random().nextInt(14-6) + 56,(new Random().nextInt(14-6) + 6) * new Random().nextInt(14-6) + 56));
+        paint.setColor(Color.HSVToColor(hsl));
 //        paint.setColor(Color.rgb(redValue,greenValue,blueValue));
 
         // Draw a circle onto the canvas to represent the body
