@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     final String TAG = "User Profile Page";
     String username;
 
-
+    Bitmap image;
 
     Button scanButton;
     Button photoButton;
@@ -148,15 +149,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        photoButton = findViewById(R.id.Photo_Button);
-        photoButton.setOnClickListener(v -> {
-            Toast.makeText(MainActivity.this, "Open Camera", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            PhotoTakeNew test = new PhotoTakeNew(intent);
-            Bitmap image = test.takePhoto();
-
-        });
-
         // NAVBAR Buttons
         mapButton = findViewById(R.id.navbar_map_button);
         galleryButton = findViewById(R.id.navbar_gallery_button);
@@ -204,7 +196,16 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Start Scanning", Toast.LENGTH_SHORT).show();
                 QRScan newClass = new QRScan();
                 newClass.scanCode(barLaucher);
+                ///Here
             }
+        });
+
+        photoButton = findViewById(R.id.Photo_Button);
+        photoButton.setOnClickListener(v -> {
+            Toast.makeText(MainActivity.this, "Open Camera", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent, 100);
+
         });
 
     }
@@ -263,4 +264,23 @@ public class MainActivity extends AppCompatActivity {
             }).show();
         }
     });
+
+    /**
+     * Take Real World photos
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode The integer result code returned by the child activity
+     *                   through its setResult().
+     * @param data An Intent, which can return result data to the caller
+     *               (various data can be attached to Intent "extras").
+     *
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100){
+            image = (Bitmap) data.getExtras().get("data");
+        }
+    }
 }

@@ -30,15 +30,7 @@ public class PhotoTakeNew extends AppCompatActivity {
     }
 
     public Bitmap start(){
-        startActivityForResult(intent, 100);
-        return bitmap;
-    }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CAMERA_REQUEST_CODE){
-            bitmap = (Bitmap) data.getExtras().get("data");
-        }
+        return bitmap;
     }
 }
