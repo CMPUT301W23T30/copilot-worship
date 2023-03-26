@@ -246,6 +246,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        profileCircle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CharacterImage testCharacter = characterCreator();
+                profileCircle.setImageBitmap(testCharacter.getCharacterImage());
+                smallerTextView.setText(generateRandomName());
+            }
+        });
+
     }
 
     /**
