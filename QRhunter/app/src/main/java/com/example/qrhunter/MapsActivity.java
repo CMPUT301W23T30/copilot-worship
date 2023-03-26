@@ -2,6 +2,7 @@ package com.example.qrhunter;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -23,6 +24,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Marker;
@@ -62,6 +64,9 @@ public class MapsActivity extends FragmentActivity
 
     // Radius of the visible area in meters
     private int visibleRadius = 200;
+
+    // Set a indication for locating and rotating
+    private int locateAndRotate = 0;
 
     // List of markers
     private List<Marker> markerList = new ArrayList<Marker>();
@@ -106,18 +111,31 @@ public class MapsActivity extends FragmentActivity
         myLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mFusedLocationClient.getLastLocation()
-                        .addOnSuccessListener(MapsActivity.this, new OnSuccessListener<Location>() {
-                            @Override
-                            public void onSuccess(Location location) {
-                                // Got last known location. In some rare situations this can be null.
-                                if (location != null) {
-                                    // Logic to handle location object
-                                    LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
+                if (locateAndRotate == 0) {
+                    mFusedLocationClient.getLastLocation()
+                            .addOnSuccessListener(MapsActivity.this, new OnSuccessListener<Location>() {
+                                @Override
+                                public void onSuccess(Location location) {
+                                    // Got last known location. In some rare situations this can be null.
+                                    if (location != null) {
+                                        // Logic to handle location object
+                                        LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
+                                    }
                                 }
-                            }
-                        });
+                            });
+                } else {
+                    CameraPosition current = mMap.getCameraPosition();
+                    CameraPosition newPosition = new CameraPosition.Builder(current)
+                            .bearing(0)
+                            .build();
+                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(newPosition));
+                }
+                locateAndRotate++;
+                if (locateAndRotate > 1){
+                    locateAndRotate = 0;
+                }
+
             }
         });
         followLocationButton = findViewById(R.id.map_follow_button);
@@ -147,10 +165,8 @@ public class MapsActivity extends FragmentActivity
 //            }
 //        });
 
+        // TODO add functionality to navigate to QR code's detailed page
 
-        // TODO add functionality to the locate button to rotate the camera upright
-
-        // TODO add functionality that by clicking on markers, users should be navigated to the QR code page
 
     }
 
@@ -212,6 +228,8 @@ public class MapsActivity extends FragmentActivity
                                                 if (distance <= visibleRadius) {
                                                     LatLng qrLocation = new LatLng(qrCode.getLocation().getLatitude(), qrCode.getLocation().getLongitude());
                                                     Marker marker = mMap.addMarker(new MarkerOptions().position(qrLocation).title(qrCode.getName()));
+                                                    String hash = qrCode.getHash();
+                                                    marker.setTag(hash);
                                                     markerList.add(marker);
                                                 }
                                             }
@@ -296,12 +314,37 @@ public class MapsActivity extends FragmentActivity
         QrLocation.setLatitude((Double)d.get("latitude"));
         QrLocation.setLongitude((Double)d.get("longitude"));
 
+        // Handle the situation where the score is null
+        Long score = null;
+        Object scoreObj = d.get("score");
+        if (scoreObj != null && scoreObj instanceof Long) {
+            score = (Long) scoreObj;
+        }
+
         // Create a new QR code object
         QRCode qrCode = new QRCode(
                 d.get("hash").toString(),
                 d.get("name").toString(),
                 QrLocation,
-                ((Long)d.get("score")).intValue());
+                score != null ? score.intValue() : 0);
         return qrCode;
+    }
+
+    /**
+     * This method is called when the user clicks on a marker
+     * @param marker
+     * @return false
+     */
+    // When clicking on a marker, navigate to the QR code's detailed page
+    public boolean onMarkerClick(Marker marker) {
+        // Get the QR code's hash from the marker's tag
+        String hash = marker.getTag().toString();
+        // Navigate to the QR code's detailed page
+        Intent intent = new Intent(this, QrDisplayActivity.class);
+        Bundle b = new Bundle();
+        b.putString("hash", hash);
+        intent.putExtra("hash", hash);
+        startActivity(intent);
+        return false;
     }
 }

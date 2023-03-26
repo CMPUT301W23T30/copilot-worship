@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
@@ -20,6 +21,7 @@ import java.util.ArrayList;
  * TODO make UI bigger and make name,score,location information obvious
  */
 public class GalleryAdapter extends ArrayAdapter<QRCode> {
+    private static final DecimalFormat df = new DecimalFormat("0.00");
     /**
      * Constructor for GalleryAdapater
      * @param context
@@ -56,15 +58,16 @@ public class GalleryAdapter extends ArrayAdapter<QRCode> {
         QRCode qrMon = getItem(position);
         ImageView image = view.findViewById(R.id.QRmon_image);
         TextView name = view.findViewById(R.id.QRmon_name);
-        TextView location = view.findViewById(R.id.QRmon_location);
+        TextView longitude = view.findViewById(R.id.QRmon_long);
+        TextView latitude = view.findViewById(R.id.QRmon_lat);
         TextView score = view.findViewById(R.id.QRmon_score);
 
         // set
         name.setText(qrMon.getName());
         //temp set location to longtitude and latitude?
         Location qrMonLocation = qrMon.getLocation();
-        String locationString = "" + qrMonLocation.getLongitude() + qrMonLocation.getLatitude();
-        location.setText(locationString);
+        longitude.setText(df.format(qrMonLocation.getLongitude()));
+        latitude.setText(df.format(qrMonLocation.getLatitude()));
         score.setText(String.format("%d",qrMon.getScore()));
 
         return view;
