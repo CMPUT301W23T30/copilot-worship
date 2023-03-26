@@ -13,9 +13,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.myViewHolder>{
-    public LeaderboardAdapter(List<LeaderboardModel> userList, Context context) {
+    private OnItemClickListener onItemClickListener1;
+    public LeaderboardAdapter(List<LeaderboardModel> userList, Context context, OnItemClickListener onItemClickListener1) {
         this.userList = userList;
         this.context = context;
+        this.onItemClickListener1 = onItemClickListener1;
     }
 
     private List<LeaderboardModel> userList;
@@ -33,7 +35,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
     @Override
     public myViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.leaderboard_item,parent,false);
-        return new LeaderboardAdapter.myViewHolder(view);
+        return new LeaderboardAdapter.myViewHolder(view, onItemClickListener1);
     }
 
     /**
@@ -69,19 +71,44 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
      * The actual view of the item in the recyclerview
      * @author X
      */
-    class myViewHolder extends RecyclerView.ViewHolder{
+    class myViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         CircleImageView img;
         TextView username;
         TextView ranking;
         TextView totalScore;
+        /** for recycler views there is no onItemClickListener, so we have to make our own for each of the views inside
+         * the RecyclerView
+        */
+        OnItemClickListener onItemClickListener;
 
-        public myViewHolder(@NonNull @NotNull View itemView) {
+        // we pass the onItemClickListener so when it is created we can set the onItemClickListener
+        public myViewHolder(@NonNull @NotNull View itemView, OnItemClickListener onItemClickListener) {
             super(itemView);
 
             img = (CircleImageView)itemView.findViewById(R.id.profile_picture);
             username = (TextView)itemView.findViewById(R.id.profile_name);
             ranking = (TextView)itemView.findViewById(R.id.ranking_number);
             totalScore = (TextView)itemView.findViewById(R.id.total_score);
+            // set the onItemClickListener
+            this.onItemClickListener = onItemClickListener;
+            // attach the listener to the view
+            itemView.setOnClickListener(this);
         }
+
+        /**
+         * this override is called when any of the viewholders inside the RecyclerView gets clicked through the
+         * listener set in the constructor (itemView.setOnClickListener(this))
+         */
+        @Override
+        public void onClick(View view) {
+            onItemClickListener.OnItemClick(getAdapterPosition());
+        }
+    }
+
+    /**
+     * interface used to detect and interpret the click, to be implemented inside the activity
+     */
+    public interface OnItemClickListener{
+        void OnItemClick(int position);
     }
 }

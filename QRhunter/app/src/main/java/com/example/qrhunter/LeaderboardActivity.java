@@ -16,7 +16,7 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LeaderboardActivity extends AppCompatActivity {
+public class LeaderboardActivity extends AppCompatActivity implements LeaderboardAdapter.OnItemClickListener {
     private RecyclerView recyclerView;
     private LeaderboardAdapter adapter;
 
@@ -80,7 +80,7 @@ public class LeaderboardActivity extends AppCompatActivity {
                             // storing that data in our array list
                             userList.add(user);
                         }
-                        adapter = new LeaderboardAdapter(userList, LeaderboardActivity.this);
+                        adapter = new LeaderboardAdapter(userList, LeaderboardActivity.this, LeaderboardActivity.this::OnItemClick);
                         recyclerView.setAdapter(adapter);
                     }
                 });
@@ -106,6 +106,15 @@ public class LeaderboardActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         Intent intent = new Intent(LeaderboardActivity.this, MainActivity.class);
         bundle.putString("username", thirdUsernameStr);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    @Override
+    public void OnItemClick(int position) {
+        Bundle bundle = new Bundle();
+        Intent intent = new Intent(LeaderboardActivity.this, MainActivity.class);
+        bundle.putString("username", userList.get(position).getUsername());
         intent.putExtras(bundle);
         startActivity(intent);
     }
