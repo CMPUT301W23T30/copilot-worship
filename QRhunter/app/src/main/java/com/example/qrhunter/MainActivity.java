@@ -78,6 +78,9 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.menu_add_player_button:
                 Intent intent = new Intent(this, AddPlayerActivity.class);
+                Bundle b = new Bundle();
+                b.putString("username", username);
+                intent.putExtras(b);
                 startActivity(intent);
                 return true;
             default:
