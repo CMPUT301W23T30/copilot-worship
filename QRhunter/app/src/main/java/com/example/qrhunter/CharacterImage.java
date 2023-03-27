@@ -13,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import java.util.Random;
 
 public class CharacterImage {
+    private Context context;
     private Bitmap body;
     private Bitmap arms;
     private Bitmap legs;
@@ -20,10 +21,13 @@ public class CharacterImage {
     private Bitmap mouth;
     private Bitmap hat;
 
-    public CharacterImage(Context context,int radius,String armsFileName,String legsFileName,
+    public CharacterImage(Context context, String armsFileName,String legsFileName,
                      String eyesFileName,String mouthFileName,String hatFileName, String firstSixDigitsString) {
         // Create a new bitmap for the body with the given radius
+
+        int radius = (int) (43 * context.getResources().getDisplayMetrics().density);
         this.body = Bitmap.createBitmap(radius * 2,radius * 2,Bitmap.Config.ARGB_8888);
+        this.context = context;
 
         // Get the canvas for the body bitmap
         Canvas canvas = new Canvas(this.body);
@@ -74,9 +78,12 @@ public class CharacterImage {
 
     public Bitmap getCharacterImage() {
         // Create a new bitmap with same dimensions as body bitmap
-        int width = 450;
-        int height = 450;
-        int radius = 120;
+        // Test pixel density (Pixel 3 API 31): 2.75
+        // 450 px = 164 dp, 120 px = 43 dp
+
+        int width = (int) (164 * context.getResources().getDisplayMetrics().density);
+        int height = (int) (164 * context.getResources().getDisplayMetrics().density);
+        int radius = (int) (43 * context.getResources().getDisplayMetrics().density);
         Bitmap characterImage = Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888);
 
         // Get canvas for new bitmap
@@ -85,10 +92,10 @@ public class CharacterImage {
         // Draw bitmaps onto canvas in desired order and positions
         canvas.drawBitmap(body,radius - radius/8,radius/2 + hat.getHeight()/4 + radius/4,null);
         canvas.drawBitmap(arms,radius + arms.getWidth()/2 - radius/8,2*radius + radius/4,null);
-        canvas.drawBitmap(legs,radius + radius/7,2*radius + radius/4,null);
-        canvas.drawBitmap(eyes,radius + radius/7,radius/2 + radius/5 + radius/4,null);
-        canvas.drawBitmap(mouth, radius + radius/7,radius + 2*legs.getHeight()/3 + radius/4,null);
-        canvas.drawBitmap(hat,radius + radius/7,hat.getHeight() - radius + hat.getHeight()/4 + radius/4,null);
+        canvas.drawBitmap(legs,radius + radius/8,2*radius + radius/4,null);
+        canvas.drawBitmap(eyes,radius + radius/8,radius/2 + radius/5 + radius/4,null);
+        canvas.drawBitmap(mouth, radius + radius/8,radius + 2*legs.getHeight()/3 + radius/4,null);
+        canvas.drawBitmap(hat,radius + radius/8,hat.getHeight() - radius + hat.getHeight()/4 + radius/4,null);
 
         return characterImage;
     }

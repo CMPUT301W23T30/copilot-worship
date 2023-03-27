@@ -339,19 +339,19 @@ public class MainActivity extends AppCompatActivity {
         BigInteger hashedQRCodeBigInt = new BigInteger(hashedQRCode, 16);
         String firstSixDigitsString = hashedQRCodeBigInt.toString().substring(0, 6);
 
-        armsFileName = "arms" + firstSixDigitsString.substring(0, 1);
-        legsFileName = "legs" + firstSixDigitsString.substring(1, 2);
-        eyesFileName = "eyes" + firstSixDigitsString.substring(2, 3);
-        mouthFileName = "mouth" + firstSixDigitsString.substring(3, 4);
-        hatFileName = "hat" + firstSixDigitsString.substring(4, 5);
+//        armsFileName = "arms" + firstSixDigitsString.substring(0, 1);
+//        legsFileName = "legs" + firstSixDigitsString.substring(1, 2);
+//        eyesFileName = "eyes" + firstSixDigitsString.substring(2, 3);
+//        mouthFileName = "mouth" + firstSixDigitsString.substring(3, 4);
+//        hatFileName = "hat" + firstSixDigitsString.substring(4, 5);
 
-//        armsFileName = "arms" + (int) (Math.random() * 10);
-//        legsFileName = "legs" + (int) (Math.random() * 10);
-//        eyesFileName = "eyes" + (int) (Math.random() * 10);
-//        mouthFileName = "mouth" + (int) (Math.random() * 10);
-//        hatFileName = "hat" + (int) (Math.random() * 10);
+        armsFileName = "arms" + (int) (Math.random() * 10);
+        legsFileName = "legs" + (int) (Math.random() * 10);
+        eyesFileName = "eyes" + (int) (Math.random() * 10);
+        mouthFileName = "mouth" + (int) (Math.random() * 10);
+        hatFileName = "hat" + (int) (Math.random() * 10);
 
-        CharacterImage testCharacter = new CharacterImage(this, 120, armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName, firstSixDigitsString);
+        CharacterImage testCharacter = new CharacterImage(this, armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName, firstSixDigitsString);
 
         return testCharacter;
     }
