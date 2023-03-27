@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         CharacterImage testCharacter = characterCreator("2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824");
         profileCircle.setImageBitmap(testCharacter.getCharacterImage());
 
-        smallerTextView.setText(generateRandomName());
+        smallerTextView.setText("Click on the monster to generate a new one!!!!");
 
         // profileCircle.setImageResource(R.drawable._icon__profile_circle_);
 
