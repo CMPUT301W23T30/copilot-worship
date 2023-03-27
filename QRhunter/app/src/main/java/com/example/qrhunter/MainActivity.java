@@ -197,7 +197,6 @@ public class MainActivity extends AppCompatActivity {
                 QRScan newClass = new QRScan();
                 newClass.scanCode(barLaucher);
                 ///Here
-                askAndTakePhoto();
             }
         });
 
@@ -253,6 +252,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialogInterface, int i)
                 {
                     dialogInterface.dismiss();
+                    askAndTakePhoto();
                 }
             }).show();
         }
@@ -293,6 +293,7 @@ public class MainActivity extends AppCompatActivity {
                         // Continue with delete operation
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         startActivityForResult(intent, 100);
+
                     }
                 })
 
