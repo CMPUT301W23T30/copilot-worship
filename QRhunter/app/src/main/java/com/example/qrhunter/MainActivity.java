@@ -197,16 +197,8 @@ public class MainActivity extends AppCompatActivity {
                 QRScan newClass = new QRScan();
                 newClass.scanCode(barLaucher);
                 ///Here
-                newClass.askTakePhoto();
+                askAndTakePhoto();
             }
-        });
-
-        photoButton = findViewById(R.id.Photo_Button);
-        photoButton.setOnClickListener(v -> {
-            Toast.makeText(MainActivity.this, "Open Camera", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(intent, 100);
-
         });
 
     }
@@ -283,5 +275,30 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 100){
             image = (Bitmap) data.getExtras().get("data");
         }
+    }
+
+    /**
+     * Asks whether the users want to take a photo
+     * If Yes, then starts Taking Photo
+     */
+    public void askAndTakePhoto(){
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Add Object Photo")
+                .setMessage("Do you want to take a Photo of the real object?")
+
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Continue with delete operation
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivityForResult(intent, 100);
+                    }
+                })
+
+                // A null listener allows the button to dismiss the dialog and take no further action.
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 }
