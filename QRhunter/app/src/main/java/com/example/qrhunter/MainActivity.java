@@ -185,7 +185,6 @@ public class MainActivity extends AppCompatActivity {
 
         // profileCircle.setImageResource(R.drawable._icon__profile_circle_);
 
-        TextView userText = findViewById(R.id.user_page_user_name);
         Bundle bundle = getIntent().getExtras();
         Database db = new Database();
         //db.populateDB(); Run only when we need to redo db after a purge
