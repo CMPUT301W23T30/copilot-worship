@@ -2,25 +2,23 @@ package com.example.qrhunter;
 
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -40,6 +38,7 @@ public class Database {
     // Initialize database and collections
     private final FirebaseFirestore db;
     private CollectionReference playersCollection;
+    private Player player;
     private CollectionReference qrCodeCollection;
     private QuerySnapshot playerSnapshotResult;
     private Task<QuerySnapshot> playerSnapshot;
@@ -64,47 +63,97 @@ public class Database {
                 .get();
     }
 
-
     /**
-     * Gets contact information from Players document
-     * @param username Username of the player to be found
-     * @param callback Listener for player info from database
+     * Gets Player information from username
+     * @param username Username of player whose info is being asked for
+     * @param callback Listener
      */
-    public void getPlayerContact(String username, final PlayerContactListener callback){
-
-       playersCollection.document(username).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-           @Override
-           public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-
-               Bundle bundle = new Bundle();
-               bundle.putString("email", value.get("email").toString());
-               bundle.putString("number", value.get("number").toString());
-
-               callback.playerContactCallback(bundle);
-           }
-       });
-    }
-
-    /**
-     * Gets an array of the Player's collection of QR codes
-     * @param username Username of the player
-     * @param callback Listener for player info from database
-     */
-    public void getPlayerStats(String username, final PlayerStatsListener callback){
-        playersCollection.document(username).collection("QRCodes").addSnapshotListener(new EventListener<QuerySnapshot>() {
+    public void getPlayerInfo(String username, final PlayerInfoListener callback){
+        getPlayerFromUsername(username).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                ArrayList<String> qrList = new ArrayList<>();
-                for (DocumentSnapshot doc : value.getDocuments()) {
-                    qrList.add(doc.getId());
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                Player player;
+                if (task.isSuccessful()){
+                    for (QueryDocumentSnapshot document : task.getResult()){
+                        player = new Player(
+                                username,
+                                document.get("email").toString(),
+                                Integer.parseInt(document.get("number").toString()),
+                                new ArrayList<>()
+                        );
+
+                        callback.playerInfoCallback(player);
+                    }
+                } else {
+                    Log.d("DATABASE", "Error getting document: ", task.getException());
                 }
-                Bundle bundle = new Bundle();
-                bundle.putStringArrayList("HashList", qrList);
-                callback.playerStatsCallback(bundle);
             }
         });
     }
 
+    /**
+     * Gets an array of the Player's collection of QR codes hashes
+     * @param username Username of the player
+     * @param callback Listener for player info from database
+     */
+    public void getPlayerCollection(String username, final PlayerCollectionListener callback){
+        playersCollection.document(username).collection("QRCodes").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                Map<String, String> qrMap = new HashMap<String, String>();
+                //ArrayList<String> qrList = new ArrayList<>();
+                //ArrayList<String> commentList = new ArrayList<>();
+                for (DocumentSnapshot doc : value.getDocuments()) {
+                    String hash = doc.get("hash").toString();
+                    String comment = "";
+
+                    if (doc.get("comment") == null){
+                        Log.d("TASK", "NO COMMENT");
+                        comment = "";
+                    }else{
+                        Log.d("TASK", "HAS COMMENT: " + doc.get("comment").toString());
+                        comment = doc.get("comment").toString();
+                    }
+
+                    qrMap.put(hash, comment);
+                }
+                callback.playerCollectionCallback(qrMap);
+            }
+        });
+    }
+
+    /**
+     * Gets QRCode Info to create a QR Code
+     * @param hash Hash of the QR code
+     * @param callback Listener for QR info from database
+     */
+    public void getQRCodeInfo (String hash, final QRCodeListener callback){
+        qrCodeCollection.document(hash).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot doc = task.getResult();
+                    if(doc.exists()){
+                        Log.d("DATABASE", "IT EXISTS");
+                        Location location = new Location("");
+                        location.setLatitude((Double) doc.get("longitude"));
+                        location.setLongitude((Double) doc.get("latitude"));
+                        QRCode qrCode = new QRCode(
+                                doc.get("hash").toString(),
+                                doc.get("name").toString(),
+                                location,
+                                Integer.parseInt(doc.get("score").toString())
+                        );
+                        callback.qrCodeCallback(qrCode);
+                    } else {
+                        Log.d("DATABASE", "DOES NOT EXIST");
+                    }
+                } else {
+                    Log.d("DATABASE", "TASK FAILED");
+                }
+            }
+        });
+    }
 
     /**
      * Adds a player to the database

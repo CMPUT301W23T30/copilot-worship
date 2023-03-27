@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,7 +31,7 @@ import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Map;
 
 /**
  * User login page
@@ -43,13 +44,10 @@ import java.util.Collections;
 public class MainActivity extends AppCompatActivity {
     //Tag for logging any issues
     final String TAG = "User Profile Page";
+    Player currentPlayer;
+    ArrayList<QRCodeComment> qrCodeComments = new ArrayList<>();
     String username;
-
-    TextView beefyQR;
-    TextView squishyQR;
-    TextView userEmail;
-    TextView userPhone;
-
+    ArrayList<String> qrList = new ArrayList<>();
     Button scanButton;
     Button photoButton;
 
@@ -82,12 +80,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_add_player_button:
-                Intent intent = new Intent(this, AddPlayerActivity.class);
-
-                Bundle b = new Bundle();
-                b.putString("username", username);
-                intent.putExtras(b);
-                startActivity(intent);
+//                Intent intent = new Intent(this, AddPlayerActivity.class);
+//
+//                Bundle b = new Bundle();
+//                b.putString("username", username);
+//                intent.putExtras(b);
+//                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -177,41 +175,44 @@ public class MainActivity extends AppCompatActivity {
         //db.populateScore(20);// Run only after populate db
         getUsername(bundle, db, userText);
 
-        // Player Information
         TextView totalScore = findViewById(R.id.user_page_total_score);
         TextView beefyQR = findViewById(R.id.user_page_strongest);
         TextView squishyQR = findViewById(R.id.user_page_weakest);
         TextView userEmail = findViewById(R.id.user_page_email);
         TextView userPhone = findViewById(R.id.user_page_phone);
 
-        db.getPlayerContact(username, new PlayerContactListener() {
+        // Player Information
+        //TODO CHANGE TO USERNAME LATER
+        db.getPlayerInfo("Player-1", new PlayerInfoListener() {
             @Override
-            public void playerContactCallback(Bundle bundle) {
-                userEmail.setText(bundle.getString("email"));
-                userPhone.setText(bundle.getString("number"));
-            }
-        });
-        //TODO change back to username
-        db.getPlayerStats(username, new PlayerStatsListener() {
+            public void playerInfoCallback(Player player) {
+                currentPlayer = player;
+                userEmail.setText(currentPlayer.getEmail());
+                userPhone.setText(String.valueOf(currentPlayer.getNumber()));
+                db.getPlayerCollection(player.getUsername(), new PlayerCollectionListener() {
+                    @Override
+                    public void playerCollectionCallback(Map<String, String> map) {
+                        for (Map.Entry<String,String> qrEntry : map.entrySet()) {
+                            db.getQRCodeInfo(qrEntry.getKey(), new QRCodeListener() {
+                                @Override
+                                public void qrCodeCallback(QRCode qrCode) {
+                                    ArrayList<QRCode> qrCodes = currentPlayer.getQrCodes();
+                                    qrList.add(qrCode.getHash());
+                                    qrCodes.add(qrCode);
+                                    currentPlayer.setQrCodes(qrCodes);
 
-            @Override
-            public void playerStatsCallback(Bundle bundle) {
-                Integer total = 0;
-                ArrayList<Integer> qrScore = new ArrayList<>();
+                                    qrCodeComments.add(new QRCodeComment(qrCode, qrEntry.getValue()));
 
-                for (String hash : bundle.getStringArrayList("HashList")){
-                    Integer score = scoreCalculator(hash);
-                    qrScore.add(score);
-                    total = total + score;
-                }
-
-                // Leave as default N/A if no QRs in Player collection
-                if (total != 0) {
-                    totalScore.setText(String.valueOf(total));
-                    beefyQR.setText(String.valueOf(Collections.max(qrScore)));
-                    squishyQR.setText(String.valueOf(Collections.min(qrScore)));
-                }
-
+                                    if (currentPlayer.getTotalScore() != 0) {
+                                        totalScore.setText(String.valueOf(currentPlayer.getTotalScore()));
+                                        beefyQR.setText(String.valueOf(currentPlayer.getBeefy()));
+                                        squishyQR.setText(String.valueOf(currentPlayer.getSquishy()));
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
             }
         });
 
@@ -221,7 +222,6 @@ public class MainActivity extends AppCompatActivity {
         addQRButton = findViewById(R.id.navbar_add_button);
         searchButton = findViewById(R.id.navbar_search_button);
         rankingButton = findViewById(R.id.navbar_ranking_button);
-
         /**
          * onClick Actions for Navbar
          *
@@ -250,7 +250,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent(MainActivity.this,Gallery.class);
-                bundle.putString("username", username);
+                bundle.putParcelable("Player", currentPlayer);
+                bundle.putParcelableArrayList("QRArray",(ArrayList<? extends Parcelable>) qrCodeComments);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -280,8 +281,6 @@ public class MainActivity extends AppCompatActivity {
         final String hashed = Hashing.sha256()
                 .hashString(unhashedQRCode, StandardCharsets.UTF_8)
                 .toString();
-        Log.d("HASHER", "Unhashed: " + unhashedQRCode);
-        Log.d("HASHER", "Hash: " + hashed);
         return hashed;
     }
 
@@ -308,8 +307,6 @@ public class MainActivity extends AppCompatActivity {
                 prev = hashedQRCode.substring(i, i + 1);
             }
         }
-        Log.d("CALCULATOR", "Hash: " + hashedQRCode);
-        Log.d("CALCULATOR", "Score: " + score);
         return score;
 
     }
@@ -340,8 +337,6 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i)
                 {
-                    Log.d("ADDQR", "Hash: " + hashedCode);
-                    Log.d("ADDQR", "Score: " + score);
                     AddQR(new QRCode(hashedCode, hashedCode, l,score));
                     dialogInterface.dismiss();
                 }
@@ -358,6 +353,4 @@ public class MainActivity extends AppCompatActivity {
         db.addQrCode(newQR);
         db.addScannedCode(newQR, new Player(username));
     }
-
-
 }

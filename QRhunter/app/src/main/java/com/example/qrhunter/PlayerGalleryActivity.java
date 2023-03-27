@@ -25,9 +25,11 @@ import java.util.ArrayList;
  */
 public class PlayerGalleryActivity extends AppCompatActivity {
 
-         PlayerGalleryAdapter galleryAdapter;
-         ArrayList<Player> playerArrayList = new ArrayList<Player>();
-         ListView galleryView;
+     PlayerGalleryAdapter galleryAdapter;
+     QRCode qrCode;
+     ArrayList<Player> playerArrayList = new ArrayList<Player>();
+     ListView galleryView;
+
     //TODO  make better player gallery xml
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +38,13 @@ public class PlayerGalleryActivity extends AppCompatActivity {
 
         Database db = new Database();
         Bundle bundle = getIntent().getExtras();
+        qrCode = bundle.getParcelable("QRCode");
+
         galleryView = findViewById(R.id.player_list);
 
 
         //Query for players associated with qr
-        db.getPlayersFromQRCode(bundle.getString("hash"))
+        db.getPlayersFromQRCode(qrCode.getHash())
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -60,8 +64,5 @@ public class PlayerGalleryActivity extends AppCompatActivity {
                         galleryView.setAdapter(galleryAdapter);
                     }
                 });
-
-
-
     }
 }

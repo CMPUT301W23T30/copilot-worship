@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context=".MainActivity">
 
     <ImageView
@@ -20,11 +21,11 @@
         android:id="@+id/user_page_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingBottom="40dp"
         android:text="JANEDOE"
         android:textAlignment="viewStart"
-        android:textSize="32dp"
+        android:textSize="34sp"
         android:textStyle="bold"
-        android:paddingBottom="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +37,7 @@
         android:id="@+id/user_profile_total"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
+        android:layout_marginHorizontal="30dp"
         android:background="@drawable/background_border"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -67,7 +68,7 @@
         android:id="@+id/user_page_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
+        android:layout_marginHorizontal="30dp"
         android:background="@drawable/background_border"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
