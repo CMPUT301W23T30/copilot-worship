@@ -30,17 +30,16 @@ public class CharacterImage {
 
         // Create a paint object with a colour based on first five digits of hash code
         Paint paint = new Paint();
-//        int redValue = Integer.parseInt(firstSixDigitsString.substring(0,1)) * Integer.parseInt(firstSixDigitsString.substring(1,2)) + 128;
-//        int greenValue = Integer.parseInt(firstSixDigitsString.substring(2,3))  * Integer.parseInt(firstSixDigitsString.substring(3,4)) + 128;
-//        int blueValue = Integer.parseInt(firstSixDigitsString.substring(4,5)) * Integer.parseInt(firstSixDigitsString.substring(5,6)) + 128;
+        float hueValue = ((Float.parseFloat(firstSixDigitsString.substring(0,1)) * Float.parseFloat(firstSixDigitsString.substring(1,2))) % 36) * 10;
+        float satValue = (float) 0.65;
+        float lightnessValue = (float) 0.85;
 
         float[] hsl = new float[3];  // Hue-Saturation-Lightness
-        hsl[0] = (float) Math.random() * 360;  // Hue
-        hsl[1] = (float) (0.6 + Math.random() * (0.7 - 0.6));  // Saturation
-        hsl[2] = (float) (0.75 + Math.random() * (0.9 - 0.75));  // Lightness
-//        paint.setColor(Color.rgb((new Random().nextInt(14-6) + 6) * new Random().nextInt(14-6) + 56,(new Random().nextInt(14-6) + 6) * new Random().nextInt(14-6) + 56,(new Random().nextInt(14-6) + 6) * new Random().nextInt(14-6) + 56));
+        hsl[0] = (float) (Math.random() * 360);  // Hue
+        hsl[1] = satValue;  // Saturation
+        hsl[2] = lightnessValue;  // Lightness
+
         paint.setColor(Color.HSVToColor(hsl));
-//        paint.setColor(Color.rgb(redValue,greenValue,blueValue));
 
         // Draw a circle onto the canvas to represent the body
         canvas.drawCircle(radius,radius,radius,paint);
