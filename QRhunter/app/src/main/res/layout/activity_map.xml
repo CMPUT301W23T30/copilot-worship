@@ -7,15 +7,6 @@
     tools:context=".MapsActivity">
 
     <Button
-        android:id="@+id/map_search_button"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/map_button_bg"
-        android:drawableTop="@drawable/map_look_around"/>
-    <Button
         android:id="@+id/map_back_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
