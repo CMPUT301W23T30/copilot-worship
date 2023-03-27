@@ -166,7 +166,12 @@ public class MapsActivity extends FragmentActivity
 //            }
 //        });
 
-        // TODO add functionality to navigate to QR code's detailed page
+        // TODO modify the top bar
+
+        // TODO comment on QR codes
+
+        // TODO change the back button on map activity
+
 
 
     }
