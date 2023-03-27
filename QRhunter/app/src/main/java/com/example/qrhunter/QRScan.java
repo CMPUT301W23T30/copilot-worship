@@ -27,6 +27,10 @@ public class QRScan extends AppCompatActivity {
         options.setCaptureActivity(CaptureAct.class);
         barLaucher.launch(options);
 
+
+    }
+
+    public void askTakePhoto(){
         new AlertDialog.Builder(this)
                 .setTitle("Add Object Photo")
                 .setMessage("Do you want to take a Photo of the real object?")

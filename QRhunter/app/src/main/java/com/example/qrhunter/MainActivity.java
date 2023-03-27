@@ -197,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
                 QRScan newClass = new QRScan();
                 newClass.scanCode(barLaucher);
                 ///Here
+                newClass.askTakePhoto();
             }
         });
 
