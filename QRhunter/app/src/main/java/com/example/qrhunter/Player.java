@@ -41,7 +41,7 @@ public class Player implements Parcelable {
         this.username = "qwertyuiopasdfghjklzxcvbnm";//Invalid username
         this.email = "Default email";
         this.number = 0;
-        this.qrCodes = new ArrayList<>();
+        this.qrCodes = null;
     }
     /**
      * Test constructor for player class
