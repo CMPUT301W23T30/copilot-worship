@@ -21,6 +21,13 @@
             android:theme="@style/Theme.QRhunter"
             tools:targetApi="31">
         <activity
+
+            android:name=".TestImageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PlayerGalleryActivity"
+            android:exported="false" />
+
                 android:name=".LeaderboardActivity"
                 android:exported="false">
             <meta-data
@@ -30,6 +37,7 @@
         <activity
                 android:name=".PlayerGalleryActivity"
                 android:exported="false"/>
+
         <activity
                 android:name=".QrDisplayActivity"
                 android:exported="false"/>
@@ -56,9 +64,11 @@
                     android:value=""/>
         </activity>
         <activity
-                android:name=".AddPlayerActivity"
-                android:exported="false"
-                android:label="Add Player"/>
+
+            android:name=".AddPlayerActivity"
+            android:exported="false"
+            android:label="Add Player" />
+
         <activity
                 android:name=".MapsActivity"
                 android:exported="false">
@@ -67,8 +77,10 @@
                     android:value=""/>
         </activity>
         <activity
-                android:name=".SearchPlayerActivity"
-                android:exported="false"/>
+
+            android:name=".SearchPlayerActivity"
+            android:exported="false" />
+
         <activity
                 android:name=".MainActivity"
                 android:exported="true">

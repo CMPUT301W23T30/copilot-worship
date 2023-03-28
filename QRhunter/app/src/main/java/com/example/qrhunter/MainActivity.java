@@ -4,6 +4,7 @@ package com.example.qrhunter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,9 +29,15 @@ import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
+import java.io.InputStream;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
+import java.util.Scanner;
 import java.util.Collections;
+
 
 /**
  * User login page
@@ -78,8 +85,10 @@ public class MainActivity extends AppCompatActivity {
      * @return true if the button is clicked, false otherwise
      * @author: Maarij
      */
+     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
             case R.id.menu_add_player_button:
 
@@ -167,12 +176,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //start populate xml
-        ImageView profileCircle = (ImageView) findViewById(R.id.profile_icon);
-        //in the future if we want to add profile pictures
-        profileCircle.setImageResource(R.drawable._icon__profile_circle_);
 
+        ImageView profileCircle = (ImageView) findViewById(R.id.profile_icon);
         TextView userText = findViewById(R.id.user_page_user_name);
+        TextView smallerTextView = findViewById(R.id.user_page_total_score);
+
+        CharacterImage testCharacter = characterCreator("2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824");
+        profileCircle.setImageBitmap(testCharacter.getCharacterImage());
+
+        smallerTextView.setText("Click on the monster to generate a new one!!!!");
+
+        // profileCircle.setImageResource(R.drawable._icon__profile_circle_);
+
         Bundle bundle = getIntent().getExtras();
         Database db = new Database();
         //db.populateDB(); Run only when we need to redo db after a purge
@@ -278,6 +293,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        profileCircle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CharacterImage testCharacter = characterCreator("2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824");
+                profileCircle.setImageBitmap(testCharacter.getCharacterImage());
+                smallerTextView.setText(generateRandomName());
+            }
+        });
+
     }
 
     /**
@@ -324,6 +348,62 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public String generateRandomName() {
+
+        final ArrayList<String> adjectivesList = new ArrayList<String>();
+        final ArrayList<String> nounsList = new ArrayList<String>();
+
+        InputStream adjectivesFile = getResources().openRawResource(R.raw.english_adjectives);
+        InputStream nounsFile = getResources().openRawResource(R.raw.nouns_list);
+
+        Scanner adjectivesScanner = new Scanner(adjectivesFile);
+        Scanner nounsScanner = new Scanner(nounsFile);
+
+        while (adjectivesScanner.hasNextLine()) {
+            String word = adjectivesScanner.nextLine();
+            adjectivesList.add(word);
+        }
+        adjectivesScanner.close();
+
+        while (nounsScanner.hasNextLine()) {
+            String word = nounsScanner.nextLine();
+            nounsList.add(word);
+        }
+        nounsScanner.close();
+
+        Random rand = new Random();
+
+        String randomAdjective = adjectivesList.get(rand.nextInt(adjectivesList.size()));
+        randomAdjective = randomAdjective.substring(0, 1).toUpperCase() + randomAdjective.substring(1);
+        String randomNoun = nounsList.get(rand.nextInt(nounsList.size()));
+
+        return randomAdjective + " " + randomNoun;
+
+    }
+
+    private CharacterImage characterCreator(String hashedQRCode) {
+        String armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName;
+
+        BigInteger hashedQRCodeBigInt = new BigInteger(hashedQRCode, 16);
+        String firstSixDigitsString = hashedQRCodeBigInt.toString().substring(0, 6);
+
+//        armsFileName = "arms" + firstSixDigitsString.substring(0, 1);
+//        legsFileName = "legs" + firstSixDigitsString.substring(1, 2);
+//        eyesFileName = "eyes" + firstSixDigitsString.substring(2, 3);
+//        mouthFileName = "mouth" + firstSixDigitsString.substring(3, 4);
+//        hatFileName = "hat" + firstSixDigitsString.substring(4, 5);
+
+        armsFileName = "arms" + (int) (Math.random() * 10);
+        legsFileName = "legs" + (int) (Math.random() * 10);
+        eyesFileName = "eyes" + (int) (Math.random() * 10);
+        mouthFileName = "mouth" + (int) (Math.random() * 10);
+        hatFileName = "hat" + (int) (Math.random() * 10);
+
+        CharacterImage testCharacter = new CharacterImage(this, armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName, firstSixDigitsString);
+
+        return testCharacter;
+    }
+
     /**
      * Scan QR code
      */
@@ -337,7 +417,10 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "make object", Toast.LENGTH_SHORT).show();
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Result");
-            builder.setMessage(score + " points");
+
+            String name = generateRandomName();
+
+            builder.setMessage(name + " " + score + " points");
 
             // Set Random Location for now
             Location l = new Location("");

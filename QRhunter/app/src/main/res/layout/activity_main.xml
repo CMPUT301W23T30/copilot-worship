@@ -29,8 +29,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.242" />
+        app:layout_constraintVertical_bias="0.32999998" /><![CDATA[
 
+    app:layout_constraintVertical_bias="0.242" />
+
+
+    ]]>
 
     <LinearLayout
         android:id="@+id/user_profile_total"
