@@ -47,18 +47,14 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore'
     androidTestImplementation "androidx.test:rules:1.5.0"
     androidTestImplementation "com.jayway.android.robotium:robotium-solo:5.2.1"
+    androidTestImplementation "androidx.test:runner:1.5.2"
+
 
     //Google Maps
     implementation "com.google.android.gms:play-services-location:21.0.1"
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
     implementation 'com.google.android.libraries.places:places:3.0.0'
 
-
-
-    //Firebase testing
-    //testImplementation 'org.powermock:powermock:1.6.5'
-    //testImplementation 'org.powermock:powermock-module-junit4:1.6.5'
-    //testImplementation 'org.powermock:powermock-api-mockito:1.6.5'
 
     //Spicy profiles
     implementation 'de.hdodenhof:circleimageview:3.1.0'
