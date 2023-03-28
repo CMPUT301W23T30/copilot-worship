@@ -202,13 +202,6 @@ public class MainActivity extends AppCompatActivity {
         TextView userEmail = findViewById(R.id.user_page_email);
         TextView userPhone = findViewById(R.id.user_page_phone);
 
-        db.getPlayerContact(username, new PlayerContactListener() {
-            @Override
-            public void playerContactCallback(Bundle bundle) {
-                userEmail.setText(bundle.getString("email"));
-                userPhone.setText(bundle.getString("number"));
-            }
-        });
         // Player Information
         db.getPlayerInfo(username, new PlayerInfoListener() {
             @Override
@@ -286,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent(MainActivity.this,Gallery.class);
                 bundle.putParcelable("Player", currentPlayer);
-                //bundle.putParcelableArrayList("QRArray",(ArrayList<? extends Parcelable>) qrCodeComments);
+                bundle.putParcelableArrayList("QRArray",(ArrayList<? extends Parcelable>) qrCodeComments);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
