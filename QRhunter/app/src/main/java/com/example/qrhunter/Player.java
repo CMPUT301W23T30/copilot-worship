@@ -5,13 +5,15 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * This class represents a user of the app
  *
  */
-public class Player {
+public class Player implements Parcelable {
 
     /**
      * Player username
@@ -39,7 +41,7 @@ public class Player {
         this.username = "qwertyuiopasdfghjklzxcvbnm";//Invalid username
         this.email = "Default email";
         this.number = 0;
-        this.qrCodes = new ArrayList<>();
+        this.qrCodes = null;
     }
     /**
      * Test constructor for player class
@@ -69,6 +71,25 @@ public class Player {
     // Getter and Setter methods for username, email, number, and QRCodes
 
 
+    protected Player(Parcel in) {
+        username = in.readString();
+        email = in.readString();
+        number = in.readInt();
+        qrCodes = in.createTypedArrayList(QRCode.CREATOR);
+    }
+
+    public static final Creator<Player> CREATOR = new Creator<Player>() {
+        @Override
+        public Player createFromParcel(Parcel in) {
+            return new Player(in);
+        }
+
+        @Override
+        public Player[] newArray(int size) {
+            return new Player[size];
+        }
+    };
+
     public String getUsername() {
         return username;
     }
@@ -84,6 +105,7 @@ public class Player {
 
     public ArrayList<QRCode> getQrCodes() { return qrCodes; }
     public void setQrCodes(ArrayList<QRCode> qrCodes) { this.qrCodes = qrCodes; }
+    public void addQrCode(QRCode qrcode){this.qrCodes.add(qrcode);}
 
     /**
      * TODO Write tests for this
@@ -97,5 +119,36 @@ public class Player {
         }
 
         return totalScore;
+    }
+
+    public int getSquishy(){
+        ArrayList<Integer> scores = new ArrayList<>();
+        for (QRCode qr: qrCodes){
+            scores.add(qr.getScore());
+        }
+
+        return Collections.min(scores);
+    }
+
+    public int getBeefy(){
+        ArrayList<Integer> scores = new ArrayList<>();
+        for (QRCode qr: qrCodes){
+            scores.add(qr.getScore());
+        }
+
+        return Collections.max(scores);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(username);
+        dest.writeString(email);
+        dest.writeInt(number);
+        dest.writeTypedList(qrCodes);
     }
 }
