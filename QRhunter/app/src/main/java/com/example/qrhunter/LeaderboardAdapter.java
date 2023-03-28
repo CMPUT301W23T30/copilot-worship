@@ -52,7 +52,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
 //      holder.img.setImageResource(item.getPfp());
         holder.username.setText(item.getUsername());
 
-        holder.ranking.setText(Integer.toString(position + 1));
+        holder.ranking.setText(Integer.toString(position + 1 + 3));
         holder.totalScore.setText(item.getTotalScore().toString());
 
 //        Glide.with(holder.img.getContext())
