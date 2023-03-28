@@ -191,19 +191,7 @@ public class MainActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         Database db = new Database();
-        //db.populateDB(); Run only when we need to redo db after a purge
-        //db.populateScore(20);// Run only after populate db
-        getUsername(bundle, db, userText);
-
-        // Player Information
-        TextView totalScore = findViewById(R.id.user_page_total_score);
-        TextView beefyQR = findViewById(R.id.user_page_strongest);
-        TextView squishyQR = findViewById(R.id.user_page_weakest);
-        TextView userEmail = findViewById(R.id.user_page_email);
-        TextView userPhone = findViewById(R.id.user_page_phone);
-
-
-
+        
         // NAVBAR Buttons
         mapButton = findViewById(R.id.navbar_map_button);
         galleryButton = findViewById(R.id.navbar_gallery_button);
