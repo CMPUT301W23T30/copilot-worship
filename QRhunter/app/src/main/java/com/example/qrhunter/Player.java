@@ -7,18 +7,33 @@ import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 
-/*
+/**
  * This class represents a user of the app
+ *
  */
 public class Player {
 
+    /**
+     * Player username
+     */
     private String username;
+    /**
+     * Players email
+     */
     private String email;
-    private int number; //TODO : Format number?
+    /**
+     * Players number
+     */
+    private int number;
+    /**
+     * QR Codes associated with the player
+     */
     private ArrayList<QRCode> qrCodes;
 
     /**
      * Test constructor with invalid username for testing
+     * provides us with an invalid username (above 20 characters, so that we are sure
+     * it is not in the database)
      */
     public Player(){
         this.username = "qwertyuiopasdfghjklzxcvbnm";//Invalid username
@@ -34,7 +49,7 @@ public class Player {
         this.username = username;
         this.email = "Default email";
         this.number = 0;
-        this.qrCodes = null;
+        this.qrCodes = new ArrayList<>();
     }
 
     /**
@@ -54,7 +69,6 @@ public class Player {
     // Getter and Setter methods for username, email, number, and QRCodes
 
 
-
     public String getUsername() {
         return username;
     }
@@ -71,4 +85,17 @@ public class Player {
     public ArrayList<QRCode> getQrCodes() { return qrCodes; }
     public void setQrCodes(ArrayList<QRCode> qrCodes) { this.qrCodes = qrCodes; }
 
+    /**
+     * TODO Write tests for this
+     * @return total score of player
+     */
+    public int getTotalScore() {
+        if (qrCodes.size() == 0) {return 0;}
+        int totalScore = 0;
+        for(QRCode qr: qrCodes){
+            totalScore += qr.getScore();
+        }
+
+        return totalScore;
+    }
 }

@@ -1,5 +1,9 @@
 package com.example.qrhunter;
 
+/**
+ * Abstraction for interfacing with database document objects for SearchPlayer
+ * @author X
+ */
 public class SearchModel {
 
     String username;

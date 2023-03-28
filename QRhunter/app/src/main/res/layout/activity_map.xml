@@ -6,37 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MapsActivity">
 
-    <EditText
-        android:id="@+id/map_search_bar"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:visibility="gone"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="80dp"
-        android:layout_marginRight="80dp"
-        android:background="@drawable/map_search_bg"
-        android:hint="Search here"
-        android:textAlignment="center"
-        android:elevation="10dp"/>
-    <Button
-        android:id="@+id/map_search_go_button"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/map_button_bg"
-        android:drawableTop="@drawable/map_search_goto"
-        android:visibility="gone"/>
-    <Button
-        android:id="@+id/map_search_button"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/map_button_bg"
-        android:drawableTop="@drawable/map_look_around"/>
     <Button
         android:id="@+id/map_back_button"
         android:layout_width="50dp"

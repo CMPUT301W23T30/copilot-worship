@@ -1,29 +1,20 @@
 package com.example.qrhunter;
 
 import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -34,14 +25,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.MapFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import com.google.android.gms.maps.SupportMapFragment;
 
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -53,7 +40,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
 
-
+/**
+ * An activity that displays a map showing the place at the device's current location.
+ */
 public class MapsActivity extends FragmentActivity
         implements OnMapReadyCallback,
         LocationListener {
@@ -76,6 +65,9 @@ public class MapsActivity extends FragmentActivity
 
     // Radius of the visible area in meters
     private int visibleRadius = 200;
+
+    // Set a indication for locating and rotating
+    private int locateAndRotate = 0;
 
     // List of markers
     private List<Marker> markerList = new ArrayList<Marker>();
@@ -120,18 +112,31 @@ public class MapsActivity extends FragmentActivity
         myLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mFusedLocationClient.getLastLocation()
-                        .addOnSuccessListener(MapsActivity.this, new OnSuccessListener<Location>() {
-                            @Override
-                            public void onSuccess(Location location) {
-                                // Got last known location. In some rare situations this can be null.
-                                if (location != null) {
-                                    // Logic to handle location object
-                                    LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
+                if (locateAndRotate == 0) {
+                    mFusedLocationClient.getLastLocation()
+                            .addOnSuccessListener(MapsActivity.this, new OnSuccessListener<Location>() {
+                                @Override
+                                public void onSuccess(Location location) {
+                                    // Got last known location. In some rare situations this can be null.
+                                    if (location != null) {
+                                        // Logic to handle location object
+                                        LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
+                                    }
                                 }
-                            }
-                        });
+                            });
+                } else {
+                    CameraPosition current = mMap.getCameraPosition();
+                    CameraPosition newPosition = new CameraPosition.Builder(current)
+                            .bearing(0)
+                            .build();
+                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(newPosition));
+                }
+                locateAndRotate++;
+                if (locateAndRotate > 1){
+                    locateAndRotate = 0;
+                }
+
             }
         });
         followLocationButton = findViewById(R.id.map_follow_button);
@@ -161,39 +166,9 @@ public class MapsActivity extends FragmentActivity
 //            }
 //        });
 
+        // TODO add functionality to navigate to QR code's detailed page
 
-        // TODO add functionality to the locate button to rotate the camera upright
 
-        // TODO add functionality to search nearby QR codes using location
-        // Animate the input bar expanding from the search button
-        searchButton = findViewById(R.id.map_search_button);
-        searchBar = findViewById(R.id.map_search_bar);
-        searchGoButton = findViewById(R.id.map_search_go_button);
-        // Set the initial scale to half
-        searchBar.setScaleX(0.5f);
-        searchBar.setScaleY(0.5f);
-        searchGoButton.setScaleX(0.5f);
-        searchGoButton.setScaleY(0.5f);
-
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchButton.setVisibility(View.GONE);
-                backButton.setVisibility(View.GONE);
-                searchBar.setVisibility(View.VISIBLE);
-                searchGoButton.setVisibility(View.VISIBLE);
-                searchBar.animate()
-                        .alpha(1.0f)
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(200);
-                searchGoButton.animate()
-                        .alpha(1.0f)
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(200);
-            }
-        });
     }
 
 
@@ -206,6 +181,7 @@ public class MapsActivity extends FragmentActivity
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
+     * @param googleMap
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -253,6 +229,8 @@ public class MapsActivity extends FragmentActivity
                                                 if (distance <= visibleRadius) {
                                                     LatLng qrLocation = new LatLng(qrCode.getLocation().getLatitude(), qrCode.getLocation().getLongitude());
                                                     Marker marker = mMap.addMarker(new MarkerOptions().position(qrLocation).title(qrCode.getName()));
+                                                    String hash = qrCode.getHash();
+                                                    marker.setTag(hash);
                                                     markerList.add(marker);
                                                 }
                                             }
@@ -261,6 +239,20 @@ public class MapsActivity extends FragmentActivity
                         }
                     }
                 });
+        // Set a click listener on the marker's info window
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(@NonNull Marker marker) {
+                // Get the QR code's hash from the marker's tag
+                String hash = marker.getTag().toString();
+                // Navigate to the QR code's detailed page
+                Intent intent = new Intent(MapsActivity.this, QrDisplayActivity.class);
+                Bundle b = new Bundle();
+                b.putString("hash", hash);
+                intent.putExtra("hash", hash);
+                startActivity(intent);
+            }
+        });
     }
     @Override
     public void onLocationChanged(Location location) {
@@ -274,6 +266,15 @@ public class MapsActivity extends FragmentActivity
         updateMarkers(currentLocation);
     }
 
+    /**
+     * This method calculate the distance between two points, given their latitude and longitude
+     * it uses the Haversine formula to calculate the distance between two points
+     * @param lat1
+     * @param lon1
+     * @param lat2
+     * @param lon2
+     * @return
+     */
     // Use the Haversine formula to calculate the distance between two points
     public static double distance(double lat1, double lon1, double lat2, double lon2) {
         final int R = 6371; // Radius of the earth
@@ -291,6 +292,12 @@ public class MapsActivity extends FragmentActivity
 
         return Math.sqrt(distance);
     }
+
+    /**
+     * This method updates the markers on the map, removing the ones that are out of range
+     * @param currentLocation
+     */
+    // Update the markers on the map, removing the ones that are out of range
     private void updateMarkers(Location currentLocation) {
         Iterator<Marker> iterator = markerList.iterator();
         while (iterator.hasNext()) {
@@ -308,6 +315,13 @@ public class MapsActivity extends FragmentActivity
             }
         }
     }
+
+    /**
+     * This method creates a QRCode object from a DocumentSnapshot retrieved from the database
+     * @param d the document snapshot retrieved from the database
+     * @return the QRCode object created from the document snapshot
+     */
+    // Create a QRCode object from a DocumentSnapshot which is retrieved from the database
     private QRCode create_QR_Object(DocumentSnapshot d) {
 
         // Since attributes from db are longitude and latitude, we need to create a new Location object
@@ -315,13 +329,19 @@ public class MapsActivity extends FragmentActivity
         QrLocation.setLatitude((Double)d.get("latitude"));
         QrLocation.setLongitude((Double)d.get("longitude"));
 
+        // Handle the situation where the score is null
+        Long score = null;
+        Object scoreObj = d.get("score");
+        if (scoreObj != null && scoreObj instanceof Long) {
+            score = (Long) scoreObj;
+        }
+
         // Create a new QR code object
         QRCode qrCode = new QRCode(
                 d.get("hash").toString(),
                 d.get("name").toString(),
                 QrLocation,
-                ((Long)d.get("score")).intValue());
+                score != null ? score.intValue() : 0);
         return qrCode;
     }
-
 }

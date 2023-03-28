@@ -57,3 +57,4 @@ public class AddPlayerActivityTest {
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
     }
 }
+
