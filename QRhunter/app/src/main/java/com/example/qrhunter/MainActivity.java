@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,20 +24,18 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.common.hash.Hashing;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
-import org.w3c.dom.Text;
-
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Collections;
@@ -52,14 +51,13 @@ import java.util.Collections;
  */
 public class MainActivity extends AppCompatActivity {
     //Tag for logging any issues
+    //Tag for logging any issues
     final String TAG = "User Profile Page";
+    Player currentPlayer;
     String username;
+    ArrayList<QRCodeComment> qrCodeComments = new ArrayList<>();
 
-    TextView beefyQR;
-    TextView squishyQR;
-    TextView userEmail;
-    TextView userPhone;
-
+    ArrayList<String> qrList = new ArrayList<>();
     Button scanButton;
     Button photoButton;
 
@@ -69,43 +67,6 @@ public class MainActivity extends AppCompatActivity {
     ImageButton searchButton;
     ImageButton rankingButton;
 
-    /**
-     * Gets the Player profile info from the db
-     * @author Christine
-     */
-    public void populateProfile(Database db, TextView userEmail, TextView
-            userPhone, TextView totalScore, TextView beefyQR, TextView squishyQR){
-        db.getPlayerContact(username, new PlayerContactListener() {
-            @Override
-            public void playerContactCallback(Bundle bundle) {
-                userEmail.setText(bundle.getString("email"));
-                userPhone.setText(bundle.getString("number"));
-            }
-        });
-        //TODO change back to username
-        db.getPlayerStats(username, new PlayerStatsListener() {
-
-            @Override
-            public void playerStatsCallback(Bundle bundle) {
-                Integer total = 0;
-                ArrayList<Integer> qrScore = new ArrayList<>();
-
-                for (String hash : bundle.getStringArrayList("HashList")){
-                    Integer score = scoreCalculator(hash);
-                    qrScore.add(score);
-                    total = total + score;
-                }
-
-                // Leave as default N/A if no QRs in Player collection
-                if (total != 0) {
-                    totalScore.setText(String.valueOf(total));
-                    beefyQR.setText(String.valueOf(Collections.max(qrScore)));
-                    squishyQR.setText(String.valueOf(Collections.min(qrScore)));
-                }
-
-            }
-        });
-    }
 
     /**
      * Inflate the menu; this adds items to the action bar if it is present.
@@ -159,17 +120,14 @@ public class MainActivity extends AppCompatActivity {
      * @param bundle bundle of data that will include a username if is sent through another activity
      * @param db Database instance to query from
      * @param userText User text to set the username too
-     * @return Returns 0 if player was passed into to, 1 if player was saved on phone and 3 if a new player
      */
-    public int getUsername(Bundle bundle, Database db, TextView userText){
+    public void getUsername(Bundle bundle, Database db, TextView userText){
         //https://stackoverflow.com/questions/10209814/saving-user-information-in-app-settings
         //Roughly following
         //TODO properly cite
         if(bundle != null){
             username = bundle.getString("username");
             userText.setText(username);
-            return 0;
-
         }
         else{
 
@@ -178,8 +136,6 @@ public class MainActivity extends AppCompatActivity {
             if(settings.contains("Username")){
                 username = settings.getString("Username", "");
                 userText.setText(username);
-                return 1;
-
             }
             //else we can assume a new player
             else{
@@ -191,46 +147,32 @@ public class MainActivity extends AppCompatActivity {
                                 if(task.isSuccessful()){
                                     username = "Player-" + (task.getResult().getCount()
                                             + 1);
-                                    editor.putString("Username", username);
-                                    editor.apply();
-                                    userText.setText(username);
                                 }
                                 else{
                                     //TODO add an error message here
-                                    //DO not save this temp thing
                                     Log.d(TAG, "Failed to get player count for new player");
-                                    System.out.println(task.getException().getMessage());
                                     username = "Player-?";
                                 }
-
-                                db.addPlayer(new Player(username)).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
-                                        // Player Information
-                                        TextView totalScore = findViewById(R.id.user_page_total_score);
-                                        TextView beefyQR = findViewById(R.id.user_page_strongest);
-                                        TextView squishyQR = findViewById(R.id.user_page_weakest);
-                                        TextView userEmail = findViewById(R.id.user_page_email);
-                                        TextView userPhone = findViewById(R.id.user_page_phone);
-                                        System.out.println("FROM NEW PLAYER");
-                                        populateProfile(db, userEmail, userPhone, totalScore, beefyQR, squishyQR);
-                                    }
-                                });
+                                editor.putString("Username", username);
+                                editor.apply();
+                                userText.setText(username);
+                                db.addPlayer(new Player(username));
                             }
-
                         })
                 ;
-
-                return 3;
 
             }
         }
     }
 
+    public void getRankingEstimates(Bundle bundle, Database db){
+        if(bundle != null){
+
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -251,52 +193,47 @@ public class MainActivity extends AppCompatActivity {
         Database db = new Database();
         //db.populateDB(); Run only when we need to redo db after a purge
         //db.populateScore(20);// Run only after populate db
-        if(getUsername(bundle, db, userText) != 3){
-            // Player Information
-            TextView totalScore = findViewById(R.id.user_page_total_score);
-            TextView beefyQR = findViewById(R.id.user_page_strongest);
-            TextView squishyQR = findViewById(R.id.user_page_weakest);
-            TextView userEmail = findViewById(R.id.user_page_email);
-            TextView userPhone = findViewById(R.id.user_page_phone);
-            populateProfile(db, userEmail, userPhone, totalScore, beefyQR, squishyQR);
-        }
+        getUsername(bundle, db, userText);
 
+        // Player Information
+        TextView totalScore = findViewById(R.id.user_page_total_score);
+        TextView beefyQR = findViewById(R.id.user_page_strongest);
+        TextView squishyQR = findViewById(R.id.user_page_weakest);
+        TextView userEmail = findViewById(R.id.user_page_email);
+        TextView userPhone = findViewById(R.id.user_page_phone);
 
-
-
-
-        /*
-        db.getPlayerContact(username, new PlayerContactListener() {
+        // Player Information
+        db.getPlayerInfo(username, new PlayerInfoListener() {
             @Override
-            public void playerContactCallback(Bundle bundle) {
-                userEmail.setText(bundle.getString("email"));
-                userPhone.setText(bundle.getString("number"));
+            public void playerInfoCallback(Player player) {
+                Log.d("TASK", "START");
+                currentPlayer = player;
+                userEmail.setText(currentPlayer.getEmail());
+                userPhone.setText(String.valueOf(currentPlayer.getNumber()));
+                db.getPlayerCollection(player.getUsername(), new PlayerCollectionListener() {
+                    @Override
+                    public void playerCollectionCallback(Map<String, String> map) {
+                        for (Map.Entry<String,String> qrEntry : map.entrySet()) {
+                            db.getQRCodeInfo(qrEntry.getKey(), new QRCodeListener() {
+                                @Override
+                                public void qrCodeCallback(QRCode qrCode) {
+                                    Log.d("TASK", "." + qrEntry.getKey() +".");
+                                    currentPlayer.addQrCode(qrCode);
+                                    qrCodeComments.add(new QRCodeComment(qrCode, qrEntry.getValue()));
+
+
+                                    if (currentPlayer.getTotalScore() != 0) {
+                                        totalScore.setText(String.valueOf(currentPlayer.getTotalScore()));
+                                        beefyQR.setText(String.valueOf(currentPlayer.getBeefy()));
+                                        squishyQR.setText(String.valueOf(currentPlayer.getSquishy()));
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
             }
         });
-        //TODO change back to username
-        db.getPlayerStats(username, new PlayerStatsListener() {
-
-            @Override
-            public void playerStatsCallback(Bundle bundle) {
-                Integer total = 0;
-                ArrayList<Integer> qrScore = new ArrayList<>();
-
-                for (String hash : bundle.getStringArrayList("HashList")){
-                    Integer score = scoreCalculator(hash);
-                    qrScore.add(score);
-                    total = total + score;
-                }
-
-                // Leave as default N/A if no QRs in Player collection
-                if (total != 0) {
-                    totalScore.setText(String.valueOf(total));
-                    beefyQR.setText(String.valueOf(Collections.max(qrScore)));
-                    squishyQR.setText(String.valueOf(Collections.min(qrScore)));
-                }
-
-            }
-        });
-        */
 
         // NAVBAR Buttons
         mapButton = findViewById(R.id.navbar_map_button);
@@ -341,7 +278,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent(MainActivity.this,Gallery.class);
-                bundle.putString("username", username);
+                bundle.putParcelable("Player", currentPlayer);
+                bundle.putParcelableArrayList("QRArray",(ArrayList<? extends Parcelable>) qrCodeComments);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
