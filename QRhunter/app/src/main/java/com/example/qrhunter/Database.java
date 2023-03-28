@@ -267,16 +267,30 @@ public class Database {
                 .get();
     }
 
+
+    /**
+     * Gets a Document snapshot of the player
+     * @param username
+     * @return
+     */
     public Task<DocumentSnapshot> getPlayer(String username) {
         return playersCollection
                 .document(username)
                 .get();
     }
 
+    /**
+     * Returns the entire player collection
+     * @return the player collection
+     */
     public Task<QuerySnapshot> getPlayerCollection(){
         return playersCollection.get();
     }
 
+    /**
+     * Gets the
+     * @return
+     */
     public Task<QuerySnapshot> getPlayerCollectionTotalScore(){
         return playersCollection.orderBy("totalScore",Query.Direction.DESCENDING).get();
     }
@@ -343,9 +357,9 @@ public class Database {
                 .get();
     }
 
-    //Test method for popualting DB MUST Call pOPULATE SCORE WHEN DONE
-    //TODO DELETE THIS
-
+    /**
+     * Funtion to populate the database
+     */
     public void populateDB(){
         populatePlayer(20, 20);
     }
@@ -363,6 +377,12 @@ public class Database {
             }
         });
     }
+
+    /**
+     * Helper function to popualteDB, fills the databse with QR Codes
+     * @param count number of QR Codes to make
+     * @param count2 number of
+     */
 
     public void populateQR(int count, int count2){
         int numCodes = (int) Math.floor(Math.random() * 5);
@@ -386,6 +406,10 @@ public class Database {
         }
     }
 
+    /**
+     * Calculates the total scores of everyone in the database
+     * @param count number of people in the database
+     */
     //Get all the scores and stuff
     public void populateScore(int count){
         for(int i = 1; i <= count; i++ ){

@@ -41,15 +41,6 @@ public class AddPlayerActivity extends AppCompatActivity {
         TextView errorText = findViewById(R.id.errorText);
 
 
-        /*
-        //Need to convert this to a bundle
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("username", username);
-        intent.putExtra("email", email);
-        intent.putExtra("number", number);
-
-         */
-
         submitButton.setOnClickListener(v -> {
             //To update the player info, we need to delete
             // all the documents and re add it
@@ -96,7 +87,6 @@ public class AddPlayerActivity extends AppCompatActivity {
                                             db.addScannedCode(new QRCode(hash ,null, null, 0),
                                                     newUser);
                                             db.removePlayerFromQRCode(currentUserName, hash);
-
                                         }
                                         SharedPreferences settings = getSharedPreferences("UserInfo", 0);
                                         //Save this new username locally, how nice
