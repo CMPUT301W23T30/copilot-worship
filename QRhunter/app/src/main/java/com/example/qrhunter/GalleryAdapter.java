@@ -1,76 +1,120 @@
 package com.example.qrhunter;
 
 import android.content.Context;
-import android.location.Location;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-/**
- * Adapter that displays the QRCodes owned by the current Player
- *
- * Outstanding Issues:
- * TODO make UI bigger and make name,score,location information obvious
- */
-public class GalleryAdapter extends ArrayAdapter<QRCode> {
+
+public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder>{
+    private ArrayList<QRCodeComment> qrCodeComments;
+    private String username;
+    private Context context;
+
+    public interface OnItemLongClickListener{
+        public boolean onItemLongClicked(int position);
+    }
+
     private static final DecimalFormat df = new DecimalFormat("0.00");
-    /**
-     * Constructor for GalleryAdapater
-     * @param context
-     * @param visits
-     */
-    public GalleryAdapter(Context context, ArrayList<QRCode> visits) {
-        super(context, 0, visits);
-    }
 
-    /**
-     * Returns View of an QRCode item in ArrayAdapter
-     * @param position The position of the item within the adapter's data set of the item whose view
-     *        we want.
-     * @param convertView The old view to reuse, if possible. Note: You should check that this view
-     *        is non-null and of an appropriate type before using. If it is not possible to convert
-     *        this view to display the correct data, this method can create a new view.
-     *        Heterogeneous lists can specify their number of view types, so that this View is
-     *        always of the right type (see {@link #getViewTypeCount()} and
-     *        {@link #getItemViewType(int)}).
-     * @param parent The parent that this view will eventually be attached to
-     * @return
-     */
-    @NonNull
-    @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        View view;
+    public class ViewHolder extends RecyclerView.ViewHolder{
+        ImageView image;
+        TextView name;
+        TextView longitude;
+        TextView latitude;
+        TextView score;
+        ImageButton editButton;
+        ImageButton deleteButton;
+        TextView comment;
+        ImageView photo;
 
-        if(convertView == null){
-            view = LayoutInflater.from(getContext()).inflate(R.layout.gallery_item, parent,false);
-        } else {
-            view = convertView;
+        public ViewHolder(View itemView){
+            super(itemView);
+
+            this.image = (ImageView) itemView.findViewById(R.id.QRmon_image);
+            this.name = (TextView) itemView.findViewById(R.id.QRmon_name);
+            this.longitude = (TextView) itemView.findViewById(R.id.QRmon_long);
+            this.latitude = (TextView) itemView.findViewById(R.id.QRmon_lat);
+            this.score = (TextView) itemView.findViewById(R.id.QRmon_score);
+            this.editButton = (ImageButton) itemView.findViewById(R.id.edit_comment);
+            this.deleteButton = (ImageButton) itemView.findViewById(R.id.delete_comment);
+            this.comment = (TextView) itemView.findViewById(R.id.QRmon_comment);
+            this.photo = (ImageView) itemView.findViewById(R.id.QRmon_photo);
         }
+    }
 
-        QRCode qrMon = getItem(position);
-        ImageView image = view.findViewById(R.id.QRmon_image);
-        TextView name = view.findViewById(R.id.QRmon_name);
-        TextView longitude = view.findViewById(R.id.QRmon_long);
-        TextView latitude = view.findViewById(R.id.QRmon_lat);
-        TextView score = view.findViewById(R.id.QRmon_score);
+    public GalleryAdapter(ArrayList<QRCodeComment> qrCodeComments, String username, Context context){
+        this.qrCodeComments = qrCodeComments;
+        this.username = username;
+        this.context = context;
+    }
 
-        // set
-        name.setText(qrMon.getName());
-        //temp set location to longtitude and latitude?
-        Location qrMonLocation = qrMon.getLocation();
-        longitude.setText(df.format(qrMonLocation.getLongitude()));
-        latitude.setText(df.format(qrMonLocation.getLatitude()));
-        score.setText(String.format("%d",qrMon.getScore()));
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.gallery_item, parent, false);
+        return new ViewHolder(view);
+    }
 
-        return view;
+    @Override
+    public void onBindViewHolder (ViewHolder holder, final int listPosition){
+        QRCode qrCode = qrCodeComments.get(listPosition).getQrCode();
+
+        ImageView image = holder.image;
+        TextView name = holder.name;
+        TextView longitude = holder.longitude;
+        TextView latitude = holder.latitude;
+        TextView score = holder.score;
+        ImageButton editButton = holder.editButton;
+        ImageButton deleteButton = holder.deleteButton;
+        TextView comment = holder.comment;
+        ImageView photo = holder.photo;
+
+        name.setText(qrCode.getName());
+        longitude.setText(df.format(qrCode.getLocation().getLongitude()));
+        latitude.setText(df.format(qrCode.getLocation().getLatitude()));
+        score.setText(String.format("%d", qrCode.getScore()));
+        comment.setText(qrCodeComments.get(listPosition).getComment());
+
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("TASK", "Edit Comment");
+            }
+        });
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("TASK", "delete Comment");
+            }
+        });
+
+        //ON LONG CLICK
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent intent = new Intent(v.getContext(), QrDisplayActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("CurrentPlayer", username);
+                bundle.putParcelable("QRCode", qrCode);
+                intent.putExtras(bundle);
+                v.getContext().startActivity(intent);
+                return true;
+            }
+        });
 
     }
+
+    @Override
+    public int getItemCount() {return qrCodeComments.size();}
 }
