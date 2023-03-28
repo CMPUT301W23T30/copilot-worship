@@ -221,6 +221,14 @@ public class Database {
                 .get();
     }
 
+    public Task<QuerySnapshot> getPlayerCollection(){
+        return playersCollection.get();
+    }
+
+    public Task<QuerySnapshot> getPlayerCollectionTotalScore(){
+        return playersCollection.orderBy("totalScore",Query.Direction.DESCENDING).get();
+    }
+
     /**
      * Removes specified QR from Player QRCode Collection
      * @param userName
