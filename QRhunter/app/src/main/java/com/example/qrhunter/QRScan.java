@@ -22,9 +22,8 @@ public class QRScan extends AppCompatActivity {
      * Start a new activity to open the camera and scan QR/bar codes
      * After scanning, asks user whether they want to take a photo of the real object
      *
-     * @param barLaucher
+     * @param barLauncher
      */
-    public void scanCode(ActivityResultLauncher<ScanOptions> barLaucher) {
     public void scanCode(ActivityResultLauncher<ScanOptions> barLauncher) {
         ScanOptions options = new ScanOptions();
         options.setPrompt("Volume up to flash on");

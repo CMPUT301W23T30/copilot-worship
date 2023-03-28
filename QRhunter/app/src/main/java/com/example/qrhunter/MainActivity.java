@@ -40,6 +40,8 @@ import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -302,7 +304,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Start Scanning", Toast.LENGTH_SHORT).show();
                 QRScan newClass = new QRScan();
                 newClass.scanCode(barLauncher);
-                newClass.scanCode(barLaucher);
                 ///Here
             }
         });
@@ -449,9 +450,10 @@ public class MainActivity extends AppCompatActivity {
                 {
                     Log.d("ADDQR", "Hash: " + hashedCode);
                     Log.d("ADDQR", "Score: " + score);
-                    AddQR(new QRCode(hashedCode, hashedCode, l,score));
-                    dialogInterface.dismiss();
-                    askAndTakePhoto();
+
+                    QRCode one = new QRCode(hashedCode, hashedCode, l,score);
+
+                    askAndTakePhoto(one);
                 }
             }).show();
         }
@@ -480,7 +482,7 @@ public class MainActivity extends AppCompatActivity {
      * Asks whether the users want to take a photo
      * If Yes, then starts Taking Photo
      */
-    public void askAndTakePhoto(){
+    public void askAndTakePhoto(QRCode one){
         new AlertDialog.Builder(MainActivity.this)
                 .setTitle("Add Object Photo")
                 .setMessage("Do you want to take a Photo of the real object?")
@@ -492,6 +494,11 @@ public class MainActivity extends AppCompatActivity {
                         // Continue with delete operation
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         startActivityForResult(intent, 100);
+
+                        /**
+                         * need to add image (Bitmap object) to one (QRCode object)
+                         */
+
 
                     }
                 })
