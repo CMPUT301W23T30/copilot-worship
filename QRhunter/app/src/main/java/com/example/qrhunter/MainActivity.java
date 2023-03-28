@@ -202,38 +202,7 @@ public class MainActivity extends AppCompatActivity {
         TextView userEmail = findViewById(R.id.user_page_email);
         TextView userPhone = findViewById(R.id.user_page_phone);
 
-        // Player Information
-        db.getPlayerInfo(username, new PlayerInfoListener() {
-            @Override
-            public void playerInfoCallback(Player player) {
-                Log.d("TASK", "START");
-                currentPlayer = player;
-                userEmail.setText(currentPlayer.getEmail());
-                userPhone.setText(String.valueOf(currentPlayer.getNumber()));
-                db.getPlayerCollection(player.getUsername(), new PlayerCollectionListener() {
-                    @Override
-                    public void playerCollectionCallback(Map<String, String> map) {
-                        for (Map.Entry<String,String> qrEntry : map.entrySet()) {
-                            db.getQRCodeInfo(qrEntry.getKey(), new QRCodeListener() {
-                                @Override
-                                public void qrCodeCallback(QRCode qrCode) {
-                                    Log.d("TASK", "." + qrEntry.getKey() +".");
-                                    currentPlayer.addQrCode(qrCode);
-                                    qrCodeComments.add(new QRCodeComment(qrCode, qrEntry.getValue()));
 
-
-                                    if (currentPlayer.getTotalScore() != 0) {
-                                        totalScore.setText(String.valueOf(currentPlayer.getTotalScore()));
-                                        beefyQR.setText(String.valueOf(currentPlayer.getBeefy()));
-                                        squishyQR.setText(String.valueOf(currentPlayer.getSquishy()));
-                                    }
-                                }
-                            });
-                        }
-                    }
-                });
-            }
-        });
 
         // NAVBAR Buttons
         mapButton = findViewById(R.id.navbar_map_button);
