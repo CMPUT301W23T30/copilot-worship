@@ -14,6 +14,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ToggleButton;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -238,6 +239,20 @@ public class MapsActivity extends FragmentActivity
                         }
                     }
                 });
+        // Set a click listener on the marker's info window
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(@NonNull Marker marker) {
+                // Get the QR code's hash from the marker's tag
+                String hash = marker.getTag().toString();
+                // Navigate to the QR code's detailed page
+                Intent intent = new Intent(MapsActivity.this, QrDisplayActivity.class);
+                Bundle b = new Bundle();
+                b.putString("hash", hash);
+                intent.putExtra("hash", hash);
+                startActivity(intent);
+            }
+        });
     }
     @Override
     public void onLocationChanged(Location location) {
@@ -328,23 +343,5 @@ public class MapsActivity extends FragmentActivity
                 QrLocation,
                 score != null ? score.intValue() : 0);
         return qrCode;
-    }
-
-    /**
-     * This method is called when the user clicks on a marker
-     * @param marker
-     * @return false
-     */
-    // When clicking on a marker, navigate to the QR code's detailed page
-    public boolean onMarkerClick(Marker marker) {
-        // Get the QR code's hash from the marker's tag
-        String hash = marker.getTag().toString();
-        // Navigate to the QR code's detailed page
-        Intent intent = new Intent(this, QrDisplayActivity.class);
-        Bundle b = new Bundle();
-        b.putString("hash", hash);
-        intent.putExtra("hash", hash);
-        startActivity(intent);
-        return false;
     }
 }
