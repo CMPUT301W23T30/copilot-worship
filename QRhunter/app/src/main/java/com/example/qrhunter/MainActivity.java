@@ -164,11 +164,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void getRankingEstimates(Bundle bundle, Database db){
-        if(bundle != null){
-
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
