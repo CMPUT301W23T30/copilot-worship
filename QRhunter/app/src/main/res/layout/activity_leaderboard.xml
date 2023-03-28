@@ -87,7 +87,7 @@
             android:layout_marginTop="5dp" app:layout_constraintEnd_toStartOf="@+id/first_place"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintHorizontal_bias="0.5"/>
     <TextView
-            android:text="999"
+            android:text=""
             android:textSize="25sp"
             android:layout_width="90sp"
             android:textAlignment="center"
@@ -107,7 +107,7 @@
             app:layout_constraintHorizontal_bias="0.5"/>
 
     <TextView
-            android:text="999"
+            android:text=""
             android:textSize="25sp"
             android:layout_width="90sp"
             android:textAlignment="center"
@@ -126,7 +126,7 @@
             app:layout_constraintEnd_toStartOf="@+id/third_place"
             app:layout_constraintStart_toEndOf="@+id/second_place"/>
     <TextView
-            android:text="999"
+            android:text=""
             android:textSize="27.5sp"
             android:layout_width="120sp"
             android:textAlignment="center"
