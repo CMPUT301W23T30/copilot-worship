@@ -249,6 +249,54 @@ public class MainActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         Database db = new Database();
+        //db.populateDB(); Run only when we need to redo db after a purge
+        //db.populateScore(20);// Run only after populate db
+        if(getUsername(bundle, db, userText) != 3){
+            // Player Information
+            TextView totalScore = findViewById(R.id.user_page_total_score);
+            TextView beefyQR = findViewById(R.id.user_page_strongest);
+            TextView squishyQR = findViewById(R.id.user_page_weakest);
+            TextView userEmail = findViewById(R.id.user_page_email);
+            TextView userPhone = findViewById(R.id.user_page_phone);
+            populateProfile(db, userEmail, userPhone, totalScore, beefyQR, squishyQR);
+        }
+
+
+
+
+
+        /*
+        db.getPlayerContact(username, new PlayerContactListener() {
+            @Override
+            public void playerContactCallback(Bundle bundle) {
+                userEmail.setText(bundle.getString("email"));
+                userPhone.setText(bundle.getString("number"));
+            }
+        });
+        //TODO change back to username
+        db.getPlayerStats(username, new PlayerStatsListener() {
+
+            @Override
+            public void playerStatsCallback(Bundle bundle) {
+                Integer total = 0;
+                ArrayList<Integer> qrScore = new ArrayList<>();
+
+                for (String hash : bundle.getStringArrayList("HashList")){
+                    Integer score = scoreCalculator(hash);
+                    qrScore.add(score);
+                    total = total + score;
+                }
+
+                // Leave as default N/A if no QRs in Player collection
+                if (total != 0) {
+                    totalScore.setText(String.valueOf(total));
+                    beefyQR.setText(String.valueOf(Collections.max(qrScore)));
+                    squishyQR.setText(String.valueOf(Collections.min(qrScore)));
+                }
+
+            }
+        });
+        */
 
         // NAVBAR Buttons
         mapButton = findViewById(R.id.navbar_map_button);
