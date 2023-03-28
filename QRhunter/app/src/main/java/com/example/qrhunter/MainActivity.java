@@ -191,15 +191,18 @@ public class MainActivity extends AppCompatActivity {
                                 if(task.isSuccessful()){
                                     username = "Player-" + (task.getResult().getCount()
                                             + 1);
+                                    editor.putString("Username", username);
+                                    editor.apply();
+                                    userText.setText(username);
                                 }
                                 else{
                                     //TODO add an error message here
+                                    //DO not save this temp thing
                                     Log.d(TAG, "Failed to get player count for new player");
+                                    System.out.println(task.getException().getMessage());
                                     username = "Player-?";
                                 }
-                                editor.putString("Username", username);
-                                editor.apply();
-                                userText.setText(username);
+
                                 db.addPlayer(new Player(username)).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
@@ -209,6 +212,7 @@ public class MainActivity extends AppCompatActivity {
                                         TextView squishyQR = findViewById(R.id.user_page_weakest);
                                         TextView userEmail = findViewById(R.id.user_page_email);
                                         TextView userPhone = findViewById(R.id.user_page_phone);
+                                        System.out.println("FROM NEW PLAYER");
                                         populateProfile(db, userEmail, userPhone, totalScore, beefyQR, squishyQR);
                                     }
                                 });
@@ -232,12 +236,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        // Player Information
-        TextView totalScore = findViewById(R.id.user_page_total_score);
-        TextView beefyQR = findViewById(R.id.user_page_strongest);
-        TextView squishyQR = findViewById(R.id.user_page_weakest);
-        TextView userEmail = findViewById(R.id.user_page_email);
-        TextView userPhone = findViewById(R.id.user_page_phone);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -258,6 +257,12 @@ public class MainActivity extends AppCompatActivity {
         //db.populateDB(); Run only when we need to redo db after a purge
         //db.populateScore(20);// Run only after populate db
         if(getUsername(bundle, db, userText) != 3){
+            // Player Information
+            TextView totalScore = findViewById(R.id.user_page_total_score);
+            TextView beefyQR = findViewById(R.id.user_page_strongest);
+            TextView squishyQR = findViewById(R.id.user_page_weakest);
+            TextView userEmail = findViewById(R.id.user_page_email);
+            TextView userPhone = findViewById(R.id.user_page_phone);
             populateProfile(db, userEmail, userPhone, totalScore, beefyQR, squishyQR);
         }
 
