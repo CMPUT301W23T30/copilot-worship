@@ -101,17 +101,15 @@ public class Database {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 Map<String, String> qrMap = new HashMap<String, String>();
-                //ArrayList<String> qrList = new ArrayList<>();
-                //ArrayList<String> commentList = new ArrayList<>();
                 for (DocumentSnapshot doc : value.getDocuments()) {
                     String hash = doc.get("hash").toString();
                     String comment = "";
 
                     if (doc.get("comment") == null){
-                        Log.d("TASK", "NO COMMENT");
+                        Log.d("DATABASE", "NO COMMENT");
                         comment = "";
                     }else{
-                        Log.d("TASK", "HAS COMMENT: " + doc.get("comment").toString());
+                        Log.d("DATABASE", "HAS COMMENT: " + doc.get("comment").toString());
                         comment = doc.get("comment").toString();
                     }
 

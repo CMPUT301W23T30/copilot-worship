@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.zxing.common.StringUtils;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -38,9 +39,10 @@ public class QrDisplayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_display);
 
-        Database db = new Database();
         Bundle bundle = getIntent().getExtras();
         qrCode = bundle.getParcelable("QRCode");
+        String currentPlayer = bundle.getString("CurrentPlayer");
+
         TextView qrName =  findViewById(R.id.qr_name);
         TextView qrPower = findViewById(R.id.qr_power);
         TextView qrHeight = findViewById(R.id.qr_height);
@@ -49,7 +51,7 @@ public class QrDisplayActivity extends AppCompatActivity {
 
         setQRStats(qrCode);
 
-        qrName.setText(qrCode.getName());
+        qrName.setText(String.format("%." + 10 + "s",qrCode.getName()));
         qrPower.setText(String.valueOf(qrCode.getScore()));
         qrHeight.setText(qrHeightStat);
         qrWeight.setText(qrWeightStat);
@@ -66,6 +68,7 @@ public class QrDisplayActivity extends AppCompatActivity {
                         QrDisplayActivity.this,
                         PlayerGalleryActivity.class);
                 Bundle bundle = new Bundle();
+                bundle.putString("CurrentPlayer", currentPlayer);
                 bundle.putParcelable("QRCode",qrCode);
                 intent.putExtras(bundle);
                 startActivity(intent);

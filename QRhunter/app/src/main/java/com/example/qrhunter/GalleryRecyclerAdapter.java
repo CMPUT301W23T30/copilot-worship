@@ -12,15 +12,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.w3c.dom.Text;
-
-import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 
 public class GalleryRecyclerAdapter extends RecyclerView.Adapter<GalleryRecyclerAdapter.ViewHolder>{
     private ArrayList<QRCodeComment> qrCodeComments;
+    private String username;
     private Context context;
 
     public interface OnItemLongClickListener{
@@ -40,7 +38,6 @@ public class GalleryRecyclerAdapter extends RecyclerView.Adapter<GalleryRecycler
         TextView comment;
         ImageView photo;
 
-
         public ViewHolder(View itemView){
             super(itemView);
 
@@ -56,8 +53,9 @@ public class GalleryRecyclerAdapter extends RecyclerView.Adapter<GalleryRecycler
         }
     }
 
-    public GalleryRecyclerAdapter(ArrayList<QRCodeComment> qrCodeComments, Context context){
+    public GalleryRecyclerAdapter(ArrayList<QRCodeComment> qrCodeComments, String username, Context context){
         this.qrCodeComments = qrCodeComments;
+        this.username = username;
         this.context = context;
     }
 
@@ -107,6 +105,7 @@ public class GalleryRecyclerAdapter extends RecyclerView.Adapter<GalleryRecycler
             public boolean onLongClick(View v) {
                 Intent intent = new Intent(v.getContext(), QrDisplayActivity.class);
                 Bundle bundle = new Bundle();
+                bundle.putString("CurrentPlayer", username);
                 bundle.putParcelable("QRCode", qrCode);
                 intent.putExtras(bundle);
                 v.getContext().startActivity(intent);

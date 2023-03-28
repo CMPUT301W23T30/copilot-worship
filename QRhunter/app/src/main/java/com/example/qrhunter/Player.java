@@ -105,6 +105,7 @@ public class Player implements Parcelable {
 
     public ArrayList<QRCode> getQrCodes() { return qrCodes; }
     public void setQrCodes(ArrayList<QRCode> qrCodes) { this.qrCodes = qrCodes; }
+    public void addQrCode(QRCode qrcode){this.qrCodes.add(qrcode);}
 
     /**
      * TODO Write tests for this

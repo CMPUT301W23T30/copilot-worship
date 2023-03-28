@@ -64,9 +64,6 @@ public class MainActivityTest {
         assertNotEquals("",userText.getText());
     }
 
-
-
-
     /**
      * Close activity after each test
      * @throws Exception

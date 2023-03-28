@@ -47,9 +47,8 @@ public class Gallery extends AppCompatActivity {
         username = player.getUsername();
         qrCodeComments = bundle.getParcelableArrayList("QRArray");
 
-
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.gallery_recycler_view);
-        GalleryRecyclerAdapter adapter = new GalleryRecyclerAdapter(qrCodeComments, this);
+        GalleryRecyclerAdapter adapter = new GalleryRecyclerAdapter(qrCodeComments, username, this);
 
         LinearLayoutManager manager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
@@ -73,6 +72,14 @@ public class Gallery extends AppCompatActivity {
         }).attachToRecyclerView(recyclerView);
     }
 
+    /**
+     * Makes sure Profile is updated to any changes made in Gallery
+     */
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Gallery.this,MainActivity.class);;
+        startActivity(intent);
+    }
 
     /**
      * Delete QR from specific Player QRCodes Collection

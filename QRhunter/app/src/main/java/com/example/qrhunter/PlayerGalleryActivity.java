@@ -1,7 +1,12 @@
 package com.example.qrhunter;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,6 +29,7 @@ import java.util.ArrayList;
  *
  */
 public class PlayerGalleryActivity extends AppCompatActivity {
+    Player player;
 
      PlayerGalleryAdapter galleryAdapter;
      QRCode qrCode;
@@ -39,6 +45,8 @@ public class PlayerGalleryActivity extends AppCompatActivity {
         Database db = new Database();
         Bundle bundle = getIntent().getExtras();
         qrCode = bundle.getParcelable("QRCode");
+        String currentPlayer = bundle.getString("CurrentPlayer");
+        Log.d("TASK", currentPlayer);
 
         galleryView = findViewById(R.id.player_list);
 
@@ -53,15 +61,32 @@ public class PlayerGalleryActivity extends AppCompatActivity {
                             // has so we can just set it to a new arrayList
                             Object number = doc.get("number");
                             if(number == null){number = "0";}
-                            Player p = new Player(doc.getString("username"),
+                            player = new Player(doc.getString("username"),
                                     doc.getString("email"),
                                     Integer.valueOf((String) number), new ArrayList<>());
-                            playerArrayList.add(p);
+                            playerArrayList.add(player);
 
                         }
-                        galleryAdapter = new PlayerGalleryAdapter(
-                                PlayerGalleryActivity.this, playerArrayList);
+                        galleryAdapter = new PlayerGalleryAdapter(PlayerGalleryActivity.this, playerArrayList);
                         galleryView.setAdapter(galleryAdapter);
+
+                        galleryView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Player selectPlayer = playerArrayList.get(position);
+
+                                if (selectPlayer.getUsername() != currentPlayer){
+                                    Intent intent = new Intent (PlayerGalleryActivity.this, OtherProfile.class);
+                                    Bundle newBundle = new Bundle();
+                                    newBundle.putParcelable("Player", selectPlayer);
+                                    intent.putExtras(newBundle);
+
+                                    startActivity(intent);
+                                }else{
+                                    Log.d("TASK", "CANNOT CLICK ON YOUR OWN PROFILE HERE");
+                                }
+                            }
+                        });
                     }
                 });
     }

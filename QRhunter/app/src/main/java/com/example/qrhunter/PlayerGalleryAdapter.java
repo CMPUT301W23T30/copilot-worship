@@ -1,18 +1,14 @@
 package com.example.qrhunter;
 
 import android.content.Context;
-import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -26,10 +22,12 @@ import java.util.ArrayList;
  */
 //TODO have this display more than just the player name
 public class PlayerGalleryAdapter extends ArrayAdapter<Player> {
+
     /**
      * Constructor for the adapter
-     * @param context Current context of the app
-     * @param players ArrayList of players to display
+     *
+     * @param context       Current context of the app
+     * @param players       ArrayList of players to display
      */
     public PlayerGalleryAdapter(Context context, ArrayList<Player> players) {
         super(context, 0, players);
@@ -57,7 +55,7 @@ public class PlayerGalleryAdapter extends ArrayAdapter<Player> {
         TextView username = view.findViewById(R.id.player_gallery_item_username);
 
         //Set information about the user
-        username.setText(player.getUsername());
+       username.setText(player.getUsername());
 
         return view;
 

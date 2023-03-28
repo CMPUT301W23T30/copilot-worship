@@ -1,6 +1,7 @@
 package com.example.qrhunter;
 
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -170,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
         TextView userText = findViewById(R.id.user_page_user_name);
         Bundle bundle = getIntent().getExtras();
+
         Database db = new Database();
         //db.populateDB(); Run only when we need to redo db after a purge
         //db.populateScore(20);// Run only after populate db
@@ -182,10 +184,10 @@ public class MainActivity extends AppCompatActivity {
         TextView userPhone = findViewById(R.id.user_page_phone);
 
         // Player Information
-        //TODO CHANGE TO USERNAME LATER
-        db.getPlayerInfo("Player-1", new PlayerInfoListener() {
+        db.getPlayerInfo(username, new PlayerInfoListener() {
             @Override
             public void playerInfoCallback(Player player) {
+                Log.d("TASK", "START");
                 currentPlayer = player;
                 userEmail.setText(currentPlayer.getEmail());
                 userPhone.setText(String.valueOf(currentPlayer.getNumber()));
@@ -196,12 +198,10 @@ public class MainActivity extends AppCompatActivity {
                             db.getQRCodeInfo(qrEntry.getKey(), new QRCodeListener() {
                                 @Override
                                 public void qrCodeCallback(QRCode qrCode) {
-                                    ArrayList<QRCode> qrCodes = currentPlayer.getQrCodes();
-                                    qrList.add(qrCode.getHash());
-                                    qrCodes.add(qrCode);
-                                    currentPlayer.setQrCodes(qrCodes);
-
+                                    Log.d("TASK", "." + qrEntry.getKey() +".");
+                                    currentPlayer.addQrCode(qrCode);
                                     qrCodeComments.add(new QRCodeComment(qrCode, qrEntry.getValue()));
+
 
                                     if (currentPlayer.getTotalScore() != 0) {
                                         totalScore.setText(String.valueOf(currentPlayer.getTotalScore()));
@@ -338,6 +338,8 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialogInterface, int i)
                 {
                     AddQR(new QRCode(hashedCode, hashedCode, l,score));
+                    Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                    startActivity(intent);
                     dialogInterface.dismiss();
                 }
             }).show();
