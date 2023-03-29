@@ -5,22 +5,16 @@ import android.content.SharedPreferences;
 import android.view.View;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -41,6 +35,38 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
     private String secondUsernameStr;
     private String thirdUsernameStr;
 
+
+    private SharedPreferences settings = getSharedPreferences("LocalLeaderboard", 0);
+    private SharedPreferences.Editor editor = settings.edit();
+
+
+    public void storeTop10(List<DocumentSnapshot> list){
+        Set<String> top10 = new HashSet<>();
+        //Store top >=10  locally
+        for(int i = 0; i < 10 || i < list.size(); i++){
+            //We can store a set easily so we use the format i-username-score
+            //Where i is the number of the player
+            top10.add( i + list.get(1).get("username").toString() + "-"
+                    + list.get(0).get("totalScore").toString());
+        }
+        editor.putStringSet("localTop10", top10);
+        editor.putBoolean("playersSaved", true);
+    }
+
+    public List<LeaderboardModel> getTop10(){
+        List<LeaderboardModel> userList = new ArrayList<>();
+        Set<String> top10 = new HashSet<>();
+        settings.getStringSet("localTop10", top10);
+        String[] topList = (String[]) top10.stream().sorted().toArray();
+        for (String formattedUser : topList) {
+            String username = formattedUser.substring(1, formattedUser.indexOf("-") + 1);
+            String score = formattedUser.substring(formattedUser.indexOf("-") + 1);
+            LeaderboardModel user = new LeaderboardModel(username, Integer.valueOf(score));
+            userList.add(user);
+        }
+        return userList;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,8 +83,6 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
         thirdUsername = findViewById(R.id.third_place_name);
         thirdScore = findViewById(R.id.third_place_score);
 
-        SharedPreferences settings = getSharedPreferences("LocalLeaderboard", 0);
-        SharedPreferences.Editor editor = settings.edit();
 
         
 
@@ -67,18 +91,7 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-
-
-                        Set<String> top10 = new HashSet<>();
-                         //Store top >=10  locally
-                        for(int i = 0; i < 10 || i < list.size(); i++){
-                            //We can store a set easily so we use the format i-username-score
-                            //Where i is the number of the player
-                            top10.add( i + list.get(1).get("username").toString() + "-"
-                            + list.get(0).get("totalScore").toString());
-                        }
-                        editor.putStringSet("localTop10", top10);
-                        editor.putBoolean("playersGotten", true);
+                        storeTop10(list);
                         // extract the top 3
                         DocumentSnapshot d1 = list.get(0);
                         firstUsernameStr = d1.get("username").toString();
