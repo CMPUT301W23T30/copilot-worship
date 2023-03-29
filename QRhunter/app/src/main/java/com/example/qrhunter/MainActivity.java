@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +30,8 @@ import com.google.common.hash.Hashing;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -58,6 +61,12 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<QRCodeComment> qrCodeComments = new ArrayList<>();
 
     ArrayList<String> qrList = new ArrayList<>();
+    TextView beefyQR;
+    TextView squishyQR;
+    TextView userEmail;
+    TextView userPhone;
+    Bitmap image;
+
     Button scanButton;
     Button photoButton;
 
@@ -439,12 +448,64 @@ public class MainActivity extends AppCompatActivity {
                 {
                     Log.d("ADDQR", "Hash: " + hashedCode);
                     Log.d("ADDQR", "Score: " + score);
-                    AddQR(new QRCode(hashedCode, hashedCode, l,score));
-                    dialogInterface.dismiss();
+
+                    QRCode one = new QRCode(hashedCode, hashedCode, l,score);
+
+                    askAndTakePhoto(one);
                 }
             }).show();
         }
     });
+
+    /**
+     * Take Real World photos
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode The integer result code returned by the child activity
+     *                   through its setResult().
+     * @param data An Intent, which can return result data to the caller
+     *               (various data can be attached to Intent "extras").
+     *
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100){
+            image = (Bitmap) data.getExtras().get("data");
+        }
+    }
+
+    /**
+     * Asks whether the users want to take a photo
+     * If Yes, then starts Taking Photo
+     */
+    public void askAndTakePhoto(QRCode one){
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Add Object Photo")
+                .setMessage("Do you want to take a Photo of the real object?")
+
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Continue with delete operation
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivityForResult(intent, 100);
+
+                        /**
+                         * need to add image (Bitmap object) to one (QRCode object)
+                         */
+
+
+                    }
+                })
+
+                // A null listener allows the button to dismiss the dialog and take no further action.
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
 
     /**
      * This method adds a QR code to the database
