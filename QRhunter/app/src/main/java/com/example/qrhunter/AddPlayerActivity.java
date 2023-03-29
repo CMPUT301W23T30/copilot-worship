@@ -18,6 +18,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+/**
+ * This class is used to add a new player to the database.
+ * When it's complete it will eventually become the login screen.
+ * It is called from the MainActivity class.
+ * @author: Maarij
+ */
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

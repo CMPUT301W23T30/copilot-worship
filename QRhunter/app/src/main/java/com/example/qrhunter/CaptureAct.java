@@ -2,9 +2,11 @@ package com.example.qrhunter;
 
 import com.journeyapps.barcodescanner.CaptureActivity;
 
-/**
- * For QR reading camera functions
- * by Bohan
- */
-public class CaptureAct extends CaptureActivity {}
+public class CaptureAct extends CaptureActivity {
+    /**
+     * Class for QR scanning
+     *
+     * @author bohan
+     */
+}
 
