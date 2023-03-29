@@ -4,25 +4,23 @@ package com.example.qrhunter;
 import static android.view.ViewGroup.FOCUS_BLOCK_DESCENDANTS;
 
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-
+import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Gallery Activity
@@ -30,115 +28,76 @@ import java.util.List;
  * Currently displays the QRCodes Name, Location, and Score
  */
 public class Gallery extends AppCompatActivity {
-    private String username;
+    Player player;
     TextView textView;
-    ArrayAdapter<GalleryAdapter> galleryAdapter;
-     ArrayList<QRCode> qrCodeArrayList = new ArrayList<QRCode>();
-     ListView galleryView;
-    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private Task<QuerySnapshot> querySnapshotTask;
+    String username;
+
+    ArrayList<QRCodeComment> qrCodeComments = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
-        galleryView = findViewById(R.id.gallery_content);
-        Bundle bundle = getIntent().getExtras();
-        username = bundle.getString("username");
         textView = findViewById((R.id.gallery_name));
 
-        galleryView.setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
-        galleryView.setClickable(true);
-        galleryView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        //galleryView = findViewById(R.id.gallery_content);
+        Bundle bundle = getIntent().getExtras();
+        player = bundle.getParcelable("Player");
+        username = player.getUsername();
+        qrCodeComments = bundle.getParcelableArrayList("QRArray");
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.gallery_recycler_view);
+        GalleryAdapter adapter = new GalleryAdapter(qrCodeComments, username, this);
+
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(manager);
+
+        recyclerView.setAdapter(adapter);
+        recyclerView.setHasFixedSize(true);
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                startActivity(new Intent(Gallery.this, QrDisplayActivity.class));
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 return false;
             }
-        });
-        CollectionReference codeCollection = db.collection("QrCodes");
-        CollectionReference userCollection = db.collection("Players").document(username).collection("QRCodes");
 
-        // compares Username to Player collection in QrCodes
-        userCollection.get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        // ignore empty documents
-                        // grab list of QR codes in Gallery
-                        if (!queryDocumentSnapshots.isEmpty()) {
-                            List<DocumentSnapshot> userList = queryDocumentSnapshots.getDocuments();
-                            for (DocumentSnapshot userDoc : userList) {
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                QRCodeComment deleteCode = qrCodeComments.get(viewHolder.getAdapterPosition());
 
-                                // get QR info from Player QRCodes
-                                codeCollection.get()
-                                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                                // ignore empty documents
-                                                // find QR info from QrCodes
-                                                if (!queryDocumentSnapshots.isEmpty()){
-                                                    List<DocumentSnapshot> qrList = queryDocumentSnapshots.getDocuments();
-                                                    for (DocumentSnapshot qrDoc : qrList){
+                DeleteQR(deleteCode);
+                adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+            }
+        }).attachToRecyclerView(recyclerView);
+    }
 
-                                                        if (qrDoc.getId().equals(userDoc.getId())) {
-
-                                                            Location location = new Location("");
-                                                            location.setLongitude((Double) qrDoc.get("longitude"));
-                                                            location.setLatitude((Double) qrDoc.get("latitude"));
-                                                            QRCode qrCode = new QRCode(
-                                                                    qrDoc.get("hash").toString(),
-                                                                    qrDoc.get("name").toString(),
-                                                                    location,
-                                                                    Integer.parseInt(qrDoc.get("score").toString()));
-
-                                                            // after getting data from Firebase we are
-                                                            // storing that data in our array list
-                                                            qrCodeArrayList.add(qrCode);
-
-                                                        }
-                                                    }
-                                                    GalleryAdapter adapter = new GalleryAdapter(Gallery.this,qrCodeArrayList);
-                                                    galleryView.setAdapter(adapter);
-                                                    galleryView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                                                        //TODO make drop down button work w/ this
-                                                        @Override
-                                                        public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                                            Intent intent = new Intent(Gallery.this, QrDisplayActivity.class);
-                                                            Bundle b = new Bundle();
-                                                            b.putString("hash", adapter.getItem(i).getHash());
-                                                            intent.putExtras(b);
-                                                            startActivity(intent);
-                                                            return false;
-                                                        }
-                                                    });
-
-                                                    // TODO Change to swipe later
-                                                    galleryView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                                        @Override
-                                                        public void onItemClick(AdapterView<?> qrCode, View view, int i, long id) {
-                                                            DeleteQR(adapter.getItem(i).getHash());
-                                                            galleryAdapter.notifyDataSetChanged();
-                                                        }
-                                                    });
-                                                }
-                                            }
-                                        });
-                            }
-                        }
-                    }
-                });
+    /**
+     * Makes sure Profile is updated to any changes made in Gallery
+     */
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Gallery.this,MainActivity.class);;
+        startActivity(intent);
     }
 
     /**
      * Delete QR from specific Player QRCodes Collection
      * Deletes Player from specific QrCodes Player Collection
-     * @param hash
+     * @param qrCodeComment
      */
-    private void DeleteQR(String hash){
+    private void DeleteQR(QRCodeComment qrCodeComment){
+        QRCode deleteQR = qrCodeComment.getQrCode();
         Database deleteDB = new Database();
-        deleteDB.removeQrCodesFromPlayer(username,hash);
-        deleteDB.removePlayerFromQRCode(username,hash);
+        // remove from local database
+        ArrayList<QRCode> changeList = player.getQrCodes();
+        changeList.remove(deleteQR);
+        player.setQrCodes(changeList);
+
+        qrCodeComments.remove(qrCodeComment);
+
+        // remove from firestore
+        deleteDB.removeQrCodesFromPlayer(username,deleteQR.getHash());
+        deleteDB.removePlayerFromQRCode(username,deleteQR.getHash());
     }
 }
