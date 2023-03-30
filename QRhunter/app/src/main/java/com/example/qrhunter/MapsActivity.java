@@ -32,6 +32,7 @@ import com.google.android.gms.maps.model.Marker;
 
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.common.collect.Maps;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -97,7 +98,8 @@ public class MapsActivity extends FragmentActivity
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                Intent intent = new Intent(MapsActivity.this, MainActivity.class);
+                startActivity(intent);
             }
         });
 
