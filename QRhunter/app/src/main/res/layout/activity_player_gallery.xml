@@ -4,17 +4,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="vertical"
     tools:context=".PlayerGalleryActivity">
 
     <TextView
-        android:id="@+id/player_gallery_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Player Gallery" />
+        android:layout_marginTop="46dp"
+        android:backgroundTint="@color/white"
+        android:text=""
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="34sp" />
+
+    <ImageView
+        android:id="@+id/shared_qr_image"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="35dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/qr_name"
+        tools:srcCompat="@tools:sample/avatars"/>
 
     <ListView
         android:id="@+id/player_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="30dp"/>
 </LinearLayout>
