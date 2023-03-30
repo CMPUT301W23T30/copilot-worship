@@ -73,7 +73,7 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
     public List<LeaderboardModel> getLeaderboard(){
         Set<String> leaderBoardSet = new HashSet<>();
         leaderBoardSet = settings.getStringSet("localLeaderboard", leaderBoardSet);
-        Object[] topList = leaderBoardSet.stream().sorted().toArray();
+        Object[] topList = leaderBoardSet.stream().toArray();
         String nullFlag = "\u0000";
         for (Object formattedObject : topList) {
             String formattedUser = (String) formattedObject;
@@ -84,6 +84,7 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
             LeaderboardModel user = new LeaderboardModel(username, Integer.valueOf(score));
             userList.add(user);
         }
+        userList.sort(new LeaderboardComparator());
         return userList;
     }
 
@@ -124,12 +125,12 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
         secondUsernameStr = userList.get(1).getUsername();
         secondScore.setText(userList.get(1).getTotalScore().toString());
         secondUsername.setText(secondUsernameStr);
-        thirdUsernameStr = userList.get(3).getUsername();
+        thirdUsernameStr = userList.get(2).getUsername();
         thirdUsername.setText(thirdUsernameStr);
         thirdScore.setText(userList.get(2).getTotalScore().toString());
         userList.remove(0);
-        userList.remove(1);
-        userList.remove(2);
+        userList.remove(0);
+        userList.remove(0);
         adapter = new LeaderboardAdapter(userList, LeaderboardActivity.this, LeaderboardActivity.this::OnItemClick);
 
         recyclerView.setAdapter(adapter);
