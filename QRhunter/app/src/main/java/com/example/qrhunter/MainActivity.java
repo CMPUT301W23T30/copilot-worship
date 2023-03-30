@@ -37,11 +37,9 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.Collections;
 
 
 /**
@@ -54,17 +52,16 @@ import java.util.Collections;
  */
 public class MainActivity extends AppCompatActivity {
     //Tag for logging any issues
-    //Tag for logging any issues
     final String TAG = "User Profile Page";
     Player currentPlayer;
     String username;
     ArrayList<QRCodeComment> qrCodeComments = new ArrayList<>();
 
     ArrayList<String> qrList = new ArrayList<>();
-    TextView beefyQR;
-    TextView squishyQR;
-    TextView userEmail;
-    TextView userPhone;
+    TextView beefyQRTextView;
+    TextView squishyQRTextView;
+    TextView userEmailTextView;
+    TextView userPhoneTextView;
     Bitmap image;
 
     Button scanButton;
@@ -103,9 +100,20 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_add_player_button:
 
                 Intent intent = new Intent(this, AddPlayerActivity.class);
-                Bundle b = new Bundle();
-                b.putString("username", username);
-                intent.putExtras(b);
+                if (currentPlayer != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("username", currentPlayer.getUsername());
+                    bundle.putString("email", currentPlayer.getEmail());
+                    bundle.putString("phone", String.valueOf(currentPlayer.getNumber()));
+                    intent.putExtras(bundle);
+                }
+                else {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("username", "");
+                    bundle.putString("email", "");
+                    bundle.putString("phone", "");
+                    intent.putExtras(bundle);
+                }
 
                 startActivity(intent);
 
@@ -188,8 +196,13 @@ public class MainActivity extends AppCompatActivity {
 
 
         ImageView profileCircle = (ImageView) findViewById(R.id.profile_icon);
-        TextView userText = findViewById(R.id.user_page_user_name);
+        TextView usernameText = findViewById(R.id.user_page_user_name);
         TextView smallerTextView = findViewById(R.id.user_page_total_score);
+        TextView totalScoreTextView = findViewById(R.id.user_page_total_score);
+        TextView beefyQRTextView = findViewById(R.id.user_page_strongest);
+        TextView squishyQRTextView = findViewById(R.id.user_page_weakest);
+        TextView userEmailTextView = findViewById(R.id.user_page_email);
+        TextView userPhoneTextView = findViewById(R.id.user_page_phone);
 
         CharacterImage testCharacter = characterCreator("2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824");
         profileCircle.setImageBitmap(testCharacter.getCharacterImage());
@@ -199,25 +212,29 @@ public class MainActivity extends AppCompatActivity {
         // profileCircle.setImageResource(R.drawable._icon__profile_circle_);
 
         Bundle bundle = getIntent().getExtras();
+
+        if (bundle != null) {
+            bundle.getString("username");
+            bundle.getString("email");
+            bundle.getString("phone");
+
+            usernameText.setText(bundle.getString("username"));
+            userEmailTextView.setText(bundle.getString("email"));
+            userPhoneTextView.setText(bundle.getString("phone"));
+        }
+
         Database db = new Database();
         //db.populateDB(); //Run only when we need to redo db after a purge
         //db.populateScore(20);// Run only after populate db
-        getUsername(bundle, db, userText);
-
-        // Player Information
-        TextView totalScore = findViewById(R.id.user_page_total_score);
-        TextView beefyQR = findViewById(R.id.user_page_strongest);
-        TextView squishyQR = findViewById(R.id.user_page_weakest);
-        TextView userEmail = findViewById(R.id.user_page_email);
-        TextView userPhone = findViewById(R.id.user_page_phone);
+        getUsername(bundle, db, usernameText);
 
         // Player Information
         db.getPlayerInfo(username, new PlayerInfoListener() {
             @Override
             public void playerInfoCallback(Player player) {
                 currentPlayer = player;
-                userEmail.setText(currentPlayer.getEmail());
-                userPhone.setText(String.valueOf(currentPlayer.getNumber()));
+                userEmailTextView.setText(currentPlayer.getEmail());
+                userPhoneTextView.setText(String.valueOf(currentPlayer.getNumber()));
                 db.getPlayerCollection(player.getUsername(), new PlayerCollectionListener() {
                     @Override
                     public void playerCollectionCallback(Map<String, String> map) {
@@ -230,9 +247,9 @@ public class MainActivity extends AppCompatActivity {
 
 
                                     if (currentPlayer.getTotalScore() != 0) {
-                                        totalScore.setText(String.valueOf(currentPlayer.getTotalScore()));
-                                        beefyQR.setText(String.valueOf(currentPlayer.getBeefy()));
-                                        squishyQR.setText(String.valueOf(currentPlayer.getSquishy()));
+                                        totalScoreTextView.setText(String.valueOf(currentPlayer.getTotalScore()));
+                                        beefyQRTextView.setText(String.valueOf(currentPlayer.getBeefy()));
+                                        squishyQRTextView.setText(String.valueOf(currentPlayer.getSquishy()));
                                     }
                                 }
                             });
@@ -352,7 +369,11 @@ public class MainActivity extends AppCompatActivity {
                 n++;
             } else {
                 if (n > 1) {
-                    score += Math.pow(Integer.parseInt(prev, 16), n - 1);
+                    if (prev.equals("0")) {
+                        score += Math.pow(20, n - 1);
+                    } else {
+                        score += Math.pow(Integer.parseInt(prev, 16), n - 1);
+                    }
                 }
                 n = 1;
                 prev = hashedQRCode.substring(i, i + 1);

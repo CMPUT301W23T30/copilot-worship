@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
  * @author: Maarij
  */
 public class AddPlayerActivity extends AppCompatActivity {
+    String passedUserName, passedEmail, passedPhone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,24 +43,32 @@ public class AddPlayerActivity extends AppCompatActivity {
 
         EditText usernameEditText = findViewById(R.id.usernameEditText);
         EditText emailEditText = findViewById(R.id.emailEditText);
-        EditText numberEditText = findViewById(R.id.numberEditText);
+        EditText phoneEditText = findViewById(R.id.numberEditText);
         Button submitButton = findViewById(R.id.submitButton);
         TextView errorText = findViewById(R.id.errorText);
 
         Bundle bundle = getIntent().getExtras();
-        String currentUserName = bundle.getString("username");
+        if (bundle != null) {
+            passedUserName = bundle.getString("username");
+            passedEmail = bundle.getString("email");
+            passedPhone = bundle.getString("phone");
 
-        usernameEditText.setText(currentUserName);
-        Database db = new Database();
+            usernameEditText.setText(passedUserName);
+            emailEditText.setText(passedEmail);
+            phoneEditText.setText(passedPhone);
+        }
 
-        db.getPlayer(currentUserName).
-                addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        emailEditText.setText(documentSnapshot.getString("email"));
-                        numberEditText.setText(documentSnapshot.get("number").toString());
-                    }
-                });
+        // usernameEditText.setText(passedUserName);
+        // Database db = new Database();
+
+        // db.getPlayer(passedUserName).
+        //         addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        //             @Override
+        //             public void onSuccess(DocumentSnapshot documentSnapshot) {
+        //                 emailEditText.setText(documentSnapshot.getString("email"));
+        //                 numberEditText.setText(documentSnapshot.get("number").toString());
+        //             }
+        //         });
 
         /*
         //Need to convert this to a bundle
@@ -74,17 +83,18 @@ public class AddPlayerActivity extends AppCompatActivity {
             //To update the player info, we need to delete
             // all the documents and re add it
             // To do that we have to reconstruct the player object for deletion and addition
+            Database db = new Database();
 
 
             //TODO maybe once add player can handle QR Codes, we might wanna revamp this
 
             String username = usernameEditText.getText().toString();
-            if(username.length() > 20 || username.length() <= 0 ){
+            if (username.length() > 20 || username.length() <= 0 ) {
                 errorText.setText("Username must be between 1-20 Characters");
                 return;
             }
             String email = emailEditText.getText().toString();
-            String number = numberEditText.getText().toString();
+            String number = phoneEditText.getText().toString();
             Player newUser = new Player(username,email, Integer.parseInt(number), new ArrayList<>());
             //making Sure it is unique
             db.getPlayer(username).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -98,11 +108,13 @@ public class AddPlayerActivity extends AppCompatActivity {
                     }
                     else {
                         //TODO add on Failure listener
-                        db.removePlayer(currentUserName);
+                        if (passedUserName != null) {
+                            db.removePlayer(passedUserName);
+                        }
                         db.addPlayer(newUser);
                         //TODO add on failure listener
                         //Need to delete the player from the qr too
-                        db.getQrCodesFromPlayer(currentUserName)
+                        db.getQrCodesFromPlayer(passedUserName)
                                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                     @Override
                                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -113,7 +125,7 @@ public class AddPlayerActivity extends AppCompatActivity {
                                             String hash = doc.getString("hash");
                                             db.addScannedCode(new QRCode(hash ,null, null, 0),
                                                     newUser);
-                                            db.removePlayerFromQRCode(currentUserName, hash);
+                                            db.removePlayerFromQRCode(passedUserName, hash);
 
                                         }
                                         SharedPreferences settings = getSharedPreferences("UserInfo", 0);
@@ -129,6 +141,10 @@ public class AddPlayerActivity extends AppCompatActivity {
                                         editor1.commit();
                                         
                                         Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString("username", usernameEditText.getText().toString());
+                                        bundle.putString("email", emailEditText.getText().toString());
+                                        bundle.putString("phone", phoneEditText.getText().toString());
                                         startActivity(intent);
                                     }
                                 });
