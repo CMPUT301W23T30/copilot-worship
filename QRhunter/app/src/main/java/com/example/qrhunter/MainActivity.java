@@ -196,13 +196,13 @@ public class MainActivity extends AppCompatActivity {
 
 
         ImageView profileCircle = (ImageView) findViewById(R.id.profile_icon);
-        TextView userText = findViewById(R.id.user_page_user_name);
+        TextView usernameText = findViewById(R.id.user_page_user_name);
         TextView smallerTextView = findViewById(R.id.user_page_total_score);
-        TextView totalScore = findViewById(R.id.user_page_total_score);
-        TextView beefyQR = findViewById(R.id.user_page_strongest);
-        TextView squishyQR = findViewById(R.id.user_page_weakest);
-        TextView userEmail = findViewById(R.id.user_page_email);
-        TextView userPhone = findViewById(R.id.user_page_phone);
+        TextView totalScoreTextView = findViewById(R.id.user_page_total_score);
+        TextView beefyQRTextView = findViewById(R.id.user_page_strongest);
+        TextView squishyQRTextView = findViewById(R.id.user_page_weakest);
+        TextView userEmailTextView = findViewById(R.id.user_page_email);
+        TextView userPhoneTextView = findViewById(R.id.user_page_phone);
 
         CharacterImage testCharacter = characterCreator("2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824");
         profileCircle.setImageBitmap(testCharacter.getCharacterImage());
@@ -218,15 +218,15 @@ public class MainActivity extends AppCompatActivity {
             bundle.getString("email");
             bundle.getString("phone");
 
-            userText.setText(bundle.getString("username"));
-            userEmail.setText(bundle.getString("email"));
-            userPhone.setText(bundle.getString("phone"));
+            usernameText.setText(bundle.getString("username"));
+            userEmailTextView.setText(bundle.getString("email"));
+            userPhoneTextView.setText(bundle.getString("phone"));
         }
 
         Database db = new Database();
         //db.populateDB(); Run only when we need to redo db after a purge
         //db.populateScore(20);// Run only after populate db
-        getUsername(bundle, db, userText);
+        getUsername(bundle, db, usernameText);
 
         // Player Information
         db.getPlayerInfo(username, new PlayerInfoListener() {
@@ -234,8 +234,8 @@ public class MainActivity extends AppCompatActivity {
             public void playerInfoCallback(Player player) {
                 Log.d("TASK", "START");
                 currentPlayer = player;
-                userEmail.setText(currentPlayer.getEmail());
-                userPhone.setText(String.valueOf(currentPlayer.getNumber()));
+                userEmailTextView.setText(currentPlayer.getEmail());
+                userPhoneTextView.setText(String.valueOf(currentPlayer.getNumber()));
                 db.getPlayerCollection(player.getUsername(), new PlayerCollectionListener() {
                     @Override
                     public void playerCollectionCallback(Map<String, String> map) {
@@ -249,9 +249,9 @@ public class MainActivity extends AppCompatActivity {
 
 
                                     if (currentPlayer.getTotalScore() != 0) {
-                                        totalScore.setText(String.valueOf(currentPlayer.getTotalScore()));
-                                        beefyQR.setText(String.valueOf(currentPlayer.getBeefy()));
-                                        squishyQR.setText(String.valueOf(currentPlayer.getSquishy()));
+                                        totalScoreTextView.setText(String.valueOf(currentPlayer.getTotalScore()));
+                                        beefyQRTextView.setText(String.valueOf(currentPlayer.getBeefy()));
+                                        squishyQRTextView.setText(String.valueOf(currentPlayer.getSquishy()));
                                     }
                                 }
                             });
