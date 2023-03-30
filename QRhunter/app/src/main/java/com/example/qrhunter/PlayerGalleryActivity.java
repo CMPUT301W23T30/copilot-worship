@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,6 +47,7 @@ public class PlayerGalleryActivity extends AppCompatActivity {
         String currentUsername = bundle.getString("currentUsername");
         galleryView = findViewById(R.id.player_list);
 
+        ImageView qrImage = findViewById(R.id.shared_qr_image);
 
         //Query for players associated with qr
         db.getPlayersFromQRCode(bundle.getString("hash"))

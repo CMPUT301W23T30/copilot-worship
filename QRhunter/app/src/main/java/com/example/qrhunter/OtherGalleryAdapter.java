@@ -44,8 +44,6 @@ public class OtherGalleryAdapter extends RecyclerView.Adapter<OtherGalleryAdapte
     public OtherGalleryAdapter(ArrayList<QRCode> qrCodeArrayList, Context context){
         this.qrCodeArrayList = qrCodeArrayList;
         this.context = context;
-
-        }
     }
 
     @Override
