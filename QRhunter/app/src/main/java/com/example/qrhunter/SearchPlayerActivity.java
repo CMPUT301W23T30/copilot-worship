@@ -125,7 +125,7 @@ public class SearchPlayerActivity extends AppCompatActivity implements SearchPla
     @Override
     public void OnItemClick(int position) {
         Bundle bundle = new Bundle();
-        Intent intent = new Intent(SearchPlayerActivity.this, MainActivity.class);
+        Intent intent = new Intent(SearchPlayerActivity.this, OtherProfiles.class);
         bundle.putString("username", userList.get(position).getUsername());
         intent.putExtras(bundle);
         startActivity(intent);
