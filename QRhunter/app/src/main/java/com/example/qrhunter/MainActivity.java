@@ -37,11 +37,9 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.Collections;
 
 
 /**
@@ -54,17 +52,16 @@ import java.util.Collections;
  */
 public class MainActivity extends AppCompatActivity {
     //Tag for logging any issues
-    //Tag for logging any issues
     final String TAG = "User Profile Page";
     Player currentPlayer;
     String username;
     ArrayList<QRCodeComment> qrCodeComments = new ArrayList<>();
 
     ArrayList<String> qrList = new ArrayList<>();
-    TextView beefyQR;
-    TextView squishyQR;
-    TextView userEmail;
-    TextView userPhone;
+    TextView beefyQRTextView;
+    TextView squishyQRTextView;
+    TextView userEmailTextView;
+    TextView userPhoneTextView;
     Bitmap image;
 
     Button scanButton;
@@ -103,9 +100,11 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_add_player_button:
 
                 Intent intent = new Intent(this, AddPlayerActivity.class);
-                Bundle b = new Bundle();
-                b.putString("username", username);
-                intent.putExtras(b);
+                Bundle bundle = new Bundle();
+                bundle.putString("username", username);
+                bundle.putString("email", currentPlayer.getEmail());
+                bundle.putString("phone", String.valueOf(currentPlayer.getNumber()));
+                intent.putExtras(bundle);
 
                 startActivity(intent);
 
