@@ -1,6 +1,10 @@
 package com.example.qrhunter;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -58,6 +62,17 @@ public class PlayerGalleryActivity extends AppCompatActivity {
                         galleryAdapter = new PlayerGalleryAdapter(
                                 PlayerGalleryActivity.this, playerArrayList);
                         galleryView.setAdapter(galleryAdapter);
+
+                        galleryView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                //Intent intent = new Intent(PlayerGalleryActivity.this, OtherProfiles.class);
+                                //Bundle bundle = new Bundle();
+                                //bundle.putString("username", galleryView.getItemAtPosition(position));
+
+                                Log.d("TASK", "TEST: " + galleryView.getItemAtPosition(position));
+                            }
+                        });
                     }
                 });
 

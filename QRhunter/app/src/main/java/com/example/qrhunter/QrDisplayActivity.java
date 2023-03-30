@@ -59,22 +59,19 @@ public class QrDisplayActivity extends AppCompatActivity {
 
         seeOthersButton = findViewById(R.id.other_players);
 
-    //TODO:  XML and CODE for other section is under testing so button is temporarily disabled
-
-//        //Find other players that have scanned this QR Code
-//        seeOthersButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(
-//                        QrDisplayActivity.this,
-//                        PlayerGalleryActivity.class);
-//                Bundle bundle = new Bundle();
-//                bundle.putString("CurrentPlayer", currentPlayer);
-//                bundle.putParcelable("QRCode",qrCode);
-//                intent.putExtras(bundle);
-//                startActivity(intent);
-//            }
-//        });
+        //Find other players that have scanned this QR Code
+        seeOthersButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(
+                        QrDisplayActivity.this,
+                        PlayerGalleryActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("hash",qrCode.getHash());
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
 
     }
 
