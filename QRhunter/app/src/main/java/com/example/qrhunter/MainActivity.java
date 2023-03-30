@@ -212,8 +212,7 @@ public class MainActivity extends AppCompatActivity {
         TextView userPhone = findViewById(R.id.user_page_phone);
 
         // Player Information
-        //TODO CHANGE TO USERNAME
-        db.getPlayerInfo("Player-1", new PlayerInfoListener() {
+        db.getPlayerInfo(username, new PlayerInfoListener() {
             @Override
             public void playerInfoCallback(Player player) {
                 currentPlayer = player;
