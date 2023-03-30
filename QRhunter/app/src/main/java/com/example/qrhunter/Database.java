@@ -310,6 +310,8 @@ public class Database {
                 DocumentSnapshot qr = transaction.get(qrCodeCollection.document(hash));
                 DocumentSnapshot p2Snap = transaction.get(playersCollection.document(p2));
                 HashMap<String, Object> qrInfo = new HashMap<>();
+                HashMap<String, Object> playerInfo = new HashMap<>();
+                playerInfo.put("player", p2);
                 qrInfo.put("hash", hash);
                 //p2 now has the qr code
                 transaction.set(playersCollection.document(p2).
@@ -321,6 +323,12 @@ public class Database {
                 //p1 now loses the qr
                 transaction.delete(playersCollection.document(p1).
                         collection("QRCodes").document(hash));
+                //qr forgets p1
+                transaction.delete(qrCodeCollection.document(hash).collection("Players")
+                        .document(p1));
+                //qr remembers p2
+                transaction.set(qrCodeCollection.document(hash).collection("Players").document(p2),
+                        playerInfo);
                 return newScore.intValue();
             }
         });
