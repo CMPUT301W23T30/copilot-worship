@@ -100,11 +100,20 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_add_player_button:
 
                 Intent intent = new Intent(this, AddPlayerActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("username", username);
-                bundle.putString("email", currentPlayer.getEmail());
-                bundle.putString("phone", String.valueOf(currentPlayer.getNumber()));
-                intent.putExtras(bundle);
+                if (currentPlayer != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("username", currentPlayer.getUsername());
+                    bundle.putString("email", currentPlayer.getEmail());
+                    bundle.putString("phone", String.valueOf(currentPlayer.getNumber()));
+                    intent.putExtras(bundle);
+                }
+                else {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("username", "");
+                    bundle.putString("email", "");
+                    bundle.putString("phone", "");
+                    intent.putExtras(bundle);
+                }
 
                 startActivity(intent);
 

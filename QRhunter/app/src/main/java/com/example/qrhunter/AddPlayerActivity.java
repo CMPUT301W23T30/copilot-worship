@@ -42,10 +42,18 @@ public class AddPlayerActivity extends AppCompatActivity {
 
         EditText usernameEditText = findViewById(R.id.usernameEditText);
         EditText emailEditText = findViewById(R.id.emailEditText);
-        EditText numberEditText = findViewById(R.id.numberEditText);
+        EditText phoneEditText = findViewById(R.id.numberEditText);
         Button submitButton = findViewById(R.id.submitButton);
         TextView errorText = findViewById(R.id.errorText);
 
+        Bundle bundle = getIntent().getExtras();
+        String passedUserName = bundle.getString("username");
+        String passedEmail = bundle.getString("email");
+        String passedPhone = bundle.getString("phone");
+
+        usernameEditText.setText(passedUserName);
+        emailEditText.setText(passedEmail);
+        phoneEditText.setText(passedPhone);
 
         /*
         //Need to convert this to a bundle
@@ -63,15 +71,14 @@ public class AddPlayerActivity extends AppCompatActivity {
 
 
             //TODO maybe once add player can handle QR Codes, we might wanna revamp this
-            Bundle bundle = getIntent().getExtras();
-            String currentUserName = bundle.getString("username");
+
             String username = usernameEditText.getText().toString();
             if(username.length() > 20 || username.length() <= 0 ){
                 errorText.setText("Username must be between 1-20 Characters");
                 return;
             }
             String email = emailEditText.getText().toString();
-            String number = numberEditText.getText().toString();
+            String number = phoneEditText.getText().toString();
             Player newUser = new Player(username,email, Integer.parseInt(number), new ArrayList<>());
             Database db = new Database();
             //making Sure it is unique
@@ -86,11 +93,11 @@ public class AddPlayerActivity extends AppCompatActivity {
                     }
                     else {
                         //TODO add on Failure listener
-                        db.removePlayer(currentUserName);
+                        db.removePlayer(passedUserName);
                         db.addPlayer(newUser);
                         //TODO add on failure listener
                         //Need to delete the player from the qr too
-                        db.getQrCodesFromPlayer(currentUserName)
+                        db.getQrCodesFromPlayer(passedUserName)
                                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                     @Override
                                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -101,7 +108,7 @@ public class AddPlayerActivity extends AppCompatActivity {
                                             String hash = doc.getString("hash");
                                             db.addScannedCode(new QRCode(hash ,null, null, 0),
                                                     newUser);
-                                            db.removePlayerFromQRCode(currentUserName, hash);
+                                            db.removePlayerFromQRCode(passedUserName, hash);
 
                                         }
                                         SharedPreferences settings = getSharedPreferences("UserInfo", 0);
@@ -110,7 +117,12 @@ public class AddPlayerActivity extends AppCompatActivity {
                                         editor.clear();
                                         editor.putString("Username", username);
                                         editor.apply();
+
                                         Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString("username", usernameEditText.getText().toString());
+                                        bundle.putString("email", emailEditText.getText().toString());
+                                        bundle.putString("phone", phoneEditText.getText().toString());
                                         startActivity(intent);
                                     }
                                 });
