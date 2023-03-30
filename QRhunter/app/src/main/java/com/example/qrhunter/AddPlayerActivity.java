@@ -93,11 +93,11 @@ public class AddPlayerActivity extends AppCompatActivity {
                     }
                     else {
                         //TODO add on Failure listener
-                        db.removePlayer(passedUserName);
+                        db.removePlayer(username);
                         db.addPlayer(newUser);
                         //TODO add on failure listener
                         //Need to delete the player from the qr too
-                        db.getQrCodesFromPlayer(passedUserName)
+                        db.getQrCodesFromPlayer(username)
                                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                     @Override
                                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {

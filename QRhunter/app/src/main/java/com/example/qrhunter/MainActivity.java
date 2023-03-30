@@ -198,6 +198,11 @@ public class MainActivity extends AppCompatActivity {
         ImageView profileCircle = (ImageView) findViewById(R.id.profile_icon);
         TextView userText = findViewById(R.id.user_page_user_name);
         TextView smallerTextView = findViewById(R.id.user_page_total_score);
+        TextView totalScore = findViewById(R.id.user_page_total_score);
+        TextView beefyQR = findViewById(R.id.user_page_strongest);
+        TextView squishyQR = findViewById(R.id.user_page_weakest);
+        TextView userEmail = findViewById(R.id.user_page_email);
+        TextView userPhone = findViewById(R.id.user_page_phone);
 
         CharacterImage testCharacter = characterCreator("2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824");
         profileCircle.setImageBitmap(testCharacter.getCharacterImage());
@@ -207,17 +212,21 @@ public class MainActivity extends AppCompatActivity {
         // profileCircle.setImageResource(R.drawable._icon__profile_circle_);
 
         Bundle bundle = getIntent().getExtras();
+
+        if (bundle != null) {
+            bundle.getString("username");
+            bundle.getString("email");
+            bundle.getString("phone");
+
+            userText.setText(bundle.getString("username"));
+            userEmail.setText(bundle.getString("email"));
+            userPhone.setText(bundle.getString("phone"));
+        }
+
         Database db = new Database();
         //db.populateDB(); Run only when we need to redo db after a purge
         //db.populateScore(20);// Run only after populate db
         getUsername(bundle, db, userText);
-
-        // Player Information
-        TextView totalScore = findViewById(R.id.user_page_total_score);
-        TextView beefyQR = findViewById(R.id.user_page_strongest);
-        TextView squishyQR = findViewById(R.id.user_page_weakest);
-        TextView userEmail = findViewById(R.id.user_page_email);
-        TextView userPhone = findViewById(R.id.user_page_phone);
 
         // Player Information
         db.getPlayerInfo(username, new PlayerInfoListener() {
