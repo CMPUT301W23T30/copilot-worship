@@ -451,7 +451,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("ADDQR", "Score: " + score);
 
                     QRCode one = new QRCode(hashedCode, hashedCode, l,score);
-
+                    AddQR(one);
                     askAndTakePhoto(one);
                 }
             }).show();
@@ -497,6 +497,7 @@ public class MainActivity extends AppCompatActivity {
                         /**
                          * need to add image (Bitmap object) to one (QRCode object)
                          */
+
 
 
                     }

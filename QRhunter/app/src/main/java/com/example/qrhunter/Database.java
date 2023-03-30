@@ -16,6 +16,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
@@ -24,6 +25,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -295,30 +297,42 @@ public class Database {
     }
 
     /**
-     * Adds a Player and the scanned QR code to the database
+     * Associates a QR Code with a Player
+     * Assumptions:
+     *   - QR Code and Player are already in the database
+     *   - QRCode hash & score is correct
      * Also updates the players total score in the db
      * Returns a map of tasks for the caller to handle
      * @param qrCode qrcode to be added
      * @param player Player that scanned the qr code
-     * @return A map with the tasks {QrToPlayerCol, PlayerToQrCol, updateTotalScore}
+     * @return A map with the tasks {associate, updateTotalScore}
      */
     public HashMap<String, Task<Void>> addScannedCode(@NonNull QRCode qrCode, @NonNull Player player){
         HashMap<String, Task<Void>> tasks = new HashMap<>();
         HashMap<String, Object> qrInfo = new HashMap<>();
         HashMap<String, Object> playerInfo = new HashMap<>();
+
+        WriteBatch batch = db.batch();
         qrInfo.put("hash", qrCode.getHash());
-        tasks.put("QrToPlayerCol", playersCollection
+        batch.set(playersCollection
                 .document(player.getUsername())
                 .collection("QRCodes")
-                .document(qrCode.getHash())
-                .set(qrInfo));
-        tasks.put("updateTotalScore", addPlayer(player));
+                .document(qrCode.getHash()), qrInfo);
+
+
+        tasks.put("updateTotalScore", playersCollection.document(player.getUsername()).update(
+                "totalScore", FieldValue.increment(qrCode.getScore())
+        ));
+
+
         playerInfo.put("username", player.getUsername());
-        tasks.put("PlayerToQrCol", qrCodeCollection
-                .document(qrCode.getHash())
-                .collection("Players")
-                .document(player.getUsername())
-                .set(playerInfo));
+
+        batch.set(qrCodeCollection
+                        .document(qrCode.getHash())
+                        .collection("Players")
+                        .document(player.getUsername()), playerInfo);
+        
+        tasks.put("associate", batch.commit());
         return tasks;
     }
 
