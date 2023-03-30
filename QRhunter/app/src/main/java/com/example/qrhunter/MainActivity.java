@@ -239,8 +239,6 @@ public class MainActivity extends AppCompatActivity {
                                     Log.d("TASK", "." + qrEntry.getKey() + ".");
                                     currentPlayer.addQrCode(qrCode);
                                     qrCodeComments.add(new QRCodeComment(qrCode, qrEntry.getValue()));
-
-
                                     if (currentPlayer.getTotalScore() != 0) {
                                         totalScore.setText(String.valueOf(currentPlayer.getTotalScore()));
                                         beefyQR.setText(String.valueOf(currentPlayer.getBeefy()));
@@ -312,7 +310,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 //                Bundle bundle = new Bundle();
 //                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
-
+                //Permission check for fine location
+                if (ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_LOCATION);
+                }
                 Toast.makeText(MainActivity.this, "Start Scanning", Toast.LENGTH_SHORT).show();
                 QRScan newClass = new QRScan();
                 newClass.scanCode(barLauncher);
@@ -449,26 +450,52 @@ public class MainActivity extends AppCompatActivity {
 
             FusedLocationProviderClient fusedLocationClient =
                     LocationServices.getFusedLocationProviderClient(this);
-            //Permission check for fine location
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_LOCATION);
-            }
-            fusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Store Location")
+                    .setMessage("Do you want to store the location of this Qreature?")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            Log.d("ADDQR", "Hash: " + hashedCode);
-                            Log.d("ADDQR", "Score: " + score);
+                            if (ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_LOCATION);
+                            }
+                            fusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+                                @Override
+                                public void onSuccess(Location location) {
+                                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            Log.d("ADDQR", "Hash: " + hashedCode);
+                                            Log.d("ADDQR", "Score: " + score);
 
-                            QRCode one = new QRCode(hashedCode, hashedCode, location, score);
-
-                            askAndTakePhoto(one);
+                                            QRCode one = new QRCode(hashedCode, hashedCode, location, score);
+                                            System.out.println("locale :)");
+                                            askAndTakePhoto(one);
+                                        }
+                                    }).show();
+                                }
+                            });
                         }
-                    }).show();
-                }
-            });
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Log.d("ADDQR", "Hash: " + hashedCode);
+                                    Log.d("ADDQR", "Score: " + score);
+                                    System.out.println("no locale :(");
+                                    QRCode one = new QRCode(hashedCode, hashedCode, new Location(""), score);
+                                    askAndTakePhoto(one);
+                                }
+                            }).show();
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+
 
 
 
