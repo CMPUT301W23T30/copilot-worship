@@ -61,6 +61,8 @@ public class SearchPlayerActivity extends AppCompatActivity {
                         recyclerView.setAdapter(adapter);
                     }
                 });
+        // enable back button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     /**
@@ -117,5 +119,16 @@ public class SearchPlayerActivity extends AppCompatActivity {
                         recyclerView.setAdapter(adapter);
                     }
                 });
+    }
+    // enable back button
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

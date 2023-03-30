@@ -1,6 +1,8 @@
 package com.example.qrhunter;
 
 import android.content.Intent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -84,6 +86,9 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
                         recyclerView.setAdapter(adapter);
                     }
                 });
+        // enable back button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
     }
 
     public void onClickFirst(View view) {
@@ -117,5 +122,20 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
         bundle.putString("username", userList.get(position).getUsername());
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+    // enable back button
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return true;
     }
 }
