@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Class that represents the leaderboard
+ * Class that displays the Leaderboard
  */
 public class LeaderboardActivity extends AppCompatActivity implements LeaderboardAdapter.OnItemClickListener {
     private RecyclerView recyclerView;
@@ -43,35 +43,33 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
     private SharedPreferences.Editor editor ;
 
 
-    public void storeTop10(List<DocumentSnapshot> list){
-        Set<String> top10 = new HashSet<>();
-        //Store top >=10  locally
-        for(int i = 0; i < 10 || i < list.size(); i++){
+    public void storeLeaderboard(List<DocumentSnapshot> list){
+        Set<String> LeaderBoardSet = new HashSet<>();
+        //Store locally
+        for(int i = 0;  i < list.size(); i++){
             //We can store a set easily so we use the format i-username-score
             //Where i is the number of the player
             String nullFlag = "\u0000";
-            top10.add( i + nullFlag + list.get(i).get("username").toString() + nullFlag
+            LeaderBoardSet.add( i + nullFlag + list.get(i).get("username").toString() + nullFlag
                     + list.get(i).get("totalScore").toString());
         }
-        editor.putStringSet("localTop10", top10);
+        editor.putStringSet("localLeaderboard", LeaderBoardSet);
         editor.putBoolean("playersSaved", true);
         editor.commit();
     }
 
-    public List<LeaderboardModel> getTop10(){
+    public List<LeaderboardModel> getLeaderboard(){
         List<LeaderboardModel> userList = new ArrayList<>();
-        Set<String> top10 = new HashSet<>();
-        top10 = settings.getStringSet("localTop10", top10);
-        Object[] topList = top10.stream().sorted().toArray();
+        Set<String> leaderBoardSet = new HashSet<>();
+        leaderBoardSet = settings.getStringSet("localLeaderboard", leaderBoardSet);
+        Object[] topList = leaderBoardSet.stream().sorted().toArray();
         String nullFlag = "\u0000";
         for (Object formattedObject : topList) {
             String formattedUser = (String) formattedObject;
-            System.out.println(formattedUser);
             //Cut off first terminator that stored position
             formattedUser = formattedUser.substring(formattedUser.indexOf(nullFlag) + 1);
             String username = formattedUser.substring(0, formattedUser.indexOf(nullFlag));
             String score = formattedUser.substring(formattedUser.indexOf(nullFlag) + 1);
-            System.out.println(username + ":  - :" + score);
             LeaderboardModel user = new LeaderboardModel(username, Integer.valueOf(score));
             userList.add(user);
         }
@@ -122,7 +120,9 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
         userList.remove(1);
         userList.remove(2);
         adapter = new LeaderboardAdapter(userList, LeaderboardActivity.this, LeaderboardActivity.this::OnItemClick);
+
         recyclerView.setAdapter(adapter);
+
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,10 +145,8 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
         Boolean saved;
         saved = settings.getBoolean("playersSaved", false);
 
-        System.out.println(saved);
         if(saved){
-            displayLeaderboardSaved(getTop10());
-            System.out.println("Gotten locally");
+            displayLeaderboardSaved(getLeaderboard());
         }
         else{
             db.getPlayerCollectionTotalScore()
@@ -156,7 +154,7 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
                         @Override
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                             List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-                            storeTop10(list);
+                            storeLeaderboard(list);
                             displayLeaderboardQuery(list);
                         }
                     });

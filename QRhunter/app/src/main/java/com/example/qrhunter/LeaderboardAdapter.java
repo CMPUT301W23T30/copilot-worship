@@ -76,6 +76,8 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         TextView username;
         TextView ranking;
         TextView totalScore;
+
+
         /** for recycler views there is no onItemClickListener, so we have to make our own for each of the views inside
          * the RecyclerView
         */
