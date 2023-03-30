@@ -13,7 +13,7 @@
         android:backgroundTint="@color/white"
         android:text="QR Gallery"
         android:textAlignment="center"
-        android:textColor="@color/black"
+        
         android:textSize="34sp" />
 
     <androidx.recyclerview.widget.RecyclerView
