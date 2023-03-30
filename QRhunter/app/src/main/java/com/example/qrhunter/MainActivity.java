@@ -1,14 +1,19 @@
 package com.example.qrhunter;
 
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.telephony.CarrierConfigManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,8 +28,13 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.common.hash.Hashing;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
@@ -53,6 +63,8 @@ import java.util.Collections;
  * Properly Cite the method to store usernames
  */
 public class MainActivity extends AppCompatActivity {
+
+    private static final int PERMISSIONS_REQUEST_LOCATION = 1;
     //Tag for logging any issues
     //Tag for logging any issues
     final String TAG = "User Profile Page";
@@ -95,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
      * @return true if the button is clicked, false otherwise
      * @author: Maarij
      */
-     
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -130,34 +142,32 @@ public class MainActivity extends AppCompatActivity {
      * @param db Database instance to query from
      * @param userText User text to set the username too
      */
-    public void getUsername(Bundle bundle, Database db, TextView userText){
+    public void getUsername(Bundle bundle, Database db, TextView userText) {
         //https://stackoverflow.com/questions/10209814/saving-user-information-in-app-settings
         //Roughly following
         //TODO properly cite
-        if(bundle != null){
+        if (bundle != null) {
             username = bundle.getString("username");
             userText.setText(username);
-        }
-        else{
+        } else {
 
             SharedPreferences settings = getSharedPreferences("UserInfo", 0);
             //If login info saved already
-            if(settings.contains("Username")){
+            if (settings.contains("Username")) {
                 username = settings.getString("Username", "");
                 userText.setText(username);
             }
             //else we can assume a new player
-            else{
+            else {
                 SharedPreferences.Editor editor = settings.edit();
                 db.getPlayerCount()
                         .addOnCompleteListener(new OnCompleteListener<AggregateQuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<AggregateQuerySnapshot> task) {
-                                if(task.isSuccessful()){
+                                if (task.isSuccessful()) {
                                     username = "Player-" + (task.getResult().getCount()
                                             + 1);
-                                }
-                                else{
+                                } else {
                                     //TODO add an error message here
                                     Log.d(TAG, "Failed to get player count for new player");
                                     username = "Player-?";
@@ -174,8 +184,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void getRankingEstimates(Bundle bundle, Database db){
-        if(bundle != null){
+    public void getRankingEstimates(Bundle bundle, Database db) {
+        if (bundle != null) {
 
         }
     }
@@ -222,11 +232,11 @@ public class MainActivity extends AppCompatActivity {
                 db.getPlayerCollection(player.getUsername(), new PlayerCollectionListener() {
                     @Override
                     public void playerCollectionCallback(Map<String, String> map) {
-                        for (Map.Entry<String,String> qrEntry : map.entrySet()) {
+                        for (Map.Entry<String, String> qrEntry : map.entrySet()) {
                             db.getQRCodeInfo(qrEntry.getKey(), new QRCodeListener() {
                                 @Override
                                 public void qrCodeCallback(QRCode qrCode) {
-                                    Log.d("TASK", "." + qrEntry.getKey() +".");
+                                    Log.d("TASK", "." + qrEntry.getKey() + ".");
                                     currentPlayer.addQrCode(qrCode);
                                     qrCodeComments.add(new QRCodeComment(qrCode, qrEntry.getValue()));
 
@@ -262,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,SearchPlayerActivity.class);
+                Intent intent = new Intent(MainActivity.this, SearchPlayerActivity.class);
                 startActivity(intent);
             }
         });
@@ -281,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,MapsActivity.class);
+                Intent intent = new Intent(MainActivity.this, MapsActivity.class);
                 startActivity(intent);
             }
         });
@@ -289,9 +299,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                Intent intent = new Intent(MainActivity.this,Gallery.class);
+                Intent intent = new Intent(MainActivity.this, Gallery.class);
                 bundle.putParcelable("Player", currentPlayer);
-                bundle.putParcelableArrayList("QRArray",(ArrayList<? extends Parcelable>) qrCodeComments);
+                bundle.putParcelableArrayList("QRArray", (ArrayList<? extends Parcelable>) qrCodeComments);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -423,10 +433,9 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Scan QR code
      */
-    ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result->
+    ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result ->
     {
-        if(result.getContents() !=null)
-        {
+        if (result.getContents() != null) {
             String hashedCode = hasher(result.getContents()); // If this fails alert won't appear, makes it easier to test
             int score = scoreCalculator(hashedCode);
 
@@ -438,25 +447,31 @@ public class MainActivity extends AppCompatActivity {
 
             builder.setMessage(name + " " + score + " points");
 
-            // Set Random Location for now
-            Location l = new Location("");
-            //Incomplete but acceptable locations
-            l.setLongitude(Math.random() * 180);
-            l.setLatitude(Math.random() * 90);
-
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
-            {
+            FusedLocationProviderClient fusedLocationClient =
+                    LocationServices.getFusedLocationProviderClient(this);
+            //Permission check for fine location
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_LOCATION);
+            }
+            fusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
-                public void onClick(DialogInterface dialogInterface, int i)
-                {
-                    Log.d("ADDQR", "Hash: " + hashedCode);
-                    Log.d("ADDQR", "Score: " + score);
+                public void onSuccess(Location location) {
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Log.d("ADDQR", "Hash: " + hashedCode);
+                            Log.d("ADDQR", "Score: " + score);
 
-                    QRCode one = new QRCode(hashedCode, hashedCode, l,score);
+                            QRCode one = new QRCode(hashedCode, hashedCode, location, score);
 
-                    askAndTakePhoto(one);
+                            askAndTakePhoto(one);
+                        }
+                    }).show();
                 }
-            }).show();
+            });
+
+
+
         }
     });
 
