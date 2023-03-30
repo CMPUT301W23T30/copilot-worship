@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
  * @author: Maarij
  */
 public class AddPlayerActivity extends AppCompatActivity {
+    String passedUserName, passedEmail, passedPhone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +47,16 @@ public class AddPlayerActivity extends AppCompatActivity {
         Button submitButton = findViewById(R.id.submitButton);
         TextView errorText = findViewById(R.id.errorText);
 
-        Bundle bundle = getIntent().getExtras();
-        String passedUserName = bundle.getString("username");
-        String passedEmail = bundle.getString("email");
-        String passedPhone = bundle.getString("phone");
+        if (getIntent().getExtras() != null) {
+            Bundle bundle = getIntent().getExtras();
+            passedUserName = bundle.getString("username");
+            passedEmail = bundle.getString("email");
+            passedPhone = bundle.getString("phone");
 
-        usernameEditText.setText(passedUserName);
-        emailEditText.setText(passedEmail);
-        phoneEditText.setText(passedPhone);
+            usernameEditText.setText(passedUserName);
+            emailEditText.setText(passedEmail);
+            phoneEditText.setText(passedPhone);
+        }
 
         /*
         //Need to convert this to a bundle
@@ -71,9 +74,8 @@ public class AddPlayerActivity extends AppCompatActivity {
 
 
             //TODO maybe once add player can handle QR Codes, we might wanna revamp this
-
             String username = usernameEditText.getText().toString();
-            if(username.length() > 20 || username.length() <= 0 ){
+            if (username.length() > 20 || username.length() <= 0 ) {
                 errorText.setText("Username must be between 1-20 Characters");
                 return;
             }
@@ -93,7 +95,9 @@ public class AddPlayerActivity extends AppCompatActivity {
                     }
                     else {
                         //TODO add on Failure listener
-                        db.removePlayer(username);
+                        if (passedUserName != null) {
+                            db.removePlayer(passedUserName);
+                        }
                         db.addPlayer(newUser);
                         //TODO add on failure listener
                         //Need to delete the player from the qr too
