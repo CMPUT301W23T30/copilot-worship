@@ -369,7 +369,11 @@ public class MainActivity extends AppCompatActivity {
                 n++;
             } else {
                 if (n > 1) {
-                    score += Math.pow(Integer.parseInt(prev, 16), n - 1);
+                    if (prev.equals("0")) {
+                        score += Math.pow(20, n - 1);
+                    } else {
+                        score += Math.pow(Integer.parseInt(prev, 16), n - 1);
+                    }
                 }
                 n = 1;
                 prev = hashedQRCode.substring(i, i + 1);
