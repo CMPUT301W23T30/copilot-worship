@@ -1,7 +1,6 @@
 package com.example.qrhunter;
 
 import android.location.Location;
-import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -20,11 +19,11 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Transaction;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
@@ -297,6 +296,37 @@ public class Database {
     }
 
     /**
+     * Assings p1's QrCode to p2
+     * @param p1
+     * @param p2
+     * @param hash
+     * @return
+     */
+    public Task<Object> giveQRCode(String p1, String p2, String hash){
+        return db.runTransaction(new Transaction.Function<Object>() {
+
+            @Nullable
+            @Override
+            public Object apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+                HashMap<String, Object> qrInfo = new HashMap<>();
+                qrInfo.put("hash", hash);
+                //p2 now has the qr code
+                transaction.set(playersCollection.document(p2).
+                        collection("QRCodes").document(hash), qrInfo);
+                DocumentSnapshot qr = transaction.get(qrCodeCollection.document(hash));
+                DocumentSnapshot p2Snap = transaction.get(playersCollection.document(p2));
+                int newScore = (int) p2Snap.get("totalScore") + (int) qr.get("score");
+                //p2 now has an updated Score
+                transaction.update(playersCollection.document(p2), "totalScore", newScore);
+                //p1 now loses the qr
+                transaction.delete(playersCollection.document(p1).
+                        collection("QRCodes").document(hash));
+                return null;
+            }
+        });
+    }
+
+    /**
      * Associates a QR Code with a Player
      * Assumptions:
      *   - QR Code and Player are already in the database
@@ -331,7 +361,7 @@ public class Database {
                         .document(qrCode.getHash())
                         .collection("Players")
                         .document(player.getUsername()), playerInfo);
-        
+
         tasks.put("associate", batch.commit());
         return tasks;
     }

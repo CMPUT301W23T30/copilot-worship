@@ -1,6 +1,5 @@
 package com.example.qrhunter;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -10,10 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.android.gms.common.data.DataBufferObserverSet;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -25,8 +21,6 @@ import com.google.firebase.firestore.QuerySnapshot;
  * @author: Maarij
  */
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * This class is used to edit player information
@@ -98,7 +92,8 @@ public class AddPlayerActivity extends AppCompatActivity {
                     }
                     else {
                         //TODO add on Failure listener
-                        db.removePlayer(currentUserName);
+
+
                         db.addPlayer(newUser);
                         //TODO add on failure listener
                         //Need to delete the player from the qr too
@@ -111,11 +106,9 @@ public class AddPlayerActivity extends AppCompatActivity {
                                             //Not sure what they can do since no rollback but atleast we can
                                             //let the user know there was a glitch
                                             String hash = doc.getString("hash");
-                                            db.addScannedCode(new QRCode(hash ,null, null, 0),
-                                                    newUser);
-                                            db.removePlayerFromQRCode(currentUserName, hash);
-
+                                            db.giveQRCode(currentUserName, username, hash);
                                         }
+
                                         SharedPreferences settings = getSharedPreferences("UserInfo", 0);
                                         //Save this new username locally, how nice
                                         SharedPreferences.Editor editor = settings.edit();
