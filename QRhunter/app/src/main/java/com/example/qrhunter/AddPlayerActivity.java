@@ -10,10 +10,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.android.gms.common.data.DataBufferObserverSet;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -25,8 +26,7 @@ import com.google.firebase.firestore.QuerySnapshot;
  * @author: Maarij
  */
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.HashMap;
 
 /**
  * This class is used to edit player information
@@ -58,26 +58,6 @@ public class AddPlayerActivity extends AppCompatActivity {
             phoneEditText.setText(passedPhone);
         }
 
-        // usernameEditText.setText(passedUserName);
-        // Database db = new Database();
-
-        // db.getPlayer(passedUserName).
-        //         addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-        //             @Override
-        //             public void onSuccess(DocumentSnapshot documentSnapshot) {
-        //                 emailEditText.setText(documentSnapshot.getString("email"));
-        //                 numberEditText.setText(documentSnapshot.get("number").toString());
-        //             }
-        //         });
-
-        /*
-        //Need to convert this to a bundle
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("username", username);
-        intent.putExtra("email", email);
-        intent.putExtra("number", number);
-
-         */
 
         submitButton.setOnClickListener(v -> {
             //To update the player info, we need to delete
@@ -85,8 +65,6 @@ public class AddPlayerActivity extends AppCompatActivity {
             // To do that we have to reconstruct the player object for deletion and addition
             Database db = new Database();
 
-
-            //TODO maybe once add player can handle QR Codes, we might wanna revamp this
 
             String username = usernameEditText.getText().toString();
             if (username.length() > 20 || username.length() <= 0 ) {
@@ -96,6 +74,12 @@ public class AddPlayerActivity extends AppCompatActivity {
             String email = emailEditText.getText().toString();
             String number = phoneEditText.getText().toString();
             Player newUser = new Player(username,email, Integer.parseInt(number), new ArrayList<>());
+            //If just changing info, no need to change much
+            if(username.equals(passedUserName)){
+                db.changeInfo(newUser);
+                Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
             //making Sure it is unique
             db.getPlayer(username).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
@@ -108,9 +92,7 @@ public class AddPlayerActivity extends AppCompatActivity {
                     }
                     else {
                         //TODO add on Failure listener
-                        if (passedUserName != null) {
-                            db.removePlayer(passedUserName);
-                        }
+
                         db.addPlayer(newUser);
                         //TODO add on failure listener
                         //Need to delete the player from the qr too
@@ -118,37 +100,49 @@ public class AddPlayerActivity extends AppCompatActivity {
                                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                     @Override
                                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                        errorText.setTextColor(getResources().getColor(R.color.white));
+                                        errorText.setText("Changing info...");
+                                        ArrayList<Task<?>> tasks = new ArrayList<>();
                                         for(QueryDocumentSnapshot doc : queryDocumentSnapshots){
                                             //TODO add failure listeners
                                             //Not sure what they can do since no rollback but atleast we can
                                             //let the user know there was a glitch
                                             String hash = doc.getString("hash");
-                                            db.addScannedCode(new QRCode(hash ,null, null, 0),
-                                                    newUser);
-                                            db.removePlayerFromQRCode(passedUserName, hash);
+                                            tasks.add(db.giveQRCode(passedUserName, username, hash));
 
                                         }
-                                        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
-                                        //Save this new username locally, how nice
-                                        SharedPreferences.Editor editor = settings.edit();
-                                        editor.clear();
-                                        editor.putString("Username", username);
-                                        editor.apply();
 
-                                        SharedPreferences settings2 = getSharedPreferences("LocalLeaderboard", 0);
-                                        SharedPreferences.Editor editor1 = settings2.edit();
-                                        editor1.putBoolean("playersSaved", false); //reload leaderboard next time
-                                        editor1.commit();
-                                        
-                                        Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
-                                        Bundle bundle = new Bundle();
-                                        bundle.putString("username", usernameEditText.getText().toString());
-                                        bundle.putString("email", emailEditText.getText().toString());
-                                        bundle.putString("phone", phoneEditText.getText().toString());
-                                        startActivity(intent);
+                                        //When done transfer
+                                        Tasks.whenAll(tasks)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        if (passedUserName != null) {
+                                                            db.removePlayer(passedUserName);
+                                                        }
+                                                        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+                                                        //Save this new username locally, how nice
+                                                        SharedPreferences.Editor editor = settings.edit();
+                                                        editor.clear();
+                                                        editor.putString("Username", username);
+                                                        editor.apply();
+
+                                                        SharedPreferences settings2 = getSharedPreferences("LocalLeaderboard", 0);
+                                                        SharedPreferences.Editor editor1 = settings2.edit();
+                                                        editor1.putBoolean("playersSaved", false); //reload leaderboard next time
+                                                        editor1.commit();
+
+                                                        Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
+                                                        Bundle bundle = new Bundle();
+                                                        bundle.putString("username", usernameEditText.getText().toString());
+                                                        bundle.putString("email", emailEditText.getText().toString());
+                                                        bundle.putString("phone", phoneEditText.getText().toString());
+                                                        startActivity(intent);
+                                                    }
+                                                });
+
                                     }
                                 });
-                        //finish();
                     }
                 }
             });
