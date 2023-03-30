@@ -176,6 +176,15 @@ public class Database {
                 .set(playerInfo);
     }
 
+    public Task<Void> changeInfo(Player player){
+        WriteBatch batch = db.batch();
+        batch.update(playersCollection.document(player.getUsername()),
+                "email", player.getEmail());
+        batch.update(playersCollection.document(player.getUsername()),
+                "number", player.getNumber());
+        return batch.commit();
+    }
+
     /**
      * Removes a player from the database
      * @param player username of player to remove
@@ -296,11 +305,11 @@ public class Database {
     }
 
     /**
-     * Assings p1's QrCode to p2
-     * @param p1
-     * @param p2
-     * @param hash
-     * @return
+     * Assigns p1's QrCode to p2
+     * @param p1 Player that is losing the qr
+     * @param p2 Player that is receiving the qr
+     * @param hash hash of qr
+     * @return Task of type integer that has the updated score of p2
      */
     public Task<Integer> giveQRCode(String p1, String p2, String hash){
         return db.runTransaction(new Transaction.Function<Integer>() {

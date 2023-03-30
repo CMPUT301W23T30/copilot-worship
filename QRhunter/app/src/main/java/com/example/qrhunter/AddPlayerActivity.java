@@ -61,22 +61,12 @@ public class AddPlayerActivity extends AppCompatActivity {
                     }
                 });
 
-        /*
-        //Need to convert this to a bundle
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("username", username);
-        intent.putExtra("email", email);
-        intent.putExtra("number", number);
-
-         */
 
         submitButton.setOnClickListener(v -> {
             //To update the player info, we need to delete
             // all the documents and re add it
             // To do that we have to reconstruct the player object for deletion and addition
 
-
-            //TODO maybe once add player can handle QR Codes, we might wanna revamp this
 
             String username = usernameEditText.getText().toString();
             if(username.length() > 20 || username.length() <= 0 ){
@@ -86,67 +76,73 @@ public class AddPlayerActivity extends AppCompatActivity {
             String email = emailEditText.getText().toString();
             String number = numberEditText.getText().toString();
             Player newUser = new Player(username,email, Integer.parseInt(number), new ArrayList<>());
-            //making Sure it is unique
-            db.getPlayer(username).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    if(documentSnapshot.exists())
-                    {
-                        //Username is not unique, so it is invalid
+            //If just changing info, no need to change much
+            if(username.equals(currentUserName)){
+                db.changeInfo(newUser);
+                Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+            else{
+                //making Sure it is unique
+                db.getPlayer(username).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if(documentSnapshot.exists())
+                        {
+                            //Username is not unique, so it is invalid
+                            errorText.setText("Username is taken dummmy");
+                        }
+                        else {
+                            //TODO add on Failure listener
 
-                        errorText.setText("Username is taken dummmy");
-                    }
-                    else {
-                        //TODO add on Failure listener
+                            db.addPlayer(newUser);
+                            //TODO add on failure listener
+                            //Need to delete the player from the qr too
+                            db.getQrCodesFromPlayer(currentUserName)
+                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                            errorText.setTextColor(getResources().getColor(R.color.white));
+                                            errorText.setText("Changing info...");
+                                            ArrayList<Task<?>> tasks = new ArrayList<>();
+                                            for(QueryDocumentSnapshot doc : queryDocumentSnapshots){
+                                                //TODO add failure listeners
+                                                //Not sure what they can do since no rollback but atleast we can
+                                                //let the user know there was a glitch
+                                                String hash = doc.getString("hash");
+                                                tasks.add(db.giveQRCode(currentUserName, username, hash));
 
+                                            }
+                                            //When done transfer
+                                            Tasks.whenAll(tasks)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void unused) {
+                                                            db.removePlayer(currentUserName);
 
-                        db.addPlayer(newUser);
-                        //TODO add on failure listener
-                        //Need to delete the player from the qr too
-                        db.getQrCodesFromPlayer(currentUserName)
-                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                        ArrayList<Task<?>> tasks = new ArrayList<>();
-                                        for(QueryDocumentSnapshot doc : queryDocumentSnapshots){
-                                            //TODO add failure listeners
-                                            //Not sure what they can do since no rollback but atleast we can
-                                            //let the user know there was a glitch
-                                            String hash = doc.getString("hash");
-                                            tasks.add(db.giveQRCode(currentUserName, username, hash));
+                                                            SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+                                                            //Save this new username locally, how nice
+                                                            SharedPreferences.Editor editor = settings.edit();
+                                                            editor.clear();
+                                                            editor.putString("Username", username);
+                                                            editor.apply();
+                                                            db.removePlayer(currentUserName);
+                                                            SharedPreferences settings2 = getSharedPreferences("LocalLeaderboard", 0);
+                                                            SharedPreferences.Editor editor1 = settings2.edit();
+                                                            editor1.putBoolean("playersSaved", false); //reload leaderboard next time
+                                                            editor1.commit();
+
+                                                            Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
+                                                            startActivity(intent);
+                                                        }
+                                                    });
 
                                         }
-                                        //When done transfer
-                                        Tasks.whenAll(tasks)
-                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void unused) {
-                                                        db.removePlayer(currentUserName);
-
-                                                        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
-                                                        //Save this new username locally, how nice
-                                                        SharedPreferences.Editor editor = settings.edit();
-                                                        editor.clear();
-                                                        editor.putString("Username", username);
-                                                        editor.apply();
-                                                        db.removePlayer(currentUserName);
-                                                        SharedPreferences settings2 = getSharedPreferences("LocalLeaderboard", 0);
-                                                        SharedPreferences.Editor editor1 = settings2.edit();
-                                                        editor1.putBoolean("playersSaved", false); //reload leaderboard next time
-                                                        editor1.commit();
-
-                                                        Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
-                                                        startActivity(intent);
-                                                    }
-                                                });
-
-                                    }
-                                });
-                        //finish();
+                                    });
+                        }
                     }
-                }
-            });
-
+                });
+            }
         });
     }
 }
