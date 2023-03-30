@@ -25,13 +25,16 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.common.hash.Hashing;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 import org.jetbrains.annotations.Nullable;
+import org.w3c.dom.Text;
 
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -453,8 +456,15 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("ADDQR", "Score: " + score);
 
                     QRCode one = new QRCode(hashedCode, hashedCode, l,score);
-                    AddQR(one);
-                    askAndTakePhoto(one);
+                    Database db = new Database();
+                    db.getPlayer(username).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            AddQR(one, documentSnapshot.get("totalScore").toString());
+                            askAndTakePhoto(one);
+                        }
+                    });
+
                 }
             })
                     .setNegativeButton("Discard", null)
@@ -517,10 +527,33 @@ public class MainActivity extends AppCompatActivity {
      * This method adds a QR code to the database
      * @param newQR the QR code to be added
      */
-    public void AddQR(QRCode newQR){
+    public void AddQR(QRCode newQR, String totalScore){
         Database db = new Database();
-        db.addQrCode(newQR);
-        db.addScannedCode(newQR, new Player(username));
+        db.getQRCountFromPlayer(username, newQR.hash).addOnSuccessListener(new OnSuccessListener<AggregateQuerySnapshot>() {
+            @Override
+            public void onSuccess(AggregateQuerySnapshot aggregateQuerySnapshot) {
+                //If player does not already have qr
+                if(aggregateQuerySnapshot.getCount() == 0){
+                    db.addQrCode(newQR);
+                    db.addScannedCode(newQR, new Player(username));
+                }
+            }
+        });
+        //Check to see if we think we moved up in the db, if first place or no score to beat
+        // Then refresh always with lessScore
+        SharedPreferences settings = getSharedPreferences("LocalLeaderboard", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        int lessScore = (Integer.parseInt(totalScore) - 1);
+        String scoretoBeat = settings.getString("scoreToBeat", lessScore + "");
+        if(Integer.parseInt(scoretoBeat) < Integer.parseInt(totalScore)){
+            editor.putBoolean("playersSaved", false);
+            editor.commit();
+        }
+
+
+
+
+
     }
 
 

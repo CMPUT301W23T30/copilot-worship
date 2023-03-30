@@ -277,6 +277,14 @@ public class Database {
                 .get();
     }
 
+    public Task<AggregateQuerySnapshot> getQRCountFromPlayer(String username, String hash){
+        return playersCollection.document(username)
+                .collection("QRCodes")
+                .whereEqualTo("hash", hash)
+                .count()
+                .get(AggregateSource.SERVER);
+    }
+
     public Task<DocumentSnapshot> getPlayer(String username) {
         return playersCollection
                 .document(username)
