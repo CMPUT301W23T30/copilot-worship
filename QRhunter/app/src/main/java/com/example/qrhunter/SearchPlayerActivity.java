@@ -62,6 +62,8 @@ public class SearchPlayerActivity extends AppCompatActivity implements SearchPla
                         recyclerView.setAdapter(adapter);
                     }
                 });
+        // Set the action bar to show the Up button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     /**
@@ -128,4 +130,16 @@ public class SearchPlayerActivity extends AppCompatActivity implements SearchPla
         intent.putExtras(bundle);
         startActivity(intent);
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 }

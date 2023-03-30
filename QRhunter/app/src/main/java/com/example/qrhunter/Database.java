@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
@@ -123,6 +124,29 @@ public class Database {
                 callback.playerCollectionCallback(qrMap);
             }
         });
+    }
+
+    /**
+     * Updates a Player's comment on a specific QRCode in their collection
+     * @param username username of Player
+     * @param comment comment updated by Player
+     * @param hash hash of QRCode
+     */
+    public void editComment(String username, String comment, String hash){
+        playersCollection.document(username).collection("QRCodes").document(hash)
+                .update("comment", comment)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("DATABASE", "Comment updated successfully");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("DATABASE", "Comment failed to be updated.");
+                    }
+                });
     }
 
     /**
