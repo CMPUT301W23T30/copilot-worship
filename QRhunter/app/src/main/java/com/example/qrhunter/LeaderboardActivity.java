@@ -69,7 +69,6 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
     }
 
     public List<LeaderboardModel> getLeaderboard(){
-        List<LeaderboardModel> userList = new ArrayList<>();
         Set<String> leaderBoardSet = new HashSet<>();
         leaderBoardSet = settings.getStringSet("localLeaderboard", leaderBoardSet);
         Object[] topList = leaderBoardSet.stream().sorted().toArray();

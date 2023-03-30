@@ -46,6 +46,20 @@ public class AddPlayerActivity extends AppCompatActivity {
         Button submitButton = findViewById(R.id.submitButton);
         TextView errorText = findViewById(R.id.errorText);
 
+        Bundle bundle = getIntent().getExtras();
+        String currentUserName = bundle.getString("username");
+
+        usernameEditText.setText(currentUserName);
+        Database db = new Database();
+
+        db.getPlayer(currentUserName).
+                addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        emailEditText.setText(documentSnapshot.getString("email"));
+                        numberEditText.setText(documentSnapshot.get("number").toString());
+                    }
+                });
 
         /*
         //Need to convert this to a bundle
@@ -63,8 +77,7 @@ public class AddPlayerActivity extends AppCompatActivity {
 
 
             //TODO maybe once add player can handle QR Codes, we might wanna revamp this
-            Bundle bundle = getIntent().getExtras();
-            String currentUserName = bundle.getString("username");
+
             String username = usernameEditText.getText().toString();
             if(username.length() > 20 || username.length() <= 0 ){
                 errorText.setText("Username must be between 1-20 Characters");
@@ -73,7 +86,6 @@ public class AddPlayerActivity extends AppCompatActivity {
             String email = emailEditText.getText().toString();
             String number = numberEditText.getText().toString();
             Player newUser = new Player(username,email, Integer.parseInt(number), new ArrayList<>());
-            Database db = new Database();
             //making Sure it is unique
             db.getPlayer(username).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
