@@ -51,7 +51,20 @@
         <meta-data
                 android:name="com.google.android.geo.API_KEY"
                 android:value="AIzaSyDq1rhH_mTOoVJ_xw6LXoCBBrmLzxabd60"/>
-
+        <activity
+            android:name=".OtherGallery"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value=""/>
+        </activity>
+        <activity
+            android:name=".OtherProfiles"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value=""/>
+        </activity>
         <activity
                 android:name=".Gallery"
                 android:exported="false">
