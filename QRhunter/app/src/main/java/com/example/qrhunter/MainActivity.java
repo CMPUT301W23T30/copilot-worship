@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Database db = new Database();
-        //db.populateDB(); Run only when we need to redo db after a purge
+        //db.populateDB(); //Run only when we need to redo db after a purge
         //db.populateScore(20);// Run only after populate db
         getUsername(bundle, db, usernameText);
 

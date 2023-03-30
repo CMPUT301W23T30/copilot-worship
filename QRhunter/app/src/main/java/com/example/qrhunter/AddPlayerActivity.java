@@ -47,8 +47,8 @@ public class AddPlayerActivity extends AppCompatActivity {
         Button submitButton = findViewById(R.id.submitButton);
         TextView errorText = findViewById(R.id.errorText);
 
-        if (getIntent().getExtras() != null) {
-            Bundle bundle = getIntent().getExtras();
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
             passedUserName = bundle.getString("username");
             passedEmail = bundle.getString("email");
             passedPhone = bundle.getString("phone");
@@ -57,6 +57,18 @@ public class AddPlayerActivity extends AppCompatActivity {
             emailEditText.setText(passedEmail);
             phoneEditText.setText(passedPhone);
         }
+
+        // usernameEditText.setText(passedUserName);
+        // Database db = new Database();
+
+        // db.getPlayer(passedUserName).
+        //         addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        //             @Override
+        //             public void onSuccess(DocumentSnapshot documentSnapshot) {
+        //                 emailEditText.setText(documentSnapshot.getString("email"));
+        //                 numberEditText.setText(documentSnapshot.get("number").toString());
+        //             }
+        //         });
 
         /*
         //Need to convert this to a bundle
@@ -74,6 +86,7 @@ public class AddPlayerActivity extends AppCompatActivity {
 
 
             //TODO maybe once add player can handle QR Codes, we might wanna revamp this
+
             String username = usernameEditText.getText().toString();
             if (username.length() > 20 || username.length() <= 0 ) {
                 errorText.setText("Username must be between 1-20 Characters");
@@ -82,7 +95,6 @@ public class AddPlayerActivity extends AppCompatActivity {
             String email = emailEditText.getText().toString();
             String number = phoneEditText.getText().toString();
             Player newUser = new Player(username,email, Integer.parseInt(number), new ArrayList<>());
-            Database db = new Database();
             //making Sure it is unique
             db.getPlayer(username).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
@@ -122,6 +134,11 @@ public class AddPlayerActivity extends AppCompatActivity {
                                         editor.putString("Username", username);
                                         editor.apply();
 
+                                        SharedPreferences settings2 = getSharedPreferences("LocalLeaderboard", 0);
+                                        SharedPreferences.Editor editor1 = settings2.edit();
+                                        editor1.putBoolean("playersSaved", false); //reload leaderboard next time
+                                        editor1.commit();
+                                        
                                         Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
                                         Bundle bundle = new Bundle();
                                         bundle.putString("username", usernameEditText.getText().toString());
