@@ -1,13 +1,13 @@
 package com.example.qrhunter;
 
 import android.location.Location;
-import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
@@ -16,14 +16,16 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Transaction;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -125,6 +127,29 @@ public class Database {
     }
 
     /**
+     * Updates a Player's comment on a specific QRCode in their collection
+     * @param username username of Player
+     * @param comment comment updated by Player
+     * @param hash hash of QRCode
+     */
+    public void editComment(String username, String comment, String hash){
+        playersCollection.document(username).collection("QRCodes").document(hash)
+                .update("comment", comment)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("DATABASE", "Comment updated successfully");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("DATABASE", "Comment failed to be updated.");
+                    }
+                });
+    }
+
+    /**
      * Gets QRCode Info to create a QR Code
      * @param hash Hash of the QR code
      * @param callback Listener for QR info from database
@@ -173,6 +198,15 @@ public class Database {
         return playersCollection
                 .document(player.getUsername())
                 .set(playerInfo);
+    }
+
+    public Task<Void> changeInfo(Player player){
+        WriteBatch batch = db.batch();
+        batch.update(playersCollection.document(player.getUsername()),
+                "email", player.getEmail());
+        batch.update(playersCollection.document(player.getUsername()),
+                "number", player.getNumber());
+        return batch.commit();
     }
 
     /**
@@ -267,6 +301,14 @@ public class Database {
                 .get();
     }
 
+    public Task<AggregateQuerySnapshot> getQRCountFromPlayer(String username, String hash){
+        return playersCollection.document(username)
+                .collection("QRCodes")
+                .whereEqualTo("hash", hash)
+                .count()
+                .get(AggregateSource.SERVER);
+    }
+
     public Task<DocumentSnapshot> getPlayer(String username) {
         return playersCollection
                 .document(username)
@@ -295,30 +337,81 @@ public class Database {
     }
 
     /**
-     * Adds a Player and the scanned QR code to the database
+     * Assigns p1's QrCode to p2
+     * @param p1 Player that is losing the qr
+     * @param p2 Player that is receiving the qr
+     * @param hash hash of qr
+     * @return Task of type integer that has the updated score of p2
+     */
+    public Task<Integer> giveQRCode(String p1, String p2, String hash){
+        return db.runTransaction(new Transaction.Function<Integer>() {
+            @Nullable
+            @Override
+            public Integer apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+                DocumentSnapshot qr = transaction.get(qrCodeCollection.document(hash));
+                DocumentSnapshot p2Snap = transaction.get(playersCollection.document(p2));
+                HashMap<String, Object> qrInfo = new HashMap<>();
+                HashMap<String, Object> playerInfo = new HashMap<>();
+                playerInfo.put("player", p2);
+                qrInfo.put("hash", hash);
+                //p2 now has the qr code
+                transaction.set(playersCollection.document(p2).
+                        collection("QRCodes").document(hash), qrInfo);
+
+                Long newScore = (Long) p2Snap.get("totalScore") + (Long) qr.get("score");
+                //p2 now has an updated Score
+                transaction.update(playersCollection.document(p2), "totalScore", newScore);
+                //p1 now loses the qr
+                transaction.delete(playersCollection.document(p1).
+                        collection("QRCodes").document(hash));
+                //qr forgets p1
+                transaction.delete(qrCodeCollection.document(hash).collection("Players")
+                        .document(p1));
+                //qr remembers p2
+                transaction.set(qrCodeCollection.document(hash).collection("Players").document(p2),
+                        playerInfo);
+                return newScore.intValue();
+            }
+        });
+    }
+
+    /**
+     * Associates a QR Code with a Player
+     * Assumptions:
+     *   - QR Code and Player are already in the database
+     *   - QRCode hash & score is correct
      * Also updates the players total score in the db
      * Returns a map of tasks for the caller to handle
      * @param qrCode qrcode to be added
      * @param player Player that scanned the qr code
-     * @return A map with the tasks {QrToPlayerCol, PlayerToQrCol, updateTotalScore}
+     * @return A map with the tasks {associate, updateTotalScore}
      */
     public HashMap<String, Task<Void>> addScannedCode(@NonNull QRCode qrCode, @NonNull Player player){
         HashMap<String, Task<Void>> tasks = new HashMap<>();
         HashMap<String, Object> qrInfo = new HashMap<>();
         HashMap<String, Object> playerInfo = new HashMap<>();
+
+        WriteBatch batch = db.batch();
         qrInfo.put("hash", qrCode.getHash());
-        tasks.put("QrToPlayerCol", playersCollection
+        batch.set(playersCollection
                 .document(player.getUsername())
                 .collection("QRCodes")
-                .document(qrCode.getHash())
-                .set(qrInfo));
-        tasks.put("updateTotalScore", addPlayer(player));
+                .document(qrCode.getHash()), qrInfo);
+
+
+        tasks.put("updateTotalScore", playersCollection.document(player.getUsername()).update(
+                "totalScore", FieldValue.increment(qrCode.getScore())
+        ));
+
+
         playerInfo.put("username", player.getUsername());
-        tasks.put("PlayerToQrCol", qrCodeCollection
-                .document(qrCode.getHash())
-                .collection("Players")
-                .document(player.getUsername())
-                .set(playerInfo));
+
+        batch.set(qrCodeCollection
+                        .document(qrCode.getHash())
+                        .collection("Players")
+                        .document(player.getUsername()), playerInfo);
+
+        tasks.put("associate", batch.commit());
         return tasks;
     }
 

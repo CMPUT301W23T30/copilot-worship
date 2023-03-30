@@ -1,7 +1,14 @@
 package com.example.qrhunter;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -28,6 +35,7 @@ public class PlayerGalleryActivity extends AppCompatActivity {
          PlayerGalleryAdapter galleryAdapter;
          ArrayList<Player> playerArrayList = new ArrayList<Player>();
          ListView galleryView;
+
     //TODO  make better player gallery xml
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +44,10 @@ public class PlayerGalleryActivity extends AppCompatActivity {
 
         Database db = new Database();
         Bundle bundle = getIntent().getExtras();
+        String currentUsername = bundle.getString("currentUsername");
         galleryView = findViewById(R.id.player_list);
 
+        ImageView qrImage = findViewById(R.id.shared_qr_image);
 
         //Query for players associated with qr
         db.getPlayersFromQRCode(bundle.getString("hash"))
@@ -58,10 +68,29 @@ public class PlayerGalleryActivity extends AppCompatActivity {
                         galleryAdapter = new PlayerGalleryAdapter(
                                 PlayerGalleryActivity.this, playerArrayList);
                         galleryView.setAdapter(galleryAdapter);
+
+                        galleryView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Player selectPlayer = playerArrayList.get(position);
+                                String selectPlayerUsername = selectPlayer.getUsername();
+
+                                //TODO startActivity ends in Error and idk why
+                                if (!currentUsername.equals(selectPlayerUsername)) {
+                                    Intent intent = new Intent(PlayerGalleryActivity.this, OtherProfiles.class);
+                                    Bundle newBundle = new Bundle();
+                                    newBundle.putString("currentUsername", selectPlayerUsername);
+                                    intent.putExtras(newBundle);
+                                    startActivity(intent);
+                                }else{
+                                    Toast.makeText(PlayerGalleryActivity.this, "That's you!", Toast.LENGTH_SHORT).show();
+                                }
+
+//                                }
+                            }
+                        });
                     }
                 });
-
-
 
     }
 }

@@ -1,5 +1,6 @@
 package com.example.qrhunter;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,7 +22,7 @@ import java.util.List;
  * Activity for SearchPlayer
  * @author X
  */
-public class SearchPlayerActivity extends AppCompatActivity {
+public class SearchPlayerActivity extends AppCompatActivity implements SearchPlayerAdapter.OnItemClickListener {
 
     private RecyclerView recyclerView;
     private SearchPlayerAdapter adapter;
@@ -57,10 +58,12 @@ public class SearchPlayerActivity extends AppCompatActivity {
                             // storing that data in our array list
                             userList.add(user);
                         }
-                        adapter = new SearchPlayerAdapter(userList, SearchPlayerActivity.this);
+                        adapter = new SearchPlayerAdapter(userList, SearchPlayerActivity.this, SearchPlayerActivity.this::OnItemClick);
                         recyclerView.setAdapter(adapter);
                     }
                 });
+        // Set the action bar to show the Up button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     /**
@@ -113,9 +116,30 @@ public class SearchPlayerActivity extends AppCompatActivity {
                             // storing that data in our array list
                             userList.add(user);
                         }
-                        adapter = new SearchPlayerAdapter(userList, SearchPlayerActivity.this);
+                        adapter = new SearchPlayerAdapter(userList, SearchPlayerActivity.this, SearchPlayerActivity.this::OnItemClick);
                         recyclerView.setAdapter(adapter);
                     }
                 });
     }
+
+    @Override
+    public void OnItemClick(int position) {
+        Bundle bundle = new Bundle();
+        Intent intent = new Intent(SearchPlayerActivity.this, MainActivity.class);
+        bundle.putString("username", userList.get(position).getUsername());
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 }

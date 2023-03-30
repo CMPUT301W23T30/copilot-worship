@@ -10,5 +10,7 @@
         <item name="android:statusBarColor">@color/black</item>
         <!-- Customize your theme here. -->
         <item name="android:fontFamily">@font/nunito_bold</item>
+        <!-- Customize the back button on top bar. -->
+        <item name="android:homeAsUpIndicator">@drawable/back_button_top_bar</item>
     </style>
 </resources>

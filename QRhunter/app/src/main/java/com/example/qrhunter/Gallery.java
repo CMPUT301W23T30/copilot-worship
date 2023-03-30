@@ -6,6 +6,8 @@ import static android.view.ViewGroup.FOCUS_BLOCK_DESCENDANTS;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -39,12 +41,15 @@ public class Gallery extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
+        Log.d("TASK", "INSIDE GALLERY");
+
         textView = findViewById((R.id.gallery_name));
 
         //galleryView = findViewById(R.id.gallery_content);
         Bundle bundle = getIntent().getExtras();
+
         player = bundle.getParcelable("Player");
-        username = player.getUsername();
+        username = bundle.getString("Username");
         qrCodeComments = bundle.getParcelableArrayList("QRArray");
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.gallery_recycler_view);
@@ -70,6 +75,9 @@ public class Gallery extends AppCompatActivity {
                 adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
             }
         }).attachToRecyclerView(recyclerView);
+
+        // Set the action bar to show the Up button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     /**
@@ -99,5 +107,21 @@ public class Gallery extends AppCompatActivity {
         // remove from firestore
         deleteDB.removeQrCodesFromPlayer(username,deleteQR.getHash());
         deleteDB.removePlayerFromQRCode(username,deleteQR.getHash());
+    }
+
+    // enable back button
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return true;
     }
 }

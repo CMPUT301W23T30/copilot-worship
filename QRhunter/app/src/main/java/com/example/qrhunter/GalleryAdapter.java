@@ -1,15 +1,23 @@
 package com.example.qrhunter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.DecimalFormat;
@@ -20,6 +28,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     private ArrayList<QRCodeComment> qrCodeComments;
     private String username;
     private Context context;
+    private String qrComment;
 
     public interface OnItemLongClickListener{
         public boolean onItemLongClicked(int position);
@@ -28,14 +37,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     private static final DecimalFormat df = new DecimalFormat("0.00");
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        ImageView image;
-        TextView name;
-        TextView longitude;
-        TextView latitude;
-        TextView score;
-        ImageButton editButton;
-        ImageButton deleteButton;
-        TextView comment;
+
+        ImageView image;TextView name;TextView longitude;TextView latitude;TextView score;
+        ImageButton showMore; ImageButton showLess;
+        ImageButton editButton;ImageButton saveButton;
+        CardView commentCard; TextView comment;EditText editComment;
         ImageView photo;
 
         public ViewHolder(View itemView){
@@ -46,10 +52,17 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             this.longitude = (TextView) itemView.findViewById(R.id.QRmon_long);
             this.latitude = (TextView) itemView.findViewById(R.id.QRmon_lat);
             this.score = (TextView) itemView.findViewById(R.id.QRmon_score);
+
+            this.showMore = (ImageButton) itemView.findViewById(R.id.show_more_button);
+            this.showLess = (ImageButton) itemView.findViewById(R.id.show_less_button);
+
+            this.commentCard = (CardView) itemView.findViewById(R.id.cardView);
             this.editButton = (ImageButton) itemView.findViewById(R.id.edit_comment);
-            this.deleteButton = (ImageButton) itemView.findViewById(R.id.delete_comment);
+            this.saveButton = (ImageButton) itemView.findViewById(R.id.save_comment);
             this.comment = (TextView) itemView.findViewById(R.id.QRmon_comment);
+            this.editComment = (EditText) itemView.findViewById(R.id.QRmon_edit_comment);
             this.photo = (ImageView) itemView.findViewById(R.id.QRmon_photo);
+
         }
     }
 
@@ -68,44 +81,110 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     @Override
     public void onBindViewHolder (ViewHolder holder, final int listPosition){
         QRCode qrCode = qrCodeComments.get(listPosition).getQrCode();
+        qrComment = qrCodeComments.get(listPosition).getComment();
 
+        //Standard Information of QRCode
         ImageView image = holder.image;
         TextView name = holder.name;
         TextView longitude = holder.longitude;
         TextView latitude = holder.latitude;
         TextView score = holder.score;
-        ImageButton editButton = holder.editButton;
-        ImageButton deleteButton = holder.deleteButton;
-        TextView comment = holder.comment;
-        ImageView photo = holder.photo;
 
+        //TODO set QRCode Image
         name.setText(qrCode.getName());
         longitude.setText(df.format(qrCode.getLocation().getLongitude()));
         latitude.setText(df.format(qrCode.getLocation().getLatitude()));
         score.setText(String.format("%d", qrCode.getScore()));
-        comment.setText(qrCodeComments.get(listPosition).getComment());
 
+        //ShowMore and ShowLess Buttons
+        ImageButton showMore = holder.showMore;
+        ImageButton showLess = holder.showLess;
+
+
+        //Extra Information of QRCode
+        CardView commentCard = holder.commentCard;
+        ImageButton editButton = holder.editButton;
+        ImageButton saveButton = holder.saveButton;
+        TextView comment = holder.comment;
+        EditText editComment = holder.editComment;
+        ImageView photo = holder.photo;
+
+        //TODO SET QRCode Photo
+        comment.setText(qrComment);
+
+        //TODO don't forget to HIDE QRCode photo
+        //Hide Extras
+        showLess.setVisibility(View.GONE); //Will control visibility of everything that comes after it
+
+        commentCard.setVisibility(View.GONE);
+        editButton.setVisibility(View.GONE);
+        saveButton.setVisibility(View.GONE);
+        editComment.setVisibility(View.GONE);
+
+        //ShowMore sets Extra Information to Visible
+        showMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showMore.setVisibility(View.GONE);
+
+                //TODO don't forget to SHOW QRCode photo
+                showLess.setVisibility(View.VISIBLE); //Will control visibility of everything that comes after it
+
+                commentCard.setVisibility(View.VISIBLE);
+                editButton.setVisibility(View.VISIBLE);
+                saveButton.setVisibility(View.VISIBLE);
+                editComment.setVisibility(View.VISIBLE);
+            }
+        });
+
+        //Sets comment to new string input by user
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("TASK", "Edit Comment");
+                comment.setVisibility(View.GONE);
+                editComment.setVisibility(View.VISIBLE);
             }
         });
 
-        deleteButton.setOnClickListener(new View.OnClickListener() {
+        //Save comment to local and firebase storage
+        saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("TASK", "delete Comment");
+                qrComment = editComment.getText().toString();
+
+                editComment.setVisibility(View.GONE);
+                comment.setText(qrComment);
+                comment.setVisibility(View.VISIBLE);
+
+                Database db = new Database();
+                db.editComment(username, qrComment, qrCode.getHash());
             }
         });
 
+        showLess.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO don't forget to REHIDE QRCode photo
+                showLess.setVisibility(View.GONE); //Will control visibility of everything that comes after it
+
+                commentCard.setVisibility(View.GONE);
+                editButton.setVisibility(View.GONE);
+                saveButton.setVisibility(View.GONE);
+                editComment.setVisibility(View.GONE);
+
+                showMore.setVisibility(View.VISIBLE);
+            }
+        });
+
+
         //ON LONG CLICK
+        //Goes to QRDisplayActivity to see QR details
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 Intent intent = new Intent(v.getContext(), QrDisplayActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("CurrentPlayer", username);
+                bundle.putString("currentUsername", username);
                 bundle.putParcelable("QRCode", qrCode);
                 intent.putExtras(bundle);
                 v.getContext().startActivity(intent);
@@ -117,4 +196,17 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     @Override
     public int getItemCount() {return qrCodeComments.size();}
+
+    //https://stackoverflow.com/questions/4165414/how-to-hide-soft-keyboard-on-android-after-clicking-outside-edittext
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) activity.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+        if(inputMethodManager.isAcceptingText()){
+            inputMethodManager.hideSoftInputFromWindow(
+                    activity.getCurrentFocus().getWindowToken(),
+                    0
+            );
+        }
+    }
 }

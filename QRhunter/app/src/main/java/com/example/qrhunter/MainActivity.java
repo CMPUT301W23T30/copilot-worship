@@ -1,14 +1,19 @@
 package com.example.qrhunter;
 
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.telephony.CarrierConfigManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,25 +28,30 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.common.hash.Hashing;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 import org.jetbrains.annotations.Nullable;
+import org.w3c.dom.Text;
 
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.Collections;
 
 
 /**
@@ -53,7 +63,8 @@ import java.util.Collections;
  * Properly Cite the method to store usernames
  */
 public class MainActivity extends AppCompatActivity {
-    //Tag for logging any issues
+
+    private static final int PERMISSIONS_REQUEST_LOCATION = 1;
     //Tag for logging any issues
     final String TAG = "User Profile Page";
     Player currentPlayer;
@@ -61,10 +72,10 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<QRCodeComment> qrCodeComments = new ArrayList<>();
 
     ArrayList<String> qrList = new ArrayList<>();
-    TextView beefyQR;
-    TextView squishyQR;
-    TextView userEmail;
-    TextView userPhone;
+    TextView beefyQRTextView;
+    TextView squishyQRTextView;
+    TextView userEmailTextView;
+    TextView userPhoneTextView;
     Bitmap image;
 
     Button scanButton;
@@ -95,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
      * @return true if the button is clicked, false otherwise
      * @author: Maarij
      */
-     
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -103,9 +114,20 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_add_player_button:
 
                 Intent intent = new Intent(this, AddPlayerActivity.class);
-                Bundle b = new Bundle();
-                b.putString("username", username);
-                intent.putExtras(b);
+                if (currentPlayer != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("username", currentPlayer.getUsername());
+                    bundle.putString("email", currentPlayer.getEmail());
+                    bundle.putString("phone", String.valueOf(currentPlayer.getNumber()));
+                    intent.putExtras(bundle);
+                }
+                else {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("username", "");
+                    bundle.putString("email", "");
+                    bundle.putString("phone", "");
+                    intent.putExtras(bundle);
+                }
 
                 startActivity(intent);
 
@@ -130,34 +152,32 @@ public class MainActivity extends AppCompatActivity {
      * @param db Database instance to query from
      * @param userText User text to set the username too
      */
-    public void getUsername(Bundle bundle, Database db, TextView userText){
+    public void getUsername(Bundle bundle, Database db, TextView userText) {
         //https://stackoverflow.com/questions/10209814/saving-user-information-in-app-settings
         //Roughly following
         //TODO properly cite
-        if(bundle != null){
+        if (bundle != null) {
             username = bundle.getString("username");
             userText.setText(username);
-        }
-        else{
+        } else {
 
             SharedPreferences settings = getSharedPreferences("UserInfo", 0);
             //If login info saved already
-            if(settings.contains("Username")){
+            if (settings.contains("Username")) {
                 username = settings.getString("Username", "");
                 userText.setText(username);
             }
             //else we can assume a new player
-            else{
+            else {
                 SharedPreferences.Editor editor = settings.edit();
                 db.getPlayerCount()
                         .addOnCompleteListener(new OnCompleteListener<AggregateQuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<AggregateQuerySnapshot> task) {
-                                if(task.isSuccessful()){
+                                if (task.isSuccessful()) {
                                     username = "Player-" + (task.getResult().getCount()
                                             + 1);
-                                }
-                                else{
+                                } else {
                                     //TODO add an error message here
                                     Log.d(TAG, "Failed to get player count for new player");
                                     username = "Player-?";
@@ -174,8 +194,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void getRankingEstimates(Bundle bundle, Database db){
-        if(bundle != null){
+    public void getRankingEstimates(Bundle bundle, Database db) {
+        if (bundle != null) {
 
         }
     }
@@ -188,53 +208,58 @@ public class MainActivity extends AppCompatActivity {
 
 
         ImageView profileCircle = (ImageView) findViewById(R.id.profile_icon);
-        TextView userText = findViewById(R.id.user_page_user_name);
+        TextView usernameText = findViewById(R.id.user_page_user_name);
         TextView smallerTextView = findViewById(R.id.user_page_total_score);
+        TextView totalScoreTextView = findViewById(R.id.user_page_total_score);
+        TextView beefyQRTextView = findViewById(R.id.user_page_strongest);
+        TextView squishyQRTextView = findViewById(R.id.user_page_weakest);
+        TextView userEmailTextView = findViewById(R.id.user_page_email);
+        TextView userPhoneTextView = findViewById(R.id.user_page_phone);
 
         CharacterImage testCharacter = characterCreator("2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824");
         profileCircle.setImageBitmap(testCharacter.getCharacterImage());
 
-        smallerTextView.setText("Click on the monster to generate a new one!!!!");
+        smallerTextView.setText("QRCREATURE TIME");
 
         // profileCircle.setImageResource(R.drawable._icon__profile_circle_);
 
         Bundle bundle = getIntent().getExtras();
-        Database db = new Database();
-        //db.populateDB(); Run only when we need to redo db after a purge
-        //db.populateScore(20);// Run only after populate db
-        getUsername(bundle, db, userText);
 
-        // Player Information
-        TextView totalScore = findViewById(R.id.user_page_total_score);
-        TextView beefyQR = findViewById(R.id.user_page_strongest);
-        TextView squishyQR = findViewById(R.id.user_page_weakest);
-        TextView userEmail = findViewById(R.id.user_page_email);
-        TextView userPhone = findViewById(R.id.user_page_phone);
+        if (bundle != null) {
+            bundle.getString("username");
+            bundle.getString("email");
+            bundle.getString("phone");
+
+            usernameText.setText(bundle.getString("username"));
+            userEmailTextView.setText(bundle.getString("email"));
+            userPhoneTextView.setText(bundle.getString("phone"));
+        }
+
+        Database db = new Database();
+        //db.populateDB(); //Run only when we need to redo db after a purge
+        //db.populateScore(20);// Run only after populate db
+        getUsername(bundle, db, usernameText);
 
         // Player Information
         db.getPlayerInfo(username, new PlayerInfoListener() {
             @Override
             public void playerInfoCallback(Player player) {
-                Log.d("TASK", "START");
                 currentPlayer = player;
-                userEmail.setText(currentPlayer.getEmail());
-                userPhone.setText(String.valueOf(currentPlayer.getNumber()));
+                userEmailTextView.setText(currentPlayer.getEmail());
+                userPhoneTextView.setText(String.valueOf(currentPlayer.getNumber()));
                 db.getPlayerCollection(player.getUsername(), new PlayerCollectionListener() {
                     @Override
                     public void playerCollectionCallback(Map<String, String> map) {
-                        for (Map.Entry<String,String> qrEntry : map.entrySet()) {
+                        for (Map.Entry<String, String> qrEntry : map.entrySet()) {
                             db.getQRCodeInfo(qrEntry.getKey(), new QRCodeListener() {
                                 @Override
                                 public void qrCodeCallback(QRCode qrCode) {
-                                    Log.d("TASK", "." + qrEntry.getKey() +".");
                                     currentPlayer.addQrCode(qrCode);
                                     qrCodeComments.add(new QRCodeComment(qrCode, qrEntry.getValue()));
-
-
                                     if (currentPlayer.getTotalScore() != 0) {
-                                        totalScore.setText(String.valueOf(currentPlayer.getTotalScore()));
-                                        beefyQR.setText(String.valueOf(currentPlayer.getBeefy()));
-                                        squishyQR.setText(String.valueOf(currentPlayer.getSquishy()));
+                                        totalScoreTextView.setText(String.valueOf(currentPlayer.getTotalScore()));
+                                        beefyQRTextView.setText(String.valueOf(currentPlayer.getBeefy()));
+                                        squishyQRTextView.setText(String.valueOf(currentPlayer.getSquishy()));
                                     }
                                 }
                             });
@@ -262,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,SearchPlayerActivity.class);
+                Intent intent = new Intent(MainActivity.this, SearchPlayerActivity.class);
                 startActivity(intent);
             }
         });
@@ -271,6 +296,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, LeaderboardActivity.class);
+                Bundle b = new Bundle();
+                b.putString("username", username);
+                intent.putExtras(b);
                 startActivity(intent);
             }
         });
@@ -278,7 +306,7 @@ public class MainActivity extends AppCompatActivity {
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,MapsActivity.class);
+                Intent intent = new Intent(MainActivity.this, MapsActivity.class);
                 startActivity(intent);
             }
         });
@@ -286,10 +314,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                Intent intent = new Intent(MainActivity.this,Gallery.class);
+                Intent intent = new Intent(MainActivity.this, Gallery.class);
                 bundle.putParcelable("Player", currentPlayer);
+                bundle.putString("Username", username);
                 bundle.putParcelableArrayList("QRArray",(ArrayList<? extends Parcelable>) qrCodeComments);
                 intent.putExtras(bundle);
+                Log.d("TASK", "STARTING GALLERY");
                 startActivity(intent);
             }
         });
@@ -299,7 +329,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 //                Bundle bundle = new Bundle();
 //                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
-
+                //Permission check for fine location
+                if (ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_LOCATION);
+                }
                 Toast.makeText(MainActivity.this, "Start Scanning", Toast.LENGTH_SHORT).show();
                 QRScan newClass = new QRScan();
                 newClass.scanCode(barLauncher);
@@ -349,7 +382,11 @@ public class MainActivity extends AppCompatActivity {
                 n++;
             } else {
                 if (n > 1) {
-                    score += Math.pow(Integer.parseInt(prev, 16), n - 1);
+                    if (prev.equals("0")) {
+                        score += Math.pow(20, n - 1);
+                    } else {
+                        score += Math.pow(Integer.parseInt(prev, 16), n - 1);
+                    }
                 }
                 n = 1;
                 prev = hashedQRCode.substring(i, i + 1);
@@ -420,10 +457,9 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Scan QR code
      */
-    ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result->
+    ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result ->
     {
-        if(result.getContents() !=null)
-        {
+        if (result.getContents() != null) {
             String hashedCode = hasher(result.getContents()); // If this fails alert won't appear, makes it easier to test
             int score = scoreCalculator(hashedCode);
 
@@ -433,27 +469,73 @@ public class MainActivity extends AppCompatActivity {
 
             String name = generateRandomName();
 
-            builder.setMessage(name + " " + score + " points");
+            builder.setMessage("You found a " + name + " worth " + score + " points !" + "\nWould you like to keep it?");
 
-            // Set Random Location for now
-            Location l = new Location("");
-            //Incomplete but acceptable locations
-            l.setLongitude(Math.random() * 180);
-            l.setLatitude(Math.random() * 90);
+            FusedLocationProviderClient fusedLocationClient =
+                    LocationServices.getFusedLocationProviderClient(this);
 
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
-            {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i)
-                {
-                    Log.d("ADDQR", "Hash: " + hashedCode);
-                    Log.d("ADDQR", "Score: " + score);
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Store Location")
+                    .setMessage("Do you want to store the location of this Qreature?")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            if (ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_LOCATION);
+                            }
+                            fusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+                                @Override
+                                public void onSuccess(Location location) {
+                                    builder.setPositiveButton("Keep", new DialogInterface.OnClickListener()
+                                    {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            Log.d("ADDQR", "Hash: " + hashedCode);
+                                            Log.d("ADDQR", "Score: " + score);
 
-                    QRCode one = new QRCode(hashedCode, hashedCode, l,score);
+                                            QRCode one = new QRCode(hashedCode, hashedCode, location, score);
+                                            Database db = new Database();
+                                            db.getPlayer(username).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                    AddQR(one, documentSnapshot.get("totalScore").toString());
+                                                    askAndTakePhoto(one);
+                                                }
+                                            });
+                                        }
+                                    })
+                                            .setNegativeButton("Discard", null)
+                                            .show();
+                                }
+                            });
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            builder.setPositiveButton("Keep", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Log.d("ADDQR", "Hash: " + hashedCode);
+                                    Log.d("ADDQR", "Score: " + score);
+                                    QRCode one = new QRCode(hashedCode, hashedCode, new Location(""), score);
+                                    Database db = new Database();
+                                    db.getPlayer(username).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                            AddQR(one, documentSnapshot.get("totalScore").toString());
+                                            askAndTakePhoto(one);
+                                        }
+                                    });
+                                }
+                            })
+                                    .setNegativeButton("Discard", null)
+                                    .show();
 
-                    askAndTakePhoto(one);
-                }
-            }).show();
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
         }
     });
 
@@ -498,6 +580,7 @@ public class MainActivity extends AppCompatActivity {
                          */
 
 
+
                     }
                 })
 
@@ -511,10 +594,33 @@ public class MainActivity extends AppCompatActivity {
      * This method adds a QR code to the database
      * @param newQR the QR code to be added
      */
-    public void AddQR(QRCode newQR){
+    public void AddQR(QRCode newQR, String totalScore){
         Database db = new Database();
-        db.addQrCode(newQR);
-        db.addScannedCode(newQR, new Player(username));
+        db.getQRCountFromPlayer(username, newQR.hash).addOnSuccessListener(new OnSuccessListener<AggregateQuerySnapshot>() {
+            @Override
+            public void onSuccess(AggregateQuerySnapshot aggregateQuerySnapshot) {
+                //If player does not already have qr
+                if(aggregateQuerySnapshot.getCount() == 0){
+                    db.addQrCode(newQR);
+                    db.addScannedCode(newQR, new Player(username));
+                    //Check to see if we think we moved up in the db, if first place or no score to beat
+                    // Then refresh always with lessScore
+                    SharedPreferences settings = getSharedPreferences("LocalLeaderboard", 0);
+                    SharedPreferences.Editor editor = settings.edit();
+                    int lessScore = (Integer.parseInt(totalScore) - 1);
+                    System.out.println(lessScore);
+                    String scoretoBeat = settings.getString("scoreToBeat", lessScore + "");
+                    System.out.println(scoretoBeat);
+                    System.out.println(totalScore);
+                    if(Integer.parseInt(scoretoBeat) < Integer.parseInt(totalScore)){
+                        editor.putBoolean("playersSaved", false);
+                        editor.commit();
+                    }
+                }
+            }
+        });
+
+
     }
 
 
