@@ -436,7 +436,7 @@ public class MainActivity extends AppCompatActivity {
 
             String name = generateRandomName();
 
-            builder.setMessage(name + " " + score + " points");
+            builder.setMessage("You found a " + name + " worth " + score + " points !" + "\nWould you like to keep it?");
 
             // Set Random Location for now
             Location l = new Location("");
@@ -444,7 +444,7 @@ public class MainActivity extends AppCompatActivity {
             l.setLongitude(Math.random() * 180);
             l.setLatitude(Math.random() * 90);
 
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
+            builder.setPositiveButton("Keep", new DialogInterface.OnClickListener()
             {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i)
@@ -456,7 +456,9 @@ public class MainActivity extends AppCompatActivity {
                     AddQR(one);
                     askAndTakePhoto(one);
                 }
-            }).show();
+            })
+                    .setNegativeButton("Discard", null)
+                    .show();
         }
     });
 
