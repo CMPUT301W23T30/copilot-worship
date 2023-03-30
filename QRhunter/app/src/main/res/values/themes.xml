@@ -12,5 +12,8 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+
+        <!-- Customize the back button on the too bar -->
+        <item name="homeAsUpIndicator">@drawable/back_top_bar</item>
     </style>
 </resources>
