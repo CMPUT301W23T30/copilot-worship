@@ -38,6 +38,7 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
     private String secondUsernameStr;
     private String thirdUsernameStr;
 
+    private String currentUser;
 
     private SharedPreferences settings;
     private SharedPreferences.Editor editor ;
@@ -52,7 +53,16 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
             String nullFlag = "\u0000";
             LeaderBoardSet.add( i + nullFlag + list.get(i).get("username").toString() + nullFlag
                     + list.get(i).get("totalScore").toString());
+            //Store the score before the current user as the "score to beat"
+            //Then we can update the leaderboard anytime we think we have beaten this score
+            if(list.get(i).get("username").toString().equals(currentUser)){
+                if(i != 0 ) {
+                    editor.putString("scoreToBeat", list.get(i - 1).get("totalScore").toString());
+                    editor.commit();
+                }
+            }
         }
+
         editor.putStringSet("localLeaderboard", LeaderBoardSet);
         editor.putBoolean("playersSaved", true);
         editor.commit();
@@ -141,6 +151,7 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
         secondScore = findViewById(R.id.second_place_score);
         thirdUsername = findViewById(R.id.third_place_name);
         thirdScore = findViewById(R.id.third_place_score);
+        currentUser = getIntent().getExtras().getString("username");
 
         Boolean saved;
         saved = settings.getBoolean("playersSaved", false);
