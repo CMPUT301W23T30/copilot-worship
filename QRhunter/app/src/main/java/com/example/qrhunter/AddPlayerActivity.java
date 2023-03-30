@@ -1,5 +1,6 @@
 package com.example.qrhunter;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -9,7 +10,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -21,6 +26,7 @@ import com.google.firebase.firestore.QuerySnapshot;
  * @author: Maarij
  */
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * This class is used to edit player information
@@ -101,28 +107,39 @@ public class AddPlayerActivity extends AppCompatActivity {
                                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                     @Override
                                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                        ArrayList<Task<?>> tasks = new ArrayList<>();
                                         for(QueryDocumentSnapshot doc : queryDocumentSnapshots){
                                             //TODO add failure listeners
                                             //Not sure what they can do since no rollback but atleast we can
                                             //let the user know there was a glitch
                                             String hash = doc.getString("hash");
-                                            db.giveQRCode(currentUserName, username, hash);
+                                            tasks.add(db.giveQRCode(currentUserName, username, hash));
+
                                         }
+                                        //When done transfer
+                                        Tasks.whenAll(tasks)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        db.removePlayer(currentUserName);
 
-                                        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
-                                        //Save this new username locally, how nice
-                                        SharedPreferences.Editor editor = settings.edit();
-                                        editor.clear();
-                                        editor.putString("Username", username);
-                                        editor.apply();
+                                                        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+                                                        //Save this new username locally, how nice
+                                                        SharedPreferences.Editor editor = settings.edit();
+                                                        editor.clear();
+                                                        editor.putString("Username", username);
+                                                        editor.apply();
+                                                        db.removePlayer(currentUserName);
+                                                        SharedPreferences settings2 = getSharedPreferences("LocalLeaderboard", 0);
+                                                        SharedPreferences.Editor editor1 = settings2.edit();
+                                                        editor1.putBoolean("playersSaved", false); //reload leaderboard next time
+                                                        editor1.commit();
 
-                                        SharedPreferences settings2 = getSharedPreferences("LocalLeaderboard", 0);
-                                        SharedPreferences.Editor editor1 = settings2.edit();
-                                        editor1.putBoolean("playersSaved", false); //reload leaderboard next time
-                                        editor1.commit();
-                                        
-                                        Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
-                                        startActivity(intent);
+                                                        Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
+                                                        startActivity(intent);
+                                                    }
+                                                });
+
                                     }
                                 });
                         //finish();

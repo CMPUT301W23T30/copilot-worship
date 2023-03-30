@@ -302,26 +302,26 @@ public class Database {
      * @param hash
      * @return
      */
-    public Task<Object> giveQRCode(String p1, String p2, String hash){
-        return db.runTransaction(new Transaction.Function<Object>() {
-
+    public Task<Integer> giveQRCode(String p1, String p2, String hash){
+        return db.runTransaction(new Transaction.Function<Integer>() {
             @Nullable
             @Override
-            public Object apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+            public Integer apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+                DocumentSnapshot qr = transaction.get(qrCodeCollection.document(hash));
+                DocumentSnapshot p2Snap = transaction.get(playersCollection.document(p2));
                 HashMap<String, Object> qrInfo = new HashMap<>();
                 qrInfo.put("hash", hash);
                 //p2 now has the qr code
                 transaction.set(playersCollection.document(p2).
                         collection("QRCodes").document(hash), qrInfo);
-                DocumentSnapshot qr = transaction.get(qrCodeCollection.document(hash));
-                DocumentSnapshot p2Snap = transaction.get(playersCollection.document(p2));
-                int newScore = (int) p2Snap.get("totalScore") + (int) qr.get("score");
+
+                Long newScore = (Long) p2Snap.get("totalScore") + (Long) qr.get("score");
                 //p2 now has an updated Score
                 transaction.update(playersCollection.document(p2), "totalScore", newScore);
                 //p1 now loses the qr
                 transaction.delete(playersCollection.document(p1).
                         collection("QRCodes").document(hash));
-                return null;
+                return newScore.intValue();
             }
         });
     }
