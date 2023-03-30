@@ -105,7 +105,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             public boolean onLongClick(View v) {
                 Intent intent = new Intent(v.getContext(), QrDisplayActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("CurrentPlayer", username);
+                bundle.putString("currentUsername", username);
                 bundle.putParcelable("QRCode", qrCode);
                 intent.putExtras(bundle);
                 v.getContext().startActivity(intent);

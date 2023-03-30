@@ -41,7 +41,7 @@ public class QrDisplayActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         qrCode = bundle.getParcelable("QRCode");
-        String currentPlayer = bundle.getString("CurrentPlayer");
+        String currentPlayer = bundle.getString("currentUsername");
 
         TextView qrName =  findViewById(R.id.qr_name);
         TextView qrPower = findViewById(R.id.qr_power);
@@ -67,6 +67,7 @@ public class QrDisplayActivity extends AppCompatActivity {
                         QrDisplayActivity.this,
                         PlayerGalleryActivity.class);
                 Bundle bundle = new Bundle();
+                bundle.putString("currentUsername",currentPlayer);
                 bundle.putString("hash",qrCode.getHash());
                 intent.putExtras(bundle);
                 startActivity(intent);

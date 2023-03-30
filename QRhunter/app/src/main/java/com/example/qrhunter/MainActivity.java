@@ -213,12 +213,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Player Information
         //TODO CHANGE TO USERNAME
-
-        Log.d("TASK", "HAPPY");
         db.getPlayerInfo("Player-1", new PlayerInfoListener() {
             @Override
             public void playerInfoCallback(Player player) {
-                Log.d("TASK", "START");
                 currentPlayer = player;
                 userEmail.setText(currentPlayer.getEmail());
                 userPhone.setText(String.valueOf(currentPlayer.getNumber()));
@@ -229,7 +226,6 @@ public class MainActivity extends AppCompatActivity {
                             db.getQRCodeInfo(qrEntry.getKey(), new QRCodeListener() {
                                 @Override
                                 public void qrCodeCallback(QRCode qrCode) {
-                                    Log.d("TASK", "." + qrEntry.getKey() +".");
                                     currentPlayer.addQrCode(qrCode);
                                     qrCodeComments.add(new QRCodeComment(qrCode, qrEntry.getValue()));
 

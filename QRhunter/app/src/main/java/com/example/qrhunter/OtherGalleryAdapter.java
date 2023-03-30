@@ -11,7 +11,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.DecimalFormat;
@@ -45,6 +44,8 @@ public class OtherGalleryAdapter extends RecyclerView.Adapter<OtherGalleryAdapte
     public OtherGalleryAdapter(ArrayList<QRCode> qrCodeArrayList, Context context){
         this.qrCodeArrayList = qrCodeArrayList;
         this.context = context;
+
+        }
     }
 
     @Override
@@ -56,6 +57,7 @@ public class OtherGalleryAdapter extends RecyclerView.Adapter<OtherGalleryAdapte
     @Override
     public void onBindViewHolder (OtherGalleryAdapter.ViewHolder holder, final int listPosition){
         QRCode qrCode = qrCodeArrayList.get(listPosition);
+
         ImageView image = holder.image;
         TextView name = holder.name;
         TextView longitude = holder.longitude;
@@ -70,6 +72,6 @@ public class OtherGalleryAdapter extends RecyclerView.Adapter<OtherGalleryAdapte
     }
     @Override
     public int getItemCount() {
-        return 0;
+        return qrCodeArrayList.size();
     }
 }

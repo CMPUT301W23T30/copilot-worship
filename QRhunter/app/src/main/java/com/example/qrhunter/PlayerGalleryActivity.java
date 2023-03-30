@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -32,6 +33,7 @@ public class PlayerGalleryActivity extends AppCompatActivity {
          PlayerGalleryAdapter galleryAdapter;
          ArrayList<Player> playerArrayList = new ArrayList<Player>();
          ListView galleryView;
+
     //TODO  make better player gallery xml
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,7 @@ public class PlayerGalleryActivity extends AppCompatActivity {
 
         Database db = new Database();
         Bundle bundle = getIntent().getExtras();
+        String currentUsername = bundle.getString("currentUsername");
         galleryView = findViewById(R.id.player_list);
 
 
@@ -66,17 +69,25 @@ public class PlayerGalleryActivity extends AppCompatActivity {
                         galleryView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                //Intent intent = new Intent(PlayerGalleryActivity.this, OtherProfiles.class);
-                                //Bundle bundle = new Bundle();
-                                //bundle.putString("username", galleryView.getItemAtPosition(position));
+                                Player selectPlayer = playerArrayList.get(position);
+                                String selectPlayerUsername = selectPlayer.getUsername();
 
-                                Log.d("TASK", "TEST: " + galleryView.getItemAtPosition(position));
+                                //TODO startActivity ends in Error and idk why
+                                if (!currentUsername.equals(selectPlayerUsername)) {
+                                    Intent intent = new Intent(PlayerGalleryActivity.this, OtherProfiles.class);
+                                    Bundle newBundle = new Bundle();
+                                    newBundle.putString("currentUsername", selectPlayerUsername);
+                                    intent.putExtras(newBundle);
+                                    startActivity(intent);
+                                }else{
+                                    Toast.makeText(PlayerGalleryActivity.this, "That's you!", Toast.LENGTH_SHORT).show();
+                                }
+
+//                                }
                             }
                         });
                     }
                 });
-
-
 
     }
 }
