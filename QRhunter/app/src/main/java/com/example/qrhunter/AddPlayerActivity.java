@@ -122,6 +122,12 @@ public class AddPlayerActivity extends AppCompatActivity {
                                         editor.clear();
                                         editor.putString("Username", username);
                                         editor.apply();
+
+                                        SharedPreferences settings2 = getSharedPreferences("LocalLeaderboard", 0);
+                                        SharedPreferences.Editor editor1 = settings2.edit();
+                                        editor1.putBoolean("playersSaved", false); //reload leaderboard next time
+                                        editor1.commit();
+                                        
                                         Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
                                         startActivity(intent);
                                     }
