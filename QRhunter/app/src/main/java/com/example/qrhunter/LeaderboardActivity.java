@@ -117,9 +117,6 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
     }
 
     public void displayLeaderboardSaved(List<LeaderboardModel> userList){
-        for(LeaderboardModel m : userList){
-            System.out.println(m.getUsername() + " " + m.getTotalScore().toString());
-        }
         firstUsernameStr = userList.get(0).getUsername();
         firstScore.setText(userList.get(0).getTotalScore().toString());
         firstUsername.setText(firstUsernameStr);
@@ -130,8 +127,8 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
         thirdUsername.setText(thirdUsernameStr);
         thirdScore.setText(userList.get(2).getTotalScore().toString());
         userList.remove(0);
-        userList.remove(1);
-        userList.remove(2);
+        userList.remove(0);
+        userList.remove(0);
         adapter = new LeaderboardAdapter(userList, LeaderboardActivity.this, LeaderboardActivity.this::OnItemClick);
 
         recyclerView.setAdapter(adapter);
