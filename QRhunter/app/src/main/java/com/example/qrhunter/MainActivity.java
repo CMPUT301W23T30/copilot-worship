@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
         CharacterImage testCharacter = characterCreator("2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824");
         profileCircle.setImageBitmap(testCharacter.getCharacterImage());
 
-        smallerTextView.setText("Click on the monster to generate a new one!!!!");
+        smallerTextView.setText("QRCREATURE TIME");
 
         // profileCircle.setImageResource(R.drawable._icon__profile_circle_);
 
@@ -289,8 +289,10 @@ public class MainActivity extends AppCompatActivity {
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent(MainActivity.this,Gallery.class);
                 bundle.putParcelable("Player", currentPlayer);
+                bundle.putString("Username", username);
                 bundle.putParcelableArrayList("QRArray",(ArrayList<? extends Parcelable>) qrCodeComments);
                 intent.putExtras(bundle);
+                Log.d("TASK", "STARTING GALLERY");
                 startActivity(intent);
             }
         });

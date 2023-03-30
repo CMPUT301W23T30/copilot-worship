@@ -39,12 +39,15 @@ public class Gallery extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
+        Log.d("TASK", "INSIDE GALLERY");
+
         textView = findViewById((R.id.gallery_name));
 
         //galleryView = findViewById(R.id.gallery_content);
         Bundle bundle = getIntent().getExtras();
+
         player = bundle.getParcelable("Player");
-        username = player.getUsername();
+        username = bundle.getString("Username");
         qrCodeComments = bundle.getParcelableArrayList("QRArray");
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.gallery_recycler_view);
