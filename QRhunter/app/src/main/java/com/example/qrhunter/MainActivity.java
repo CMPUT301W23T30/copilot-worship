@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
         TextView userPhone = findViewById(R.id.user_page_phone);
 
         // Player Information
-        db.getPlayerInfo(username, new PlayerInfoListener() {
+        db.getPlayerInfo("Player-1", new PlayerInfoListener() {
             @Override
             public void playerInfoCallback(Player player) {
                 currentPlayer = player;
