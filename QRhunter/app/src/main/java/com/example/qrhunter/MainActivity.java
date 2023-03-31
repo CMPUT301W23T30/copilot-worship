@@ -558,7 +558,6 @@ public class MainActivity extends AppCompatActivity {
             image = (Bitmap) data.getExtras().get("data");
             Database db = new Database();
             String hash = getIntent().getStringExtra("CamHash");
-            
             db.storeQRPicture(username, hash, image);
         }
     }

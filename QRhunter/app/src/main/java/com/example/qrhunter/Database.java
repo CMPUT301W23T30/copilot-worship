@@ -525,4 +525,18 @@ public class Database {
         return qrPlayerStore.putBytes(data);
     }
 
+    /**
+     * Loads the file to memory. Has a maximum size of 1MB
+     *
+     * @param username username of person with qr
+     * @param hash     hash of the qr
+     * @return
+     */
+    public Task<byte[]> getQRPicture(String username, String hash){
+        StorageReference qrPlayerGet = storageRef.child("qrImages/"
+                +username + hash + ".jpg");
+        final long ONE_MEGABYTE = 1024 * 1024;
+        return qrPlayerGet.getBytes(ONE_MEGABYTE);
+    }
+
 }
