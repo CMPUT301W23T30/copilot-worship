@@ -87,7 +87,7 @@ public class AddPlayerActivity extends AppCompatActivity {
 
          */
         selectButton.setOnClickListener(v -> {
-            //TODO add select profile pic functionality
+            imageChooser();
         });
 
         randomizeButton.setOnClickListener(v -> {
