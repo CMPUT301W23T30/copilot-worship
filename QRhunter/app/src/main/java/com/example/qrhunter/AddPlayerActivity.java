@@ -63,17 +63,8 @@ public class AddPlayerActivity extends AppCompatActivity {
             phoneEditText.setText(passedPhone);
         }
 
-        String armsFileName = "arms" + (int) (Math.random() * 10);
-        String legsFileName = "legs" + (int) (Math.random() * 10);
-        String eyesFileName = "eyes" + (int) (Math.random() * 10);
-        String mouthFileName = "mouth" + (int) (Math.random() * 10);
-        String hatFileName = "hat" + (int) (Math.random() * 10);
-        String firstSixDigitsString = String.valueOf((int) (Math.random() * 1000000));
+        profilePicImageView.setImageBitmap(changeProfilePic());
 
-        CharacterImage testCharacter = new CharacterImage(this, armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName, firstSixDigitsString);
-
-        Bitmap testCharacterBitmap = testCharacter.getCharacterImage();
-        profilePicImageView.setImageBitmap(testCharacterBitmap);
 
         // usernameEditText.setText(passedUserName);
         // Database db = new Database();
@@ -95,6 +86,13 @@ public class AddPlayerActivity extends AppCompatActivity {
         intent.putExtra("number", number);
 
          */
+        selectButton.setOnClickListener(v -> {
+            //TODO add select profile pic functionality
+        });
+
+        randomizeButton.setOnClickListener(v -> {
+            profilePicImageView.setImageBitmap(changeProfilePic());
+        });
 
         submitButton.setOnClickListener(v -> {
             //To update the player info, we need to delete
@@ -171,5 +169,18 @@ public class AddPlayerActivity extends AppCompatActivity {
             });
 
         });
+    }
+
+    private Bitmap changeProfilePic() {
+        String armsFileName = "arms" + (int) (Math.random() * 10);
+        String legsFileName = "legs" + (int) (Math.random() * 10);
+        String eyesFileName = "eyes" + (int) (Math.random() * 10);
+        String mouthFileName = "mouth" + (int) (Math.random() * 10);
+        String hatFileName = "hat" + (int) (Math.random() * 10);
+        String firstSixDigitsString = String.valueOf((int) (Math.random() * 1000000));
+
+        CharacterImage testCharacter = new CharacterImage(this, armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName, firstSixDigitsString);
+
+        return testCharacter.getCharacterImage();
     }
 }
