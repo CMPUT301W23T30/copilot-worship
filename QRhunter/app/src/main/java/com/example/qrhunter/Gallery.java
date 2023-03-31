@@ -50,7 +50,7 @@ public class Gallery extends AppCompatActivity {
         qrCodeList = player.getQrCodes();
 
         //Find number of QRCode Player has found
-        if (!qrCodeList.equals(null)){
+        if (qrCodeList != null){
             galleryCount.setText(String.valueOf(qrCodeList.size()));
         }
 

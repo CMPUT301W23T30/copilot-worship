@@ -3,6 +3,8 @@ package com.example.qrhunter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.os.Bundle;
 import android.text.Editable;
@@ -20,6 +22,8 @@ import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -110,8 +114,23 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         EditText editComment = holder.editComment;
         ImageView photo = holder.photo;
 
+
         //TODO SET QRCode Photo
         comment.setText(qrComment);
+        //set picture
+        Database db = new Database();
+        db.getQRPicture(username, qrCode.getHash())
+                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        //From https://stackoverflow.com/questions/7359173/create-bitmap-from-bytearray-in-android
+                        //TODO Cite properly
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inMutable = true;
+                        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+                        photo.setImageBitmap(bmp);
+                    }
+                });
 
         //TODO don't forget to HIDE QRCode photo
         //Hide Extras

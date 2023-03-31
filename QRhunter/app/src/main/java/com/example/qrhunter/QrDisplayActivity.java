@@ -62,7 +62,7 @@ public class QrDisplayActivity extends AppCompatActivity {
         seeOthersButton.setVisibility(View.GONE);
 
         //Gallery to see Shared Players is only visible from QRS you own
-        if (!currentPlayer.equals(null)){
+        if (currentPlayer != null){
             seeOthersButton.setVisibility(View.VISIBLE);
         }
 

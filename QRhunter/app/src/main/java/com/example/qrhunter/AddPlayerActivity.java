@@ -31,7 +31,7 @@ import java.util.HashMap;
 /**
  * This class is used to edit player information
  * It is called from the MainActivity class.
- * @author: Maarij
+ * @author Maarij
  */
 public class AddPlayerActivity extends AppCompatActivity {
     String passedUserName, passedEmail, passedPhone;
