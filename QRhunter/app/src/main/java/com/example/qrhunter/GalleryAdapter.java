@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -143,6 +144,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             public void onClick(View v) {
                 comment.setVisibility(View.GONE);
                 editComment.setVisibility(View.VISIBLE);
+
+                //Redirects focus to EditText
+                //Opens soft keyboard
+                editComment.requestFocus();
+                InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
             }
         });
 
@@ -158,9 +165,17 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
                 Database db = new Database();
                 db.editComment(username, qrComment, qrCode.getHash());
+
+                //Hides soft keyboard
+                //https://stackoverflow.com/questions/19451395/how-to-hide-the-soft-keyboard-in-android-after-doing-something-outside-of-editte
+                InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+                Toast.makeText(context, "Your comment has been saved.", Toast.LENGTH_SHORT).show();
             }
         });
 
+        //Hides the extra information again
         showLess.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

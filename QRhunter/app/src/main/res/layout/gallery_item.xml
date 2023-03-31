@@ -162,6 +162,7 @@
             android:layout_marginVertical="5dp"
             android:background="@android:color/transparent"
             android:gravity="center_vertical"
+            android:hint="Click here to add a comment!"
             android:text=" "
             android:textSize="14sp"
             app:layout_constraintStart_toEndOf="@+id/QRmon_image"
