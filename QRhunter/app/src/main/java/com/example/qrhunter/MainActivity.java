@@ -342,7 +342,7 @@ public class MainActivity extends AppCompatActivity {
                 String firstSixDigits = getFirstSixDigits(testHash);
                 CharacterImage testCharacter = characterCreator(firstSixDigits);
                 profileCircle.setImageBitmap(testCharacter.getCharacterImage());
-                smallerTextView.setText(generateRandomName());
+                smallerTextView.setText(generateRandomName(firstSixDigits));
             }
         });
 
@@ -396,7 +396,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public String generateRandomName() {
+    public String generateRandomName(String firstSixDigits) {
 
         final ArrayList<String> adjectivesList = new ArrayList<String>();
         final ArrayList<String> nounsList = new ArrayList<String>();
@@ -426,12 +426,15 @@ public class MainActivity extends AppCompatActivity {
         String noun = nounsList.get(rand.nextInt(nounsList.size()));
         */
 
-        int adjectiveIndex =
-        String adjective = adjectivesList.get()
+        int firstFourDigits = Integer.parseInt(firstSixDigits.substring(0, 4));
+        int adjectiveIndex = firstFourDigits - (firstFourDigits / adjectivesList.size()) * adjectivesList.size();
+        String adjective = adjectivesList.get(adjectiveIndex);
 
+        int lastTwoDigits = Integer.parseInt(firstSixDigits.substring(4, 6));
+        int nounIndex = lastTwoDigits - (lastTwoDigits / nounsList.size()) * nounsList.size();
+        String noun = nounsList.get(nounIndex);
 
-
-        return randomAdjective + " " + randomNoun;
+        return adjective + " " + noun;
 
     }
 
@@ -472,7 +475,8 @@ public class MainActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Result");
 
-            String name = generateRandomName();
+            String testHash = getFirstSixDigits(hashedCode);
+            String name = generateRandomName(testHash);
 
             builder.setMessage(name + " " + score + " points");
 
