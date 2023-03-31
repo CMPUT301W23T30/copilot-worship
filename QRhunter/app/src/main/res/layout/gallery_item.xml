@@ -65,8 +65,8 @@
 
     <ImageButton
         android:id="@+id/show_less_button"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:backgroundTint="@color/transparent"
         app:srcCompat="@drawable/circle_hide_button"
         app:layout_constraintStart_toEndOf="@+id/QRmon_image"
@@ -74,8 +74,8 @@
 
     <ImageButton
         android:id="@+id/edit_comment"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:backgroundTint="@color/transparent"
         app:layout_constraintEnd_toStartOf="@+id/cardView"
         app:layout_constraintStart_toStartOf="parent"
