@@ -15,7 +15,8 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/map_button_bg"
-        android:drawableStart="@drawable/map_back_arrow"/>
+        android:drawableStart="@drawable/map_back_arrow"
+        android:contentDescription="Used to quit the activity"/>
 
     <Button
         android:id="@+id/map_locate_button"
@@ -26,7 +27,8 @@
         android:layout_marginBottom="90dp"
         android:layout_marginEnd="20dp"
         android:background="@drawable/map_button_bg"
-        android:drawableBottom="@drawable/map_locate"/>
+        android:drawableBottom="@drawable/map_locate"
+        android:contentDescription="Used to locate to current position"/>
 
     <ToggleButton
         android:id="@+id/map_follow_button"
@@ -38,9 +40,10 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/map_follow_bg"
-        android:drawableBottom="@drawable/map_follow"
+        android:drawableLeft="@drawable/map_follow"
         android:textOff=""
-        android:textOn="" />
+        android:textOn=""
+        android:paddingTop="7dp"/>
 
     <Button
         android:id="@+id/map_add_button"
@@ -50,7 +53,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
         android:background="@color/transparent"
-        android:drawableBottom="@drawable/navbar_add"/>
+        android:drawableBottom="@drawable/navbar_add"
+        android:contentDescription="Used to start scanning qr codes"/>
 
 
 </RelativeLayout>
