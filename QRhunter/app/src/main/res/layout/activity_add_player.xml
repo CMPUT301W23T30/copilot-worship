@@ -10,13 +10,13 @@
         android:id="@+id/usernameEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="64dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:minHeight="48dp"
         android:text="default"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_player_profile_pic" />
 
@@ -30,10 +30,10 @@
         android:text="default@default.com"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/usernameEditText"
-        app:layout_constraintVertical_bias="0.191" />
+        app:layout_constraintVertical_bias="0.114" />
 
     <EditText
         android:id="@+id/numberEditText"
@@ -45,10 +45,10 @@
         android:text="0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.477"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailEditText"
-        app:layout_constraintVertical_bias="0.312" />
+        app:layout_constraintVertical_bias="0.164" />
 
     <Button
         android:id="@+id/submitButton"
@@ -89,13 +89,13 @@
         android:id="@+id/numberLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
         android:text="Phone Number"
         app:layout_constraintBottom_toTopOf="@+id/numberEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/numberEditText"
-        app:layout_constraintTop_toBottomOf="@+id/emailEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/emailEditText"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/errorText"
@@ -114,10 +114,9 @@
         android:id="@+id/select_profile_pic_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="96dp"
         android:layout_marginTop="36dp"
         android:text="Select"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/submitButton"
         app:layout_constraintTop_toBottomOf="@+id/numberEditText" />
 
     <Button
@@ -126,16 +125,16 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
         android:text="Randomize"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.068"
+        app:layout_constraintEnd_toEndOf="@+id/submitButton"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/select_profile_pic_button"
         app:layout_constraintTop_toBottomOf="@+id/numberEditText" />
 
     <ImageView
         android:id="@+id/edit_player_profile_pic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="92dp"
+        android:layout_width="149dp"
+        android:layout_height="161dp"
+        android:layout_marginTop="52dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
