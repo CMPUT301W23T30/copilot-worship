@@ -31,9 +31,8 @@ import java.util.ArrayList;
  */
 public class Gallery extends AppCompatActivity {
     Player player;
-    TextView textView;
     String username;
-
+    ArrayList<QRCode> qrCodeList = new ArrayList<>();
     ArrayList<QRCodeComment> qrCodeComments = new ArrayList<>();
 
     @Override
@@ -41,16 +40,19 @@ public class Gallery extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
-        Log.d("TASK", "INSIDE GALLERY");
+        TextView galleryCount = findViewById(R.id.gallery_qr_count);
 
-        textView = findViewById((R.id.gallery_name));
-
-        //galleryView = findViewById(R.id.gallery_content);
+        //Unpack bundle to get Player info
         Bundle bundle = getIntent().getExtras();
-
         player = bundle.getParcelable("Player");
         username = bundle.getString("Username");
         qrCodeComments = bundle.getParcelableArrayList("QRArray");
+        qrCodeList = player.getQrCodes();
+
+        //Find number of QRCode Player has found
+        if (!qrCodeList.equals(null)){
+            galleryCount.setText(String.valueOf(qrCodeList.size()));
+        }
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.gallery_recycler_view);
         GalleryAdapter adapter = new GalleryAdapter(qrCodeComments, username, this);
