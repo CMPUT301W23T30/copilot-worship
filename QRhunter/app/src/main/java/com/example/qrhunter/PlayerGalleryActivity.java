@@ -45,6 +45,8 @@ public class PlayerGalleryActivity extends AppCompatActivity {
         Database db = new Database();
         Bundle bundle = getIntent().getExtras();
         String currentUsername = bundle.getString("currentUsername");
+
+
         galleryView = findViewById(R.id.player_list);
 
         ImageView qrImage = findViewById(R.id.shared_qr_image);

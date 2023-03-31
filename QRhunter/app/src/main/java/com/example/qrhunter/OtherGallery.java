@@ -19,8 +19,9 @@ import java.util.ArrayList;
 public class OtherGallery extends AppCompatActivity {
     Player player;
     TextView galleryName;
+    TextView galleryCount;
     String username;
-
+    ArrayList<QRCode> qrCodesList = new ArrayList<>();
     ArrayList<QRCode> qrCodeArrayList = new ArrayList<>();
 
     @Override
@@ -29,30 +30,29 @@ public class OtherGallery extends AppCompatActivity {
         setContentView(R.layout.activity_other_gallery);
 
         galleryName = findViewById((R.id.other_gallery_name));
+        galleryCount = findViewById(R.id.other_gallery_qr_count);
 
-
-
-        //galleryView = findViewById(R.id.gallery_content);
+        //Unpack bundle to get Player info
         Bundle bundle = getIntent().getExtras();
         player = bundle.getParcelable("Player");
         username = player.getUsername();
         qrCodeArrayList = player.getQrCodes();
+        qrCodesList = player.getQrCodes();
+
         galleryName.setText(username + "'s Gallery");
 
-        for (QRCode qrCode : qrCodeArrayList){
-            Log.d("TASK", "QR: " + qrCode.getName());
+        //Find number of QRCode Player has found
+        if (!qrCodesList.equals(null)){
+            galleryCount.setText(String.valueOf(qrCodesList.size()));
         }
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.other_gallery_recycler_view);
-
-        Log.d("TASK", "START");
 
         OtherGalleryAdapter adapter = new OtherGalleryAdapter(qrCodeArrayList, this);
 
         LinearLayoutManager manager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
 
-        Log.d("TASK", "SET");
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
     }

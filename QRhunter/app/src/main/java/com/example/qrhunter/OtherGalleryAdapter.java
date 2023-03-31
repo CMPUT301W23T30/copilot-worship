@@ -67,6 +67,21 @@ public class OtherGalleryAdapter extends RecyclerView.Adapter<OtherGalleryAdapte
         latitude.setText(df.format(qrCode.getLocation().getLatitude()));
         score.setText(String.format("%d", qrCode.getScore()));
 
+        //ON LONG CLICK
+        //Goes to QRDisplayActivity to see QR details
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent intent = new Intent(v.getContext(), QrDisplayActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("currentUsername", null);
+                bundle.putParcelable("QRCode", qrCode);
+                intent.putExtras(bundle);
+                v.getContext().startActivity(intent);
+                return true;
+            }
+        });
+
     }
     @Override
     public int getItemCount() {

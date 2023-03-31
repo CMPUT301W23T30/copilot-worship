@@ -178,7 +178,7 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
 
     public void onClickFirst(View view) {
         Bundle bundle = new Bundle();
-        Intent intent = new Intent(LeaderboardActivity.this, MainActivity.class);
+        Intent intent = new Intent(LeaderboardActivity.this, OtherProfiles.class);
         bundle.putString("username", firstUsernameStr);
         intent.putExtras(bundle);
         startActivity(intent);
@@ -186,7 +186,7 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
 
     public void onClickSecond(View view) {
         Bundle bundle = new Bundle();
-        Intent intent = new Intent(LeaderboardActivity.this, MainActivity.class);
+        Intent intent = new Intent(LeaderboardActivity.this, OtherProfiles.class);
         bundle.putString("username", secondUsernameStr);
         intent.putExtras(bundle);
         startActivity(intent);
@@ -194,7 +194,7 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
 
     public void onClickThird(View view) {
         Bundle bundle = new Bundle();
-        Intent intent = new Intent(LeaderboardActivity.this, MainActivity.class);
+        Intent intent = new Intent(LeaderboardActivity.this, OtherProfiles.class);
         bundle.putString("username", thirdUsernameStr);
         intent.putExtras(bundle);
         startActivity(intent);
@@ -203,7 +203,7 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
     @Override
     public void OnItemClick(int position) {
         Bundle bundle = new Bundle();
-        Intent intent = new Intent(LeaderboardActivity.this, MainActivity.class);
+        Intent intent = new Intent(LeaderboardActivity.this, OtherProfiles.class);
         bundle.putString("username", userList.get(position).getUsername());
         intent.putExtras(bundle);
         startActivity(intent);

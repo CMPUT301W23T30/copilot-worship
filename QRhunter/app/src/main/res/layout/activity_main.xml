@@ -11,7 +11,6 @@
         android:id="@+id/profile_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/user_page_user_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,16 +20,21 @@
         android:id="@+id/user_page_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="40dp"
         android:text="JANEDOE"
         android:textAlignment="viewStart"
-        android:textSize="34sp"
+        android:textSize="30sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.242" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_icon"/>
+
+    <RelativeLayout
+        android:id="@+id/divideNameAndTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/user_page_user_name"/>
 
 
     <LinearLayout
@@ -40,9 +44,10 @@
         android:layout_marginHorizontal="30dp"
         android:background="@drawable/background_border"
         android:orientation="vertical"
+        android:layout_marginBottom="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_page_user_name">
+        app:layout_constraintTop_toBottomOf="@+id/divideNameAndTotal">
 
         <TextView
             android:layout_width="wrap_content"
@@ -61,8 +66,16 @@
             android:layout_margin="10dp"
             android:text="N/A"
             android:textAlignment="textEnd"
-            android:textSize="34sp"></TextView>
+            android:textSize="30sp"></TextView>
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/divideTotalAndInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/user_profile_total"/>
 
     <LinearLayout
         android:id="@+id/user_page_info"
@@ -71,11 +84,10 @@
         android:layout_marginHorizontal="30dp"
         android:background="@drawable/background_border"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/navbar_add_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_profile_total"
-        app:layout_constraintVertical_bias="0.183">
+        app:layout_constraintTop_toBottomOf="@+id/divideTotalAndInfo">
 
         <TextView
             android:layout_width="wrap_content"
@@ -92,7 +104,7 @@
             android:layout_margin="10dp"
             android:text="N/A"
             android:textAlignment="textEnd"
-            android:textSize="24sp"/>
+            android:textSize="20sp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -110,7 +122,7 @@
             android:layout_margin="10dp"
             android:text="N/A"
             android:textAlignment="textEnd"
-            android:textSize="24sp"/>
+            android:textSize="20sp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -142,10 +154,12 @@
             android:textSize="20sp"/>
     </LinearLayout>
 
+
     <RelativeLayout
         android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:layout_constraintTop_toBottomOf="@+id/user_page_info"
         tools:context=".MainActivity">
 
         <include layout="@layout/navbar" />
