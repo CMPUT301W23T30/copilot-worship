@@ -556,6 +556,10 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 100){
             image = (Bitmap) data.getExtras().get("data");
+            Database db = new Database();
+            String hash = getIntent().getStringExtra("CamHash");
+            
+            db.storeQRPicture(username, hash, image);
         }
     }
 
@@ -574,14 +578,9 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         // Continue with delete operation
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        //Because we are in main we have to use main's intent
+                        getIntent().putExtra("CamHash", one.getHash());
                         startActivityForResult(intent, 100);
-
-                        /**
-                         * need to add image (Bitmap object) to one (QRCode object)
-                         */
-
-
-
                     }
                 })
 
