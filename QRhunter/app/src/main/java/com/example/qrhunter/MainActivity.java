@@ -8,12 +8,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.telephony.CarrierConfigManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -50,7 +47,6 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Random;
 import java.util.Scanner;
 
 
@@ -216,7 +212,9 @@ public class MainActivity extends AppCompatActivity {
         TextView userEmailTextView = findViewById(R.id.user_page_email);
         TextView userPhoneTextView = findViewById(R.id.user_page_phone);
 
-        CharacterImage testCharacter = characterCreator("2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824");
+        String testHash = "2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824";
+        String firstSixDigits = getFirstSixDigits(testHash);
+        CharacterImage testCharacter = characterCreator(firstSixDigits);
         profileCircle.setImageBitmap(testCharacter.getCharacterImage());
 
         smallerTextView.setText("QRCREATURE TIME");
@@ -343,9 +341,11 @@ public class MainActivity extends AppCompatActivity {
         profileCircle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CharacterImage testCharacter = characterCreator("2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824");
+                String testHash = "2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824";
+                String firstSixDigits = getFirstSixDigits(testHash);
+                CharacterImage testCharacter = characterCreator(firstSixDigits);
                 profileCircle.setImageBitmap(testCharacter.getCharacterImage());
-                smallerTextView.setText(generateRandomName());
+                smallerTextView.setText(generateRandomName(firstSixDigits));
             }
         });
 
@@ -399,7 +399,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public String generateRandomName() {
+    public String generateRandomName(String firstSixDigits) {
 
         final ArrayList<String> adjectivesList = new ArrayList<String>();
         final ArrayList<String> nounsList = new ArrayList<String>();
@@ -422,21 +422,32 @@ public class MainActivity extends AppCompatActivity {
         }
         nounsScanner.close();
 
+        /*
         Random rand = new Random();
+        String adjective = adjectivesList.get(rand.nextInt(adjectivesList.size()));
+        adjective = randomAdjective.substring(0, 1).toUpperCase() + randomAdjective.substring(1);
+        String noun = nounsList.get(rand.nextInt(nounsList.size()));
+        */
 
-        String randomAdjective = adjectivesList.get(rand.nextInt(adjectivesList.size()));
-        randomAdjective = randomAdjective.substring(0, 1).toUpperCase() + randomAdjective.substring(1);
-        String randomNoun = nounsList.get(rand.nextInt(nounsList.size()));
+        int firstFourDigits = Integer.parseInt(firstSixDigits.substring(0, 4));
+        int adjectiveIndex = firstFourDigits - (firstFourDigits / adjectivesList.size()) * adjectivesList.size();
+        String adjective = adjectivesList.get(adjectiveIndex);
+        adjective = adjective.substring(0, 1).toUpperCase() + adjective.substring(1);
 
-        return randomAdjective + " " + randomNoun;
+        int lastTwoDigits = Integer.parseInt(firstSixDigits.substring(4, 6));
+        int nounIndex = lastTwoDigits - (lastTwoDigits / nounsList.size()) * nounsList.size();
+        String noun = nounsList.get(nounIndex);
+
+        return adjective + " " + noun;
 
     }
 
-    private CharacterImage characterCreator(String hashedQRCode) {
-        String armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName;
+    private String getFirstSixDigits(String hashedQRCode) {
+        return new BigInteger(hashedQRCode, 16).toString().substring(0, 6);
+    }
 
-        BigInteger hashedQRCodeBigInt = new BigInteger(hashedQRCode, 16);
-        String firstSixDigitsString = hashedQRCodeBigInt.toString().substring(0, 6);
+    private CharacterImage characterCreator(String firstSixDigitsString) {
+        String armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName;
 
 //        armsFileName = "arms" + firstSixDigitsString.substring(0, 1);
 //        legsFileName = "legs" + firstSixDigitsString.substring(1, 2);
@@ -468,7 +479,8 @@ public class MainActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Result");
 
-            String name = generateRandomName();
+            String testHash = getFirstSixDigits(hashedCode);
+            String name = generateRandomName(testHash);
 
             builder.setMessage("You found a " + name + " worth " + score + " points !" + "\nWould you like to keep it?");
 

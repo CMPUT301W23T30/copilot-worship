@@ -32,7 +32,7 @@ public class CharacterImage {
         // Get the canvas for the body bitmap
         Canvas canvas = new Canvas(this.body);
 
-        // Create a paint object with a colour based on first five digits of hash code
+        // Create a paint object with a colour based on first six digits of hash code
         Paint paint = new Paint();
         float hueValue = ((Float.parseFloat(firstSixDigitsString.substring(0,1)) * Float.parseFloat(firstSixDigitsString.substring(1,2))) % 36) * 10;
         float satValue = (float) 0.65;
