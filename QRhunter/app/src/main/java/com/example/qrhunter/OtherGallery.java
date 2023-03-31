@@ -43,7 +43,7 @@ public class OtherGallery extends AppCompatActivity {
 
         //Find number of QRCode Player has found
         if (!qrCodesList.equals(null)){
-            galleryName.setText(String.valueOf(qrCodesList.size()));
+            galleryCount.setText(String.valueOf(qrCodesList.size()));
         }
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.other_gallery_recycler_view);
