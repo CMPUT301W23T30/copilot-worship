@@ -429,6 +429,7 @@ public class MainActivity extends AppCompatActivity {
         int firstFourDigits = Integer.parseInt(firstSixDigits.substring(0, 4));
         int adjectiveIndex = firstFourDigits - (firstFourDigits / adjectivesList.size()) * adjectivesList.size();
         String adjective = adjectivesList.get(adjectiveIndex);
+        adjective = adjective.substring(0, 1).toUpperCase() + adjective.substring(1);
 
         int lastTwoDigits = Integer.parseInt(firstSixDigits.substring(4, 6));
         int nounIndex = lastTwoDigits - (lastTwoDigits / nounsList.size()) * nounsList.size();
