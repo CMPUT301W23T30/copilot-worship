@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.data.DataBufferObserverSet;
@@ -41,9 +43,12 @@ public class AddPlayerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_player);
 
+        ImageView profilePicImageView = findViewById(R.id.edit_player_profile_pic);
         EditText usernameEditText = findViewById(R.id.usernameEditText);
         EditText emailEditText = findViewById(R.id.emailEditText);
         EditText phoneEditText = findViewById(R.id.numberEditText);
+        Button selectButton = findViewById(R.id.select_profile_pic_button);
+        Button randomizeButton = findViewById(R.id.randomize_player_char_button);
         Button submitButton = findViewById(R.id.submitButton);
         TextView errorText = findViewById(R.id.errorText);
 
@@ -57,6 +62,18 @@ public class AddPlayerActivity extends AppCompatActivity {
             emailEditText.setText(passedEmail);
             phoneEditText.setText(passedPhone);
         }
+
+        String armsFileName = "arms" + (int) (Math.random() * 10);
+        String legsFileName = "legs" + (int) (Math.random() * 10);
+        String eyesFileName = "eyes" + (int) (Math.random() * 10);
+        String mouthFileName = "mouth" + (int) (Math.random() * 10);
+        String hatFileName = "hat" + (int) (Math.random() * 10);
+        String firstSixDigitsString = String.valueOf((int) (Math.random() * 1000000));
+
+        CharacterImage testCharacter = new CharacterImage(this, armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName, firstSixDigitsString);
+
+        Bitmap testCharacterBitmap = testCharacter.getCharacterImage();
+        profilePicImageView.setImageBitmap(testCharacterBitmap);
 
         // usernameEditText.setText(passedUserName);
         // Database db = new Database();
