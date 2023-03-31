@@ -15,8 +15,9 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/map_button_bg"
-        android:drawableStart="@drawable/map_back_arrow"
-        android:contentDescription="Used to quit the activity"/>
+        android:drawableStart="@drawable/back_button_top_bar"
+        android:contentDescription="Used to quit the activity"
+        android:paddingLeft="10dp"/>
 
     <Button
         android:id="@+id/map_locate_button"
@@ -28,7 +29,8 @@
         android:layout_marginEnd="20dp"
         android:background="@drawable/map_button_bg"
         android:drawableBottom="@drawable/map_locate"
-        android:contentDescription="Used to locate to current position"/>
+        android:contentDescription="Used to locate to current position"
+        android:paddingBottom="2dp"/>
 
     <ToggleButton
         android:id="@+id/map_follow_button"
@@ -43,7 +45,8 @@
         android:drawableLeft="@drawable/map_follow"
         android:textOff=""
         android:textOn=""
-        android:paddingTop="7dp"/>
+        android:paddingTop="7dp"
+        android:paddingLeft="2dp"/>
 
     <Button
         android:id="@+id/map_add_button"
