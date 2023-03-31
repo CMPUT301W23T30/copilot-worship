@@ -242,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Player Information
         //TODO CHANGE BACK TO USERNAME
-        db.getPlayerInfo("Player-1", new PlayerInfoListener() {
+        db.getPlayerInfo(username, new PlayerInfoListener() {
             @Override
             public void playerInfoCallback(Player player) {
                 currentPlayer = player;
