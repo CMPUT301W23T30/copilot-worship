@@ -1,21 +1,22 @@
 package com.example.qrhunter;
 
-import androidx.annotation.NonNull;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.common.data.DataBufferObserverSet;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -26,9 +27,8 @@ import com.google.firebase.firestore.QuerySnapshot;
  * It is called from the MainActivity class.
  * @author: Maarij
  */
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * This class is used to edit player information
@@ -63,7 +63,7 @@ public class AddPlayerActivity extends AppCompatActivity {
             phoneEditText.setText(passedPhone);
         }
 
-        profilePicImageView.setImageBitmap(changeProfilePic());
+        profilePicImageView.setImageBitmap(generateRandomQReature());
 
 
         // usernameEditText.setText(passedUserName);
@@ -91,7 +91,7 @@ public class AddPlayerActivity extends AppCompatActivity {
         });
 
         randomizeButton.setOnClickListener(v -> {
-            profilePicImageView.setImageBitmap(changeProfilePic());
+            profilePicImageView.setImageBitmap(generateRandomQReature());
         });
 
         submitButton.setOnClickListener(v -> {
@@ -171,7 +171,7 @@ public class AddPlayerActivity extends AppCompatActivity {
         });
     }
 
-    private Bitmap changeProfilePic() {
+    private Bitmap generateRandomQReature() {
         String armsFileName = "arms" + (int) (Math.random() * 10);
         String legsFileName = "legs" + (int) (Math.random() * 10);
         String eyesFileName = "eyes" + (int) (Math.random() * 10);
@@ -183,4 +183,43 @@ public class AddPlayerActivity extends AppCompatActivity {
 
         return testCharacter.getCharacterImage();
     }
+
+    // https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
+    private void imageChooser()
+    {
+        Intent i = new Intent();
+        i.setType("image/*");
+        i.setAction(Intent.ACTION_GET_CONTENT);
+
+        launchSomeActivity.launch(i);
+    }
+
+    ActivityResultLauncher<Intent> launchSomeActivity
+            = registerForActivityResult(
+            new ActivityResultContracts
+                    .StartActivityForResult(),
+            result -> {
+                if (result.getResultCode()
+                        == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null
+                            && data.getData() != null) {
+                        Uri selectedImageUri = data.getData();
+                        Bitmap selectedImageBitmap = null;
+                        try {
+                            selectedImageBitmap
+                                    = MediaStore.Images.Media.getBitmap(
+                                    this.getContentResolver(),
+                                    selectedImageUri);
+                        }
+                        catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        ImageView profilePicImageView = findViewById(R.id.edit_player_profile_pic);
+                        profilePicImageView.setImageBitmap(selectedImageBitmap);
+                    }
+                }
+            });
+
 }
