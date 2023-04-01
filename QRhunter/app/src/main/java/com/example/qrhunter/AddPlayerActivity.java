@@ -8,10 +8,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
 
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,6 +39,7 @@ import com.google.firebase.firestore.QuerySnapshot;
  * It is called from the MainActivity class.
  * @author: Maarij
  */
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -99,8 +103,10 @@ public class AddPlayerActivity extends AppCompatActivity {
             String email = emailEditText.getText().toString();
             String number = phoneEditText.getText().toString();
             Player newUser = new Player(username,email, Integer.parseInt(number), new ArrayList<>());
+
             //If just changing info, no need to change much
             if(username.equals(passedUserName)){
+                savePicture(username);
                 db.changeInfo(newUser);
                 Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
                 startActivity(intent);
@@ -117,7 +123,7 @@ public class AddPlayerActivity extends AppCompatActivity {
                     }
                     else {
                         //TODO add on Failure listener
-
+                        savePicture(username);
                         db.addPlayer(newUser);
                         //TODO add on failure listener
                         //Need to delete the player from the qr too
@@ -126,7 +132,7 @@ public class AddPlayerActivity extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                         errorText.setTextColor(getResources().getColor(R.color.black));
-                                        errorText.setText("Changing info...");
+                                        errorText.setText("Changing account info...");
                                         ArrayList<Task<?>> tasks = new ArrayList<>();
                                         for(QueryDocumentSnapshot doc : queryDocumentSnapshots){
                                             //TODO add failure listeners
@@ -242,5 +248,19 @@ public class AddPlayerActivity extends AppCompatActivity {
                     }
                 }
             });
+
+    public void savePicture(String username){
+        SharedPreferences settings = getSharedPreferences("profilePicture", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("saved", true);
+        editor.commit();
+        ImageView iv = findViewById(R.id.edit_player_profile_pic);
+        Drawable drawable = iv.getDrawable();
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+        Bitmap bitmap = bitmapDrawable.getBitmap();
+        Database db = new Database();
+        db.storeProfilePicture(username, bitmap);
+
+    }
 
 }

@@ -539,4 +539,12 @@ public class Database {
         return qrPlayerGet.getBytes(ONE_MEGABYTE);
     }
 
+    public UploadTask storeProfilePicture(String username, Bitmap image) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+        StorageReference playerStore = storageRef.child("playerPics/" + username + ".jpg");
+        return playerStore.putBytes(data);
+    }
+
 }
