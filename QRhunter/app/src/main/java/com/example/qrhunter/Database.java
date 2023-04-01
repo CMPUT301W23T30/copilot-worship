@@ -425,7 +425,7 @@ public class Database {
      * @return Aggregate task that gets the player count
      */
     public Task<AggregateQuerySnapshot> getPlayerCount(){
-        return qrCodeCollection.count()
+        return playersCollection.count()
                 .get(AggregateSource.SERVER);
     }
 

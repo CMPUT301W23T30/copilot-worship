@@ -118,11 +118,15 @@ public class MainActivity extends AppCompatActivity {
                     bundle.putString("email", currentPlayer.getEmail());
                     bundle.putString("phone", String.valueOf(currentPlayer.getNumber()));
                     ImageView profile = findViewById(R.id.profile_icon);
-                    BitmapDrawable bitmapDrawable = (BitmapDrawable) profile.getDrawable();
-                    Bitmap bitmap = bitmapDrawable.getBitmap();
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                    byte[] data = baos.toByteArray();
+                    SharedPreferences settings = getSharedPreferences("profilePicture", 0);
+                    byte[] data = null;
+                    if(settings.getBoolean("saved", false)){
+                        BitmapDrawable bitmapDrawable = (BitmapDrawable) profile.getDrawable();
+                        Bitmap bitmap = bitmapDrawable.getBitmap();
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        data = baos.toByteArray();
+                    }
                     bundle.putByteArray("pictureBytes", data);
                     intent.putExtras(bundle);
                 }
@@ -194,8 +198,7 @@ public class MainActivity extends AppCompatActivity {
                                 userText.setText(username);
                                 db.addPlayer(new Player(username));
                             }
-                        })
-                ;
+                        });
 
             }
         }

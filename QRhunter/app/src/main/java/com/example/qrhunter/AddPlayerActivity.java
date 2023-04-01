@@ -77,16 +77,15 @@ public class AddPlayerActivity extends AppCompatActivity {
             usernameEditText.setText(passedUserName);
             emailEditText.setText(passedEmail);
             phoneEditText.setText(passedPhone);
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inMutable = true;
-            Bitmap bmp = BitmapFactory.decodeByteArray(passedPicture, 0, passedPicture.length, options);
-            //bmp = Bitmap.createScaledBitmap(bmp, profilePicImageView.getHeight(),
-            //        profilePicImageView.getWidth(), true);
-            profilePicImageView.setImageBitmap(bmp);
+            if(passedPicture != null){
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inMutable = true;
+                Bitmap bmp = BitmapFactory.decodeByteArray(passedPicture, 0, passedPicture.length, options);
+                profilePicImageView.setImageBitmap(bmp);
+            }
+
         }
 
-
-       // profilePicImageView.setImageBitmap(generateRandomQReature());
 
         selectButton.setOnClickListener(v -> {
             imageChooser();
