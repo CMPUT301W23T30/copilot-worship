@@ -59,7 +59,14 @@ public class QrDisplayActivity extends AppCompatActivity {
         qrWeight.setText(qrWeightStat);
         qrType.setText(qrTypeStat);
 
+
         seeOthersButton = findViewById(R.id.other_players);
+        seeOthersButton.setVisibility(View.GONE);
+
+        //Gallery to see Shared Players is only visible from QRS you own
+        if (currentPlayer != null){
+            seeOthersButton.setVisibility(View.VISIBLE);
+        }
 
         //Find other players that have scanned this QR Code
         seeOthersButton.setOnClickListener(new View.OnClickListener() {
@@ -85,10 +92,10 @@ public class QrDisplayActivity extends AppCompatActivity {
      */
     public void setQRStats(QRCode qrCode){
         String rawHeight = df.format(qrCode.getLocation().getLongitude()).replace(".", "");
-        qrHeightStat = "" + rawHeight.charAt(0) + "'" + rawHeight.charAt(1) + rawHeight.charAt(2);
+        qrHeightStat = "" + rawHeight.charAt(0) + "." + rawHeight.charAt(1) + rawHeight.charAt(2) + " cm";
 
         String rawWeight = df.format(qrCode.getLocation().getLatitude()).replace(".", "");
-        qrWeightStat = "" + rawWeight.charAt(0) + rawWeight.charAt(1) + "." + rawWeight.charAt(2) + rawWeight.charAt(3) + "LBS";
+        qrWeightStat = "" + rawWeight.charAt(0) + rawWeight.charAt(1) + "." + rawWeight.charAt(2) + rawWeight.charAt(3) + "G";
 
         Integer rawType = qrCode.getScore();
         if (rawType <= 15){

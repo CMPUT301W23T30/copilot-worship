@@ -1,5 +1,6 @@
 package com.example.qrhunter;
 
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.util.Log;
 
@@ -26,17 +27,18 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
 import com.google.firebase.firestore.WriteBatch;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class represents the database the app uses
- *
- *  Outstanding issues:
- *      - TODO integrate proper deletion for player nad qr c
- *        ie remove player from the qr collection once player deleted
+ * This class is a wrapper for queries and everything related to offline storage
+ * that the app uses
  *
  */
 public class Database {
@@ -47,13 +49,16 @@ public class Database {
     private CollectionReference qrCodeCollection;
     private QuerySnapshot playerSnapshotResult;
     private Task<QuerySnapshot> playerSnapshot;
-
+    private StorageReference storageRef;
 
     // Default constructor for Database, creates a new instance of the database and collections
     public Database(){
         db = FirebaseFirestore.getInstance();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
         playersCollection = db.collection("Players");
         qrCodeCollection = db.collection("QrCodes");
+
     }
 
 
@@ -504,5 +509,34 @@ public class Database {
                     });
         }
 }
+
+    /**
+     * Uploads, and associates a picture with a player
+     * @param username username of player to be uplaoded
+     * @param hash hash of qr code to be aassicuated with
+     * @param image Bitmap of image to be uploaded
+     * @return Upload Task of the process
+     */
+    public UploadTask storeQRPicture(String username, String hash, Bitmap image){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+        StorageReference qrPlayerStore = storageRef.child("qrImages/" +username + hash + ".jpg");
+        return qrPlayerStore.putBytes(data);
+    }
+
+    /**
+     * Loads the file to memory. Has a maximum size of 1MB
+     *
+     * @param username username of person with qr
+     * @param hash     hash of the qr
+     * @return
+     */
+    public Task<byte[]> getQRPicture(String username, String hash){
+        StorageReference qrPlayerGet = storageRef.child("qrImages/"
+                +username + hash + ".jpg");
+        final long ONE_MEGABYTE = 1024 * 1024;
+        return qrPlayerGet.getBytes(ONE_MEGABYTE);
+    }
 
 }

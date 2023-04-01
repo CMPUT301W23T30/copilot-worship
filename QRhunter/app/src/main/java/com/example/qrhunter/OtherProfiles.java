@@ -27,7 +27,7 @@ public class OtherProfiles extends AppCompatActivity {
 
         Log.d("TASK", "ENTERED NEW PROFILE");
         Bundle bundle = getIntent().getExtras();
-        currentUsername = bundle.getString("username");
+        currentUsername = bundle.getString("currentUsername");
         Database db = new Database();
 
 

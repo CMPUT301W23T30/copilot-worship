@@ -3,6 +3,8 @@ package com.example.qrhunter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,9 +18,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -109,8 +114,23 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         EditText editComment = holder.editComment;
         ImageView photo = holder.photo;
 
+
         //TODO SET QRCode Photo
         comment.setText(qrComment);
+        //set picture
+        Database db = new Database();
+        db.getQRPicture(username, qrCode.getHash())
+                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        //From https://stackoverflow.com/questions/7359173/create-bitmap-from-bytearray-in-android
+                        //TODO Cite properly
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inMutable = true;
+                        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+                        photo.setImageBitmap(bmp);
+                    }
+                });
 
         //TODO don't forget to HIDE QRCode photo
         //Hide Extras
@@ -143,6 +163,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             public void onClick(View v) {
                 comment.setVisibility(View.GONE);
                 editComment.setVisibility(View.VISIBLE);
+
+                //Redirects focus to EditText
+                //Opens soft keyboard
+                editComment.requestFocus();
+                InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
             }
         });
 
@@ -158,9 +184,17 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
                 Database db = new Database();
                 db.editComment(username, qrComment, qrCode.getHash());
+
+                //Hides soft keyboard
+                //https://stackoverflow.com/questions/19451395/how-to-hide-the-soft-keyboard-in-android-after-doing-something-outside-of-editte
+                InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+                Toast.makeText(context, "Your comment has been saved.", Toast.LENGTH_SHORT).show();
             }
         });
 
+        //Hides the extra information again
         showLess.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

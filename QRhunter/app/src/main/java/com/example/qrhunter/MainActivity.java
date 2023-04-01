@@ -8,12 +8,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.telephony.CarrierConfigManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -50,7 +47,6 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Random;
 import java.util.Scanner;
 
 
@@ -63,7 +59,6 @@ import java.util.Scanner;
  * Properly Cite the method to store usernames
  */
 public class MainActivity extends AppCompatActivity {
-
     private static final int PERMISSIONS_REQUEST_LOCATION = 1;
     //Tag for logging any issues
     final String TAG = "User Profile Page";
@@ -216,7 +211,9 @@ public class MainActivity extends AppCompatActivity {
         TextView userEmailTextView = findViewById(R.id.user_page_email);
         TextView userPhoneTextView = findViewById(R.id.user_page_phone);
 
-        CharacterImage testCharacter = characterCreator("2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824");
+        String testHash = "2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824";
+        String firstSixDigits = getFirstSixDigits(testHash);
+        CharacterImage testCharacter = characterCreator(firstSixDigits);
         profileCircle.setImageBitmap(testCharacter.getCharacterImage());
 
         smallerTextView.setText("QRCREATURE TIME");
@@ -241,6 +238,7 @@ public class MainActivity extends AppCompatActivity {
         getUsername(bundle, db, usernameText);
 
         // Player Information
+        //TODO CHANGE BACK TO USERNAME
         db.getPlayerInfo(username, new PlayerInfoListener() {
             @Override
             public void playerInfoCallback(Player player) {
@@ -327,8 +325,8 @@ public class MainActivity extends AppCompatActivity {
         addQRButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Bundle bundle = new Bundle();
-//                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+                startScan();
+                /**
                 //Permission check for fine location
                 if (ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_LOCATION);
@@ -336,15 +334,18 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Start Scanning", Toast.LENGTH_SHORT).show();
                 QRScan newClass = new QRScan();
                 newClass.scanCode(barLauncher);
+                 **/
             }
         });
 
         profileCircle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CharacterImage testCharacter = characterCreator("2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824");
+                String testHash = "2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824";
+                String firstSixDigits = getFirstSixDigits(testHash);
+                CharacterImage testCharacter = characterCreator(firstSixDigits);
                 profileCircle.setImageBitmap(testCharacter.getCharacterImage());
-                smallerTextView.setText(generateRandomName());
+                smallerTextView.setText(generateRandomName(firstSixDigits));
             }
         });
 
@@ -398,7 +399,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public String generateRandomName() {
+    public String generateRandomName(String firstSixDigits) {
 
         final ArrayList<String> adjectivesList = new ArrayList<String>();
         final ArrayList<String> nounsList = new ArrayList<String>();
@@ -421,21 +422,32 @@ public class MainActivity extends AppCompatActivity {
         }
         nounsScanner.close();
 
+        /*
         Random rand = new Random();
+        String adjective = adjectivesList.get(rand.nextInt(adjectivesList.size()));
+        adjective = randomAdjective.substring(0, 1).toUpperCase() + randomAdjective.substring(1);
+        String noun = nounsList.get(rand.nextInt(nounsList.size()));
+        */
 
-        String randomAdjective = adjectivesList.get(rand.nextInt(adjectivesList.size()));
-        randomAdjective = randomAdjective.substring(0, 1).toUpperCase() + randomAdjective.substring(1);
-        String randomNoun = nounsList.get(rand.nextInt(nounsList.size()));
+        int firstFourDigits = Integer.parseInt(firstSixDigits.substring(0, 4));
+        int adjectiveIndex = firstFourDigits - (firstFourDigits / adjectivesList.size()) * adjectivesList.size();
+        String adjective = adjectivesList.get(adjectiveIndex);
+        adjective = adjective.substring(0, 1).toUpperCase() + adjective.substring(1);
 
-        return randomAdjective + " " + randomNoun;
+        int lastTwoDigits = Integer.parseInt(firstSixDigits.substring(4, 6));
+        int nounIndex = lastTwoDigits - (lastTwoDigits / nounsList.size()) * nounsList.size();
+        String noun = nounsList.get(nounIndex);
+
+        return adjective + " " + noun;
 
     }
 
-    private CharacterImage characterCreator(String hashedQRCode) {
-        String armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName;
+    private String getFirstSixDigits(String hashedQRCode) {
+        return new BigInteger(hashedQRCode, 16).toString().substring(0, 6);
+    }
 
-        BigInteger hashedQRCodeBigInt = new BigInteger(hashedQRCode, 16);
-        String firstSixDigitsString = hashedQRCodeBigInt.toString().substring(0, 6);
+    private CharacterImage characterCreator(String firstSixDigitsString) {
+        String armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName;
 
 //        armsFileName = "arms" + firstSixDigitsString.substring(0, 1);
 //        legsFileName = "legs" + firstSixDigitsString.substring(1, 2);
@@ -454,10 +466,23 @@ public class MainActivity extends AppCompatActivity {
         return testCharacter;
     }
 
+    public void testThis(){
+        Toast.makeText(MainActivity.this, "try this", Toast.LENGTH_SHORT).show();
+    }
+
+    public void startScan(){
+        if (ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_LOCATION);
+        }
+        Toast.makeText(MainActivity.this, "Start Scanning", Toast.LENGTH_SHORT).show();
+        QRScan newClass = new QRScan(barLauncher);
+        newClass.scanCode();
+    }
+
     /**
      * Scan QR code
      */
-    ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result ->
+    public ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result ->
     {
         if (result.getContents() != null) {
             String hashedCode = hasher(result.getContents()); // If this fails alert won't appear, makes it easier to test
@@ -467,7 +492,8 @@ public class MainActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Result");
 
-            String name = generateRandomName();
+            String testHash = getFirstSixDigits(hashedCode);
+            String name = generateRandomName(testHash);
 
             builder.setMessage("You found a " + name + " worth " + score + " points !" + "\nWould you like to keep it?");
 
@@ -555,6 +581,9 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 100){
             image = (Bitmap) data.getExtras().get("data");
+            Database db = new Database();
+            String hash = getIntent().getStringExtra("CamHash");
+            db.storeQRPicture(username, hash, image);
         }
     }
 
@@ -573,14 +602,9 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         // Continue with delete operation
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        //Because we are in main we have to use main's intent
+                        getIntent().putExtra("CamHash", one.getHash());
                         startActivityForResult(intent, 100);
-
-                        /**
-                         * need to add image (Bitmap object) to one (QRCode object)
-                         */
-
-
-
                     }
                 })
 

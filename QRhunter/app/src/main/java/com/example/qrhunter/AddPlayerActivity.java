@@ -1,15 +1,19 @@
 package com.example.qrhunter;
 
-import androidx.annotation.NonNull;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,13 +31,14 @@ import com.google.firebase.firestore.QuerySnapshot;
  * It is called from the MainActivity class.
  * @author: Maarij
  */
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
  * This class is used to edit player information
  * It is called from the MainActivity class.
- * @author: Maarij
+ * @author Maarij
  */
 public class AddPlayerActivity extends AppCompatActivity {
     String passedUserName, passedEmail, passedPhone;
@@ -43,9 +48,12 @@ public class AddPlayerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_player);
 
+        ImageView profilePicImageView = findViewById(R.id.edit_player_profile_pic);
         EditText usernameEditText = findViewById(R.id.usernameEditText);
         EditText emailEditText = findViewById(R.id.emailEditText);
         EditText phoneEditText = findViewById(R.id.numberEditText);
+        Button selectButton = findViewById(R.id.select_profile_pic_button);
+        Button randomizeButton = findViewById(R.id.randomize_player_char_button);
         Button submitButton = findViewById(R.id.submitButton);
         TextView errorText = findViewById(R.id.errorText);
 
@@ -60,6 +68,15 @@ public class AddPlayerActivity extends AppCompatActivity {
             phoneEditText.setText(passedPhone);
         }
 
+        profilePicImageView.setImageBitmap(generateRandomQReature());
+
+        selectButton.setOnClickListener(v -> {
+            imageChooser();
+        });
+
+        randomizeButton.setOnClickListener(v -> {
+            profilePicImageView.setImageBitmap(generateRandomQReature());
+        });
 
         submitButton.setOnClickListener(v -> {
             //To update the player info, we need to delete
@@ -71,6 +88,7 @@ public class AddPlayerActivity extends AppCompatActivity {
             String username = usernameEditText.getText().toString();
             if (username.length() > 20 || username.length() <= 0 ) {
                 errorText.setText("Username must be between 1-20 Characters");
+
                 return;
             }
             String email = emailEditText.getText().toString();
@@ -168,4 +186,56 @@ public class AddPlayerActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         return true;
     }
+
+    private Bitmap generateRandomQReature() {
+        String armsFileName = "arms" + (int) (Math.random() * 10);
+        String legsFileName = "legs" + (int) (Math.random() * 10);
+        String eyesFileName = "eyes" + (int) (Math.random() * 10);
+        String mouthFileName = "mouth" + (int) (Math.random() * 10);
+        String hatFileName = "hat" + (int) (Math.random() * 10);
+        String firstSixDigitsString = String.valueOf((int) (Math.random() * 1000000));
+
+        CharacterImage testCharacter = new CharacterImage(this, armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName, firstSixDigitsString);
+
+        return testCharacter.getCharacterImage();
+    }
+
+    // https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
+    private void imageChooser()
+    {
+        Intent i = new Intent();
+        i.setType("image/*");
+        i.setAction(Intent.ACTION_GET_CONTENT);
+
+        launchSomeActivity.launch(i);
+    }
+
+    ActivityResultLauncher<Intent> launchSomeActivity
+            = registerForActivityResult(
+            new ActivityResultContracts
+                    .StartActivityForResult(),
+            result -> {
+                if (result.getResultCode()
+                        == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null
+                            && data.getData() != null) {
+                        Uri selectedImageUri = data.getData();
+                        Bitmap selectedImageBitmap = null;
+                        try {
+                            selectedImageBitmap
+                                    = MediaStore.Images.Media.getBitmap(
+                                    this.getContentResolver(),
+                                    selectedImageUri);
+                        }
+                        catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        ImageView profilePicImageView = findViewById(R.id.edit_player_profile_pic);
+                        profilePicImageView.setImageBitmap(selectedImageBitmap);
+                    }
+                }
+            });
+
 }
