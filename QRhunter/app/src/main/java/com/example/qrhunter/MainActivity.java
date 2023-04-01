@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                     BitmapDrawable bitmapDrawable = (BitmapDrawable) profile.getDrawable();
                     Bitmap bitmap = bitmapDrawable.getBitmap();
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                     byte[] data = baos.toByteArray();
                     bundle.putByteArray("pictureBytes", data);
                     intent.putExtras(bundle);
@@ -257,6 +257,18 @@ public class MainActivity extends AppCompatActivity {
                 currentPlayer = player;
                 userEmailTextView.setText(currentPlayer.getEmail());
                 userPhoneTextView.setText(String.valueOf(currentPlayer.getNumber()));
+                db.getProfilePicture(currentPlayer.getUsername()).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        //From https://stackoverflow.com/questions/7359173/create-bitmap-from-bytearray-in-android
+                        //TODO Cite properly
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inMutable = true;
+                        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+                        bmp = Bitmap.createScaledBitmap(bmp, profileCircle.getHeight(), profileCircle.getWidth(), true);
+                        profileCircle.setImageBitmap(bmp);
+                    }
+                });
                 db.getPlayerCollection(player.getUsername(), new PlayerCollectionListener() {
                     @Override
                     public void playerCollectionCallback(Map<String, String> map) {
@@ -271,18 +283,7 @@ public class MainActivity extends AppCompatActivity {
                                         beefyQRTextView.setText(String.valueOf(currentPlayer.getBeefy()));
                                         squishyQRTextView.setText(String.valueOf(currentPlayer.getSquishy()));
                                     }
-                                    db.getProfilePicture(currentPlayer.getUsername()).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                        @Override
-                                        public void onSuccess(byte[] bytes) {
-                                            //From https://stackoverflow.com/questions/7359173/create-bitmap-from-bytearray-in-android
-                                            //TODO Cite properly
-                                            BitmapFactory.Options options = new BitmapFactory.Options();
-                                            options.inMutable = true;
-                                            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
-                                            bmp = Bitmap.createScaledBitmap(bmp, profileCircle.getHeight(), profileCircle.getWidth(), true);
-                                            profileCircle.setImageBitmap(bmp);
-                                        }
-                                    });
+
                                 }
                             });
                         }
