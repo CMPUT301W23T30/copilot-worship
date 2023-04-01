@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
      * @param db Database instance to query from
      * @param userText User text to set the username too
      */
-    public void getUsername(Bundle bundle, Database db, TextView userText) {
+    public getUsername(Bundle bundle, Database db, TextView userText) {
         //https://stackoverflow.com/questions/10209814/saving-user-information-in-app-settings
         //Roughly following
         //TODO properly cite
@@ -204,10 +204,47 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void getRankingEstimates(Bundle bundle, Database db) {
-        if (bundle != null) {
+    public void setInfo(Database db, ImageView profileCircle, TextView totalScoreTextView, TextView userEmailTextView, TextView userPhoneTextView, TextView beefyQRTextView, TextView squishyQRTextView){
+        db.getPlayerInfo(username, new PlayerInfoListener() {
+            @Override
+            public void playerInfoCallback(Player player) {
+                currentPlayer = player;
+                userEmailTextView.setText(currentPlayer.getEmail());
+                userPhoneTextView.setText(String.valueOf(currentPlayer.getNumber()));
+                db.getProfilePicture(currentPlayer.getUsername()).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        //From https://stackoverflow.com/questions/7359173/create-bitmap-from-bytearray-in-android
+                        //TODO Cite properly
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inMutable = true;
+                        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+                        bmp = Bitmap.createScaledBitmap(bmp, profileCircle.getHeight(), profileCircle.getWidth(), true);
+                        profileCircle.setImageBitmap(bmp);
+                    }
+                });
+                db.getPlayerCollection(player.getUsername(), new PlayerCollectionListener() {
+                    @Override
+                    public void playerCollectionCallback(Map<String, String> map) {
+                        for (Map.Entry<String, String> qrEntry : map.entrySet()) {
+                            db.getQRCodeInfo(qrEntry.getKey(), new QRCodeListener() {
+                                @Override
+                                public void qrCodeCallback(QRCode qrCode) {
+                                    currentPlayer.addQrCode(qrCode);
+                                    qrCodeComments.add(new QRCodeComment(qrCode, qrEntry.getValue()));
+                                    if (currentPlayer.getTotalScore() != 0) {
+                                        totalScoreTextView.setText(String.valueOf(currentPlayer.getTotalScore()));
+                                        beefyQRTextView.setText(String.valueOf(currentPlayer.getBeefy()));
+                                        squishyQRTextView.setText(String.valueOf(currentPlayer.getSquishy()));
+                                    }
 
-        }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -254,46 +291,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Player Information
         //TODO CHANGE BACK TO USERNAME
-        db.getPlayerInfo(username, new PlayerInfoListener() {
-            @Override
-            public void playerInfoCallback(Player player) {
-                currentPlayer = player;
-                userEmailTextView.setText(currentPlayer.getEmail());
-                userPhoneTextView.setText(String.valueOf(currentPlayer.getNumber()));
-                db.getProfilePicture(currentPlayer.getUsername()).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                    @Override
-                    public void onSuccess(byte[] bytes) {
-                        //From https://stackoverflow.com/questions/7359173/create-bitmap-from-bytearray-in-android
-                        //TODO Cite properly
-                        BitmapFactory.Options options = new BitmapFactory.Options();
-                        options.inMutable = true;
-                        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
-                        bmp = Bitmap.createScaledBitmap(bmp, profileCircle.getHeight(), profileCircle.getWidth(), true);
-                        profileCircle.setImageBitmap(bmp);
-                    }
-                });
-                db.getPlayerCollection(player.getUsername(), new PlayerCollectionListener() {
-                    @Override
-                    public void playerCollectionCallback(Map<String, String> map) {
-                        for (Map.Entry<String, String> qrEntry : map.entrySet()) {
-                            db.getQRCodeInfo(qrEntry.getKey(), new QRCodeListener() {
-                                @Override
-                                public void qrCodeCallback(QRCode qrCode) {
-                                    currentPlayer.addQrCode(qrCode);
-                                    qrCodeComments.add(new QRCodeComment(qrCode, qrEntry.getValue()));
-                                    if (currentPlayer.getTotalScore() != 0) {
-                                        totalScoreTextView.setText(String.valueOf(currentPlayer.getTotalScore()));
-                                        beefyQRTextView.setText(String.valueOf(currentPlayer.getBeefy()));
-                                        squishyQRTextView.setText(String.valueOf(currentPlayer.getSquishy()));
-                                    }
-
-                                }
-                            });
-                        }
-                    }
-                });
-            }
-        });
+        setInfo(db, profileCircle, totalScoreTextView, userEmailTextView, userPhoneTextView, beefyQRTextView,
+                squishyQRTextView);
 
         // NAVBAR Buttons
         mapButton = findViewById(R.id.navbar_map_button);
