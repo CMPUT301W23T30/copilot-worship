@@ -91,6 +91,7 @@ public class AddPlayerActivity extends AppCompatActivity {
             //To update the player info, we need to delete
             // all the documents and re add it
             // To do that we have to reconstruct the player object for deletion and addition
+            //TODO Change player username in pics as well
             Database db = new Database();
 
 

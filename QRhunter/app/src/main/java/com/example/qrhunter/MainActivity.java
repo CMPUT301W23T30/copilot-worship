@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -213,8 +214,8 @@ public class MainActivity extends AppCompatActivity {
 
         String testHash = "2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824";
         String firstSixDigits = getFirstSixDigits(testHash);
-        CharacterImage testCharacter = characterCreator(firstSixDigits);
-        profileCircle.setImageBitmap(testCharacter.getCharacterImage());
+        //CharacterImage testCharacter = characterCreator(firstSixDigits);
+        //profileCircle.setImageBitmap(testCharacter.getCharacterImage());
 
         smallerTextView.setText("QRCREATURE TIME");
 
@@ -259,6 +260,19 @@ public class MainActivity extends AppCompatActivity {
                                         beefyQRTextView.setText(String.valueOf(currentPlayer.getBeefy()));
                                         squishyQRTextView.setText(String.valueOf(currentPlayer.getSquishy()));
                                     }
+                                    db.getProfilePicture(currentPlayer.getUsername()).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                        @Override
+                                        public void onSuccess(byte[] bytes) {
+                                            //From https://stackoverflow.com/questions/7359173/create-bitmap-from-bytearray-in-android
+                                            //TODO Cite properly
+                                            BitmapFactory.Options options = new BitmapFactory.Options();
+                                            options.inMutable = true;
+                                            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+                                            //Need white bg
+                                            profileCircle.setBackgroundColor(R.color.white);
+                                            profileCircle.setImageBitmap(bmp);
+                                        }
+                                    });
                                 }
                             });
                         }
@@ -338,6 +352,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /*
+        //Commented out cuz we have profile pictures now
         profileCircle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -347,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
                 profileCircle.setImageBitmap(testCharacter.getCharacterImage());
                 smallerTextView.setText(generateRandomName(firstSixDigits));
             }
-        });
+        });*/
 
     }
 

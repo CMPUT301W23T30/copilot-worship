@@ -547,4 +547,10 @@ public class Database {
         return playerStore.putBytes(data);
     }
 
+    public Task<byte []> getProfilePicture(String username){
+        StorageReference playerStore = storageRef.child("playerPics/" + username + ".jpg");
+        final long ONE_MEGABYTE = 1024 * 1024;
+        return playerStore.getBytes(ONE_MEGABYTE);
+    }
+
 }
