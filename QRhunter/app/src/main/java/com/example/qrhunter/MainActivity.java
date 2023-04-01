@@ -59,7 +59,6 @@ import java.util.Scanner;
  * Properly Cite the method to store usernames
  */
 public class MainActivity extends AppCompatActivity {
-
     private static final int PERMISSIONS_REQUEST_LOCATION = 1;
     //Tag for logging any issues
     final String TAG = "User Profile Page";
@@ -326,8 +325,8 @@ public class MainActivity extends AppCompatActivity {
         addQRButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Bundle bundle = new Bundle();
-//                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+                startScan();
+                /**
                 //Permission check for fine location
                 if (ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_LOCATION);
@@ -335,6 +334,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Start Scanning", Toast.LENGTH_SHORT).show();
                 QRScan newClass = new QRScan();
                 newClass.scanCode(barLauncher);
+                 **/
             }
         });
 
@@ -466,10 +466,23 @@ public class MainActivity extends AppCompatActivity {
         return testCharacter;
     }
 
+    public void testThis(){
+        Toast.makeText(MainActivity.this, "try this", Toast.LENGTH_SHORT).show();
+    }
+
+    public void startScan(){
+        if (ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_LOCATION);
+        }
+        Toast.makeText(MainActivity.this, "Start Scanning", Toast.LENGTH_SHORT).show();
+        QRScan newClass = new QRScan(barLauncher);
+        newClass.scanCode();
+    }
+
     /**
      * Scan QR code
      */
-    ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result ->
+    public ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result ->
     {
         if (result.getContents() != null) {
             String hashedCode = hasher(result.getContents()); // If this fails alert won't appear, makes it easier to test
