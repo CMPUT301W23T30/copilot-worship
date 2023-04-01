@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -43,6 +44,7 @@ import com.journeyapps.barcodescanner.ScanOptions;
 import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.Text;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -115,6 +117,13 @@ public class MainActivity extends AppCompatActivity {
                     bundle.putString("username", currentPlayer.getUsername());
                     bundle.putString("email", currentPlayer.getEmail());
                     bundle.putString("phone", String.valueOf(currentPlayer.getNumber()));
+                    ImageView profile = findViewById(R.id.profile_icon);
+                    BitmapDrawable bitmapDrawable = (BitmapDrawable) profile.getDrawable();
+                    Bitmap bitmap = bitmapDrawable.getBitmap();
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                    byte[] data = baos.toByteArray();
+                    bundle.putByteArray("pictureBytes", data);
                     intent.putExtras(bundle);
                 }
                 else {
@@ -122,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
                     bundle.putString("username", "");
                     bundle.putString("email", "");
                     bundle.putString("phone", "");
+                    byte[] noBytes = new byte[0];
+                    bundle.putByteArray("pictureBytes", noBytes);
                     intent.putExtras(bundle);
                 }
 

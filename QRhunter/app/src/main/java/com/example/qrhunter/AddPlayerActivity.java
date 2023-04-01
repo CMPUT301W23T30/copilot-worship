@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -51,6 +52,7 @@ import java.util.HashMap;
  */
 public class AddPlayerActivity extends AppCompatActivity {
     String passedUserName, passedEmail, passedPhone;
+    byte[] passedPicture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,14 +73,20 @@ public class AddPlayerActivity extends AppCompatActivity {
             passedUserName = bundle.getString("username");
             passedEmail = bundle.getString("email");
             passedPhone = bundle.getString("phone");
+            passedPicture = bundle.getByteArray("pictureBytes");
             usernameEditText.setText(passedUserName);
             emailEditText.setText(passedEmail);
             phoneEditText.setText(passedPhone);
-
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inMutable = true;
+            Bitmap bmp = BitmapFactory.decodeByteArray(passedPicture, 0, passedPicture.length, options);
+            //bmp = Bitmap.createScaledBitmap(bmp, profilePicImageView.getHeight(),
+            //        profilePicImageView.getWidth(), true);
+            profilePicImageView.setImageBitmap(bmp);
         }
 
 
-        profilePicImageView.setImageBitmap(generateRandomQReature());
+       // profilePicImageView.setImageBitmap(generateRandomQReature());
 
         selectButton.setOnClickListener(v -> {
             imageChooser();
