@@ -54,6 +54,8 @@ public class AddPlayerActivity extends AppCompatActivity {
     String passedUserName, passedEmail, passedPhone;
     byte[] passedPicture;
 
+    boolean picAdded = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +94,9 @@ public class AddPlayerActivity extends AppCompatActivity {
         });
 
         randomizeButton.setOnClickListener(v -> {
+
             profilePicImageView.setImageBitmap(generateRandomQReature());
+            picAdded = true;
         });
 
         submitButton.setOnClickListener(v -> {
@@ -115,7 +119,8 @@ public class AddPlayerActivity extends AppCompatActivity {
 
             //If just changing info, no need to change much
             if(username.equals(passedUserName)){
-                savePicture(username);
+                if(picAdded){savePicture(username);}
+
                 db.changeInfo(newUser);
                 Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
                 startActivity(intent);
@@ -136,7 +141,7 @@ public class AddPlayerActivity extends AppCompatActivity {
                     }
                     else {
                         //TODO add on Failure listener
-                        savePicture(username);
+                        if(picAdded){savePicture(username);}
                         db.addPlayer(newUser);
                         //TODO add on failure listener
                         //Need to delete the player from the qr too
@@ -256,6 +261,10 @@ public class AddPlayerActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
 
+                        if(selectedImageBitmap != null){
+                            picAdded = true;
+                        }
+
                         ImageView profilePicImageView = findViewById(R.id.edit_player_profile_pic);
                         profilePicImageView.setImageBitmap(selectedImageBitmap);
                     }
@@ -263,6 +272,7 @@ public class AddPlayerActivity extends AppCompatActivity {
             });
 
     public void savePicture(String username){
+
         SharedPreferences settings = getSharedPreferences("profilePicture", 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("saved", true);

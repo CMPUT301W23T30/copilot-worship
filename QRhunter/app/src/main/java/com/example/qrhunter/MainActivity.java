@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
      * @param db Database instance to query from
      * @param userText User text to set the username too
      */
-    public getUsername(Bundle bundle, Database db, TextView userText) {
+    public void getUsername(Bundle bundle, Database db, TextView userText) {
         //https://stackoverflow.com/questions/10209814/saving-user-information-in-app-settings
         //Roughly following
         //TODO properly cite
@@ -268,7 +268,6 @@ public class MainActivity extends AppCompatActivity {
         //CharacterImage testCharacter = characterCreator(firstSixDigits);
         //profileCircle.setImageBitmap(testCharacter.getCharacterImage());
 
-        smallerTextView.setText("QRCREATURE TIME");
 
         // profileCircle.setImageResource(R.drawable._icon__profile_circle_);
 
