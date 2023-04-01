@@ -125,7 +125,7 @@ public class AddPlayerActivity extends AppCompatActivity {
                                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                     @Override
                                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                        errorText.setTextColor(getResources().getColor(R.color.white));
+                                        errorText.setTextColor(getResources().getColor(R.color.black));
                                         errorText.setText("Changing info...");
                                         ArrayList<Task<?>> tasks = new ArrayList<>();
                                         for(QueryDocumentSnapshot doc : queryDocumentSnapshots){
