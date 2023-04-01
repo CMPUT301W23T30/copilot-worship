@@ -18,18 +18,24 @@ import com.journeyapps.barcodescanner.ScanOptions;
  */
 public class QRScan extends AppCompatActivity {
 
+    private ActivityResultLauncher<ScanOptions> barLauncher;
+
+    public QRScan(ActivityResultLauncher<ScanOptions> barLauncher) {
+        this.barLauncher = barLauncher;
+    }
+
     /**
      * Start a new activity to open the camera and scan QR/bar codes
      * After scanning, asks user whether they want to take a photo of the real object
      *
-     * @param barLauncher
+     * @param
      */
-    public void scanCode(ActivityResultLauncher<ScanOptions> barLauncher) {
+    public void scanCode() {
         ScanOptions options = new ScanOptions();
         options.setPrompt("Volume up to flash on");
         options.setBeepEnabled(true);
         options.setOrientationLocked(true);
         options.setCaptureActivity(CaptureAct.class);
-        barLauncher.launch(options);
+        this.barLauncher.launch(options);
     }
 }

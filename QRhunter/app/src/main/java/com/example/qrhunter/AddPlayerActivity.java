@@ -88,6 +88,7 @@ public class AddPlayerActivity extends AppCompatActivity {
             String username = usernameEditText.getText().toString();
             if (username.length() > 20 || username.length() <= 0 ) {
                 errorText.setText("Username must be between 1-20 Characters");
+
                 return;
             }
             String email = emailEditText.getText().toString();
