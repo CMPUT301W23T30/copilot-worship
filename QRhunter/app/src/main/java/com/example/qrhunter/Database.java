@@ -541,7 +541,7 @@ public class Database {
 
     public UploadTask storeProfilePicture(String username, Bitmap image) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        image.compress(Bitmap.CompressFormat.PNG, 100, baos);
         byte[] data = baos.toByteArray();
         StorageReference playerStore = storageRef.child("playerPics/" + username + ".jpg");
         return playerStore.putBytes(data);

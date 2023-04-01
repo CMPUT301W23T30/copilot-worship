@@ -71,11 +71,12 @@ public class AddPlayerActivity extends AppCompatActivity {
             passedUserName = bundle.getString("username");
             passedEmail = bundle.getString("email");
             passedPhone = bundle.getString("phone");
-
             usernameEditText.setText(passedUserName);
             emailEditText.setText(passedEmail);
             phoneEditText.setText(passedPhone);
+
         }
+
 
         profilePicImageView.setImageBitmap(generateRandomQReature());
 
@@ -111,6 +112,10 @@ public class AddPlayerActivity extends AppCompatActivity {
                 db.changeInfo(newUser);
                 Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
                 startActivity(intent);
+                SharedPreferences settings2 = getSharedPreferences("LocalLeaderboard", 0);
+                SharedPreferences.Editor editor1 = settings2.edit();
+                editor1.putBoolean("playersSaved", false); //reload leaderboard next time
+                editor1.commit();
             }
             //making Sure it is unique
             db.getPlayer(username).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
