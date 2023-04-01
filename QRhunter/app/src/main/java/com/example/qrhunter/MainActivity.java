@@ -268,8 +268,7 @@ public class MainActivity extends AppCompatActivity {
                                             BitmapFactory.Options options = new BitmapFactory.Options();
                                             options.inMutable = true;
                                             Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
-                                            //Need white bg
-                                            profileCircle.setBackgroundColor(R.color.white);
+                                            bmp = Bitmap.createScaledBitmap(bmp, profileCircle.getHeight(), profileCircle.getWidth(), true);
                                             profileCircle.setImageBitmap(bmp);
                                         }
                                     });
