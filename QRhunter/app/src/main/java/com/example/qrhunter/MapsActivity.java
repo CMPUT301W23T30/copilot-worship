@@ -38,8 +38,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * An activity that displays a map showing the place at the device's current location.
@@ -73,6 +75,8 @@ public class MapsActivity extends FragmentActivity
     // List of markers
     private List<Marker> markerList = new ArrayList<Marker>();
 
+    // Map of QRCodes hashes to names to make displaying and passing easier
+    private Map<String, String> hashHashMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -248,6 +252,7 @@ public class MapsActivity extends FragmentActivity
                 // Get the QR code's hash from the marker's tag
                 String hash = marker.getTag().toString();
                 // Navigate to the QR code's detailed page
+
                 Intent intent = new Intent(MapsActivity.this, QrDisplayActivity.class);
                 Bundle b = new Bundle();
                 b.putString("hash", hash);
