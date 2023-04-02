@@ -57,6 +57,12 @@ public class AddPlayerActivity extends AppCompatActivity {
 
     boolean picAdded = false;
 
+    /**
+     * Saves and returns to the main screen
+     * @param newUser Object of the new User to be added
+     * @param username Username of the new player
+     * @param db Instance of Database Class
+     */
     public void saveAndReturn(Player newUser, String username, Database db){
         SharedPreferences settings = getSharedPreferences("UserInfo", 0);
         String id = settings.getString("id", "no-id");
@@ -93,6 +99,7 @@ public class AddPlayerActivity extends AppCompatActivity {
         TextView errorText = findViewById(R.id.errorText);
 
         Bundle bundle = getIntent().getExtras();
+        //Set player info to the passed information
         if (bundle != null) {
             passedUserName = bundle.getString("username");
             passedEmail = bundle.getString("email");
@@ -234,6 +241,12 @@ public class AddPlayerActivity extends AppCompatActivity {
                 }
             });
 
+    /**
+     * Saves the picture to the player profile
+     * Both arguments should have the new player information
+     * @param username username of the player
+     * @param newUser Plyer object of the player
+     */
     public void savePicture(String username, Player newUser){
 
         SharedPreferences settings = getSharedPreferences("profilePicture", 0);

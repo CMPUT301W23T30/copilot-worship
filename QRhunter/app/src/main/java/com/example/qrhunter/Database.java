@@ -217,6 +217,11 @@ public class Database {
     }
 
 
+    /**
+     * Changes the information of the specified player object
+     * @param player
+     * @return Task with type void for updating the info
+     */
     public Task<Void> changeInfo(Player player){
 
         WriteBatch batch = db.batch();
@@ -309,6 +314,13 @@ public class Database {
                 .get();
     }
 
+    /**
+     * Gets the number of times a qr code has been scanned by the player
+     *
+     * @param id Id of Player
+     * @param hash hash of qr
+     * @return Task of Aggregrate Snapshot for the count (Count should be 1 or 0)
+     */
     public Task<AggregateQuerySnapshot> getQRCountFromPlayer(String id, String hash){
         return playersCollection.document(id)
                 .collection("QRCodes")
@@ -317,11 +329,17 @@ public class Database {
                 .get(AggregateSource.SERVER);
     }
 
+    /**
+     * Gets a player from the database
+     * @param id Id of player to be gotten
+     * @return Task Document Snapshot of the player
+     */
     public Task<DocumentSnapshot> getPlayer(String id) {
         return playersCollection
                 .document(id)
                 .get();
     }
+
 
     public Task<QuerySnapshot> getPlayerCollection(){
         return playersCollection.get();
@@ -344,7 +362,7 @@ public class Database {
                 .delete();
     }
 
-    //TODO maybe this will change with edit player
+
     /**
      * Assigns p1's QrCode to p2
      * @param p1 Player that is losing the qr
@@ -524,17 +542,23 @@ public class Database {
     /**
      * Loads the file to memory. Has a maximum size of 1MB
      *
-     * @param username username of person with qr
-     * @param hash     hash of the qr
-     * @return
+     * @param id id of person with qr
+     * @param hash hash of the qr
+     * @return Task with the bytes of the file
      */
-    public Task<byte[]> getQRPicture(String username, String hash){
+    public Task<byte[]> getQRPicture(String id, String hash){
         StorageReference qrPlayerGet = storageRef.child("qrImages/"
-                +username + hash + ".jpg");
+                +id + hash + ".jpg");
         final long ONE_MEGABYTE = 1024 * 1024;
         return qrPlayerGet.getBytes(ONE_MEGABYTE);
     }
 
+    /**
+     *  Stores a compressed profile picture in the database as a jpeg
+     * @param id id of player
+     * @param image bitmap of profile picture
+     * @return UploadTask
+     */
     public UploadTask storeProfilePicture(String id, Bitmap image) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
@@ -543,6 +567,11 @@ public class Database {
         return playerStore.putBytes(data);
     }
 
+    /**
+     * Gets Profile Picture of player
+     * @param id Id of player whose picture will be gotten
+     * @return Task with bytes of profile picture
+     */
     public Task<byte []> getProfilePicture(String id){
         StorageReference playerStore = storageRef.child("playerPics/" + id + ".jpg");
         final long ONE_MEGABYTE = 1024 * 1024;
