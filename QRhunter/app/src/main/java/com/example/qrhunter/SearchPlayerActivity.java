@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.SearchView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,12 +12,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Activity for SearchPlayer
@@ -28,7 +32,8 @@ public class SearchPlayerActivity extends AppCompatActivity implements SearchPla
     private SearchPlayerAdapter adapter;
 
     private List<SearchModel> userList = new ArrayList<>();
-    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private List<SearchModel> userList1 = new ArrayList<>();
+    private final Database db = new Database();
 
     /**
      * Landing screen for SearchPlayer, populates recyclerview with players according to SearchModel
@@ -45,7 +50,7 @@ public class SearchPlayerActivity extends AppCompatActivity implements SearchPla
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        db.collection("Players").get()
+        db.getPlayerCollection()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -56,9 +61,9 @@ public class SearchPlayerActivity extends AppCompatActivity implements SearchPla
 
                             // after getting data from Firebase we are
                             // storing that data in our array list
-                            userList.add(user);
+                            userList1.add(user);
                         }
-                        adapter = new SearchPlayerAdapter(userList, SearchPlayerActivity.this, SearchPlayerActivity.this::OnItemClick);
+                        adapter = new SearchPlayerAdapter(userList1, SearchPlayerActivity.this, SearchPlayerActivity.this::OnItemClick);
                         recyclerView.setAdapter(adapter);
                     }
                 });
@@ -98,28 +103,17 @@ public class SearchPlayerActivity extends AppCompatActivity implements SearchPla
      * Queries database with provided string and updates recyclerview
      * @param str string fragment you want to search
      * @author X
-     * TODO implement SQL-like *LIKE* case matching/blank space sanitation
      */
     private void txtSearch(String str){
         userList.clear();
-        db.collection("Players")
-                .orderBy("username").startAt(str).endAt(str+"~").get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-                        for (DocumentSnapshot d : list) {
 
-                            SearchModel user = new SearchModel(d.get("username").toString());
-
-                            // after getting data from Firebase we are
-                            // storing that data in our array list
-                            userList.add(user);
-                        }
-                        adapter = new SearchPlayerAdapter(userList, SearchPlayerActivity.this, SearchPlayerActivity.this::OnItemClick);
-                        recyclerView.setAdapter(adapter);
-                    }
-                });
+        for(SearchModel item: userList1){
+            if(item.getUsername().toUpperCase().contains(str.toUpperCase())){
+                userList.add(item);
+            }
+        }
+        adapter = new SearchPlayerAdapter(userList, SearchPlayerActivity.this, SearchPlayerActivity.this::OnItemClick);
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
