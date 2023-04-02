@@ -93,6 +93,7 @@ public class Database {
                                 new ArrayList<>()
                         );
                         player.setId(document.getString("id"));
+                        Log.d("DB TEST", player.getId() + " ID FROM CALLBACK");
                         callback.playerInfoCallback(player);
                     }
                 } else {
@@ -108,27 +109,37 @@ public class Database {
      * @param callback Listener for player info from database
      */
     public void getPlayerCollection(String id, final PlayerCollectionListener callback){
-        playersCollection.document(id).collection("QRCodes").addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                Map<String, String> qrMap = new HashMap<String, String>();
-                for (DocumentSnapshot doc : value.getDocuments()) {
-                    String hash = doc.get("hash").toString();
-                    String comment = "";
+        //TODO Sometimes id is null? I dont know why but it shouldnt affect anything just trying not
+        //to crash here
+        try {
+            playersCollection.document(id).collection("QRCodes").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                    Map<String, String> qrMap = new HashMap<String, String>();
+                    for (DocumentSnapshot doc : value.getDocuments()) {
+                        String hash = doc.get("hash").toString();
+                        String comment = "";
 
-                    if (doc.get("comment") == null){
-                        Log.d("DATABASE", "NO COMMENT");
-                        comment = "";
-                    }else{
-                        Log.d("DATABASE", "HAS COMMENT: " + doc.get("comment").toString());
-                        comment = doc.get("comment").toString();
+                        if (doc.get("comment") == null) {
+                            Log.d("DATABASE", "NO COMMENT");
+                            comment = "";
+                        } else {
+                            Log.d("DATABASE", "HAS COMMENT: " + doc.get("comment").toString());
+                            comment = doc.get("comment").toString();
+                        }
+
+                        qrMap.put(hash, comment);
                     }
-
-                    qrMap.put(hash, comment);
+                    callback.playerCollectionCallback(qrMap);
                 }
-                callback.playerCollectionCallback(qrMap);
-            }
-        });
+            });
+        }
+        catch (Exception e){
+            Log.d("DB TEST", "Player Id was null: " + e.getMessage() + " ID : " +  id);
+
+
+
+        }
     }
 
     /**
@@ -193,7 +204,6 @@ public class Database {
      * @param player : Player to add
      * @return Void Task of the player being added to the database
      */
-    //TODO work on this when changing profile info
     public Task<Void> addPlayer(Player player) {
         Map<String, Object> playerInfo = new HashMap<>();
         playerInfo.put("email", player.getEmail());
@@ -217,20 +227,6 @@ public class Database {
         batch.update(playersCollection.document(player.getId()),
                 "username", player.getUsername());
         return batch.commit();
-    }
-
-    //TODO change how edit player is done
-
-    /**
-     * Removes a player from the database
-     * @param  id of player to remove
-     * @return Void task of player being removed
-     */
-    public Task<Void> removePlayer(String id){
-        return playersCollection
-                .document(id)
-                .delete();
-
     }
 
     /**
