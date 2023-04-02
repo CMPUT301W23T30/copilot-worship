@@ -132,12 +132,12 @@ public class AddPlayerActivity extends AppCompatActivity {
                         if(picAdded){savePicture(username);}
 
                         SharedPreferences settings = getSharedPreferences("UserInfo", 0);
-
-                        newUser.setId(settings.getString("id", username));
+                        String id = settings.getString("id", "no-id");
+                        newUser.setId(id);
                         System.out.println(newUser.getId());
                         db.changeInfo(newUser);
                         SharedPreferences.Editor editor = settings.edit();
-                        editor.clear();
+                        editor.remove("Username");
                         editor.putString("Username", username);
                         editor.commit();
                         SharedPreferences settings2 = getSharedPreferences("LocalLeaderboard", 0);
@@ -150,63 +150,6 @@ public class AddPlayerActivity extends AppCompatActivity {
                         startActivity(intent);
 
                     }
-                    /*
-                    else {
-                        //TODO add on Failure listener
-                        if(picAdded){savePicture(username);}
-                        db.addPlayer(newUser);
-                        //TODO add on failure listener
-                        //Need to delete the player from the qr too
-                        db.getQrCodesFromPlayer(passedUserName)
-                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                        errorText.setTextColor(getResources().getColor(R.color.black));
-                                        errorText.setText("Changing account info...");
-                                        ArrayList<Task<?>> tasks = new ArrayList<>();
-                                        for(QueryDocumentSnapshot doc : queryDocumentSnapshots){
-                                            //TODO add failure listeners
-                                            //Not sure what they can do since no rollback but atleast we can
-                                            //let the user know there was a glitch
-                                            String hash = doc.getString("hash");
-                                            tasks.add(db.giveQRCode(passedUserName, username, hash));
-
-                                        }
-
-                                        //When done transfer
-                                        Tasks.whenAll(tasks)
-                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void unused) {
-                                                        if (passedUserName != null) {
-                                                            db.removePlayer(passedUserName);
-                                                        }
-                                                        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
-                                                        //Save this new username locally, how nice
-                                                        SharedPreferences.Editor editor = settings.edit();
-                                                        editor.clear();
-                                                        editor.putString("Username", username);
-                                                        editor.apply();
-
-                                                        SharedPreferences settings2 = getSharedPreferences("LocalLeaderboard", 0);
-                                                        SharedPreferences.Editor editor1 = settings2.edit();
-                                                        editor1.putBoolean("playersSaved", false); //reload leaderboard next time
-                                                        editor1.commit();
-
-                                                        Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
-                                                        Bundle bundle = new Bundle();
-                                                        bundle.putString("username", usernameEditText.getText().toString());
-                                                        bundle.putString("email", emailEditText.getText().toString());
-                                                        bundle.putString("phone", phoneEditText.getText().toString());
-                                                        startActivity(intent);
-                                                    }
-                                                });
-
-                                    }
-                                });
-                    }
-
-                     */
                 }
             });
 
@@ -296,7 +239,9 @@ public class AddPlayerActivity extends AppCompatActivity {
         BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
         Bitmap bitmap = bitmapDrawable.getBitmap();
         Database db = new Database();
-        db.storeProfilePicture(username, bitmap);
+        SharedPreferences setting = getSharedPreferences("UserInfo", 0);
+        String id = setting.getString("id", "no-id");
+        db.storeProfilePicture(id, bitmap);
 
     }
 

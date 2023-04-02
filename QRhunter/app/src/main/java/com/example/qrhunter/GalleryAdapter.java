@@ -121,18 +121,26 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         comment.setText(qrComment);
         //set picture
         Database db = new Database();
-        db.getQRPicture(username, qrCode.getHash())
-                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                    @Override
-                    public void onSuccess(byte[] bytes) {
-                        //From https://stackoverflow.com/questions/7359173/create-bitmap-from-bytearray-in-android
-                        //TODO Cite properly
-                        BitmapFactory.Options options = new BitmapFactory.Options();
-                        options.inMutable = true;
-                        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
-                        photo.setImageBitmap(bmp);
-                    }
-                });
+        db.getPlayerFromUsername(username).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for(QueryDocumentSnapshot doc : queryDocumentSnapshots){
+                    db.getQRPicture(doc.getString("id"), qrCode.getHash())
+                            .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                @Override
+                                public void onSuccess(byte[] bytes) {
+                                    //From https://stackoverflow.com/questions/7359173/create-bitmap-from-bytearray-in-android
+                                    //TODO Cite properly
+                                    BitmapFactory.Options options = new BitmapFactory.Options();
+                                    options.inMutable = true;
+                                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+                                    photo.setImageBitmap(bmp);
+                                }
+                            });
+                }
+            }
+        });
+
 
         //TODO don't forget to HIDE QRCode photo
         //Hide Extras

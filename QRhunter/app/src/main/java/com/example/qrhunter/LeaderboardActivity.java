@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -143,54 +144,77 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
 
     }
 
+
     /**
      * ugly function to get the images for the pfps of the top 3 and glide.
      * @author X
      */
     protected void glideTopThree(){
-        db.getProfilePicture(firstUsernameStr).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+        db.getPlayerFromUsername(firstUsernameStr).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
-            public void onSuccess(byte[] bytes) {
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inMutable = true;
-                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for(QueryDocumentSnapshot doc: queryDocumentSnapshots){
+                    db.getProfilePicture(doc.getString("id")).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+                            BitmapFactory.Options options = new BitmapFactory.Options();
+                            options.inMutable = true;
+                            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
 
-                Glide.with(firstPlace)
-                        .load(bmp)
-                        .placeholder(R.drawable._icon__profile_circle_)
-                        .circleCrop()
-                        .error(R.drawable._icon__profile_circle_)
-                        .into(firstPlace);
+                            Glide.with(firstPlace)
+                                    .load(bmp)
+                                    .placeholder(R.drawable._icon__profile_circle_)
+                                    .circleCrop()
+                                    .error(R.drawable._icon__profile_circle_)
+                                    .into(firstPlace);
+                        }
+                    });
+                }
             }
         });
-        db.getProfilePicture(secondUsernameStr).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inMutable = true;
-                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
 
-                Glide.with(secondPlace)
-                        .load(bmp)
-                        .placeholder(R.drawable._icon__profile_circle_)
-                        .circleCrop()
-                        .error(R.drawable._icon__profile_circle_)
-                        .into(secondPlace);
+        db.getPlayerFromUsername(secondUsernameStr).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for(QueryDocumentSnapshot doc: queryDocumentSnapshots){
+                    db.getProfilePicture(doc.getString("id")).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+                            BitmapFactory.Options options = new BitmapFactory.Options();
+                            options.inMutable = true;
+                            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+
+                            Glide.with(secondPlace)
+                                    .load(bmp)
+                                    .placeholder(R.drawable._icon__profile_circle_)
+                                    .circleCrop()
+                                    .error(R.drawable._icon__profile_circle_)
+                                    .into(secondPlace);
+                        }
+                    });
+                }
             }
         });
-        db.getProfilePicture(thirdUsernameStr).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+        db.getPlayerFromUsername(thirdUsernameStr).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
-            public void onSuccess(byte[] bytes) {
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inMutable = true;
-                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for(QueryDocumentSnapshot doc: queryDocumentSnapshots){
+                    db.getProfilePicture(doc.getString("id")).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+                            BitmapFactory.Options options = new BitmapFactory.Options();
+                            options.inMutable = true;
+                            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
 
-                Glide.with(thirdPlace)
-                        .load(bmp)
-                        .placeholder(R.drawable._icon__profile_circle_)
-                        .circleCrop()
-                        .error(R.drawable._icon__profile_circle_)
-                        .into(thirdPlace);
+                            Glide.with(thirdPlace)
+                                    .load(bmp)
+                                    .placeholder(R.drawable._icon__profile_circle_)
+                                    .circleCrop()
+                                    .error(R.drawable._icon__profile_circle_)
+                                    .into(thirdPlace);
+                        }
+                    });
+                }
             }
         });
 

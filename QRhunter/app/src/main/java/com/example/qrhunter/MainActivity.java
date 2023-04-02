@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
                 currentPlayer = player;
                 userEmailTextView.setText(currentPlayer.getEmail());
                 userPhoneTextView.setText(String.valueOf(currentPlayer.getNumber()));
-                db.getProfilePicture(currentPlayer.getUsername()).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                db.getProfilePicture(currentPlayer.getId()).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
                     public void onSuccess(byte[] bytes) {
                         //From https://stackoverflow.com/questions/7359173/create-bitmap-from-bytearray-in-android
@@ -631,7 +631,9 @@ public class MainActivity extends AppCompatActivity {
             image = (Bitmap) data.getExtras().get("data");
             Database db = new Database();
             String hash = getIntent().getStringExtra("CamHash");
-            db.storeQRPicture(username, hash, image);
+            SharedPreferences setting = getSharedPreferences("UserInfo", 0);
+            String id = setting.getString("id", "no-id");
+            db.storeQRPicture(id, hash, image);
         }
     }
 
