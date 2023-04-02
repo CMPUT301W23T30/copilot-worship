@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -80,8 +82,20 @@ public class OtherProfiles extends AppCompatActivity {
                         public void playerInfoCallback(Player player) {
                             Log.d("TASK", "START");
                             currentPlayer = player;
-                            db.getProfilePicture(player.getId());
-
+                            System.out.println(player.getId());
+                            db.getProfilePicture(player.getId()).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                @Override
+                                public void onSuccess(byte[] bytes) {
+                                    //From https://stackoverflow.com/questions/7359173/create-bitmap-from-bytearray-in-android
+                                    //TODO Cite properly
+                                    ImageView profileCircle = findViewById(R.id.other_profile_icon);
+                                    BitmapFactory.Options options = new BitmapFactory.Options();
+                                    options.inMutable = true;
+                                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+                                    bmp = Bitmap.createScaledBitmap(bmp, profileCircle.getHeight(), profileCircle.getWidth(), true);
+                                    profileCircle.setImageBitmap(bmp);
+                                }
+                            });
                             db.getPlayerCollection(player.getId(), new PlayerCollectionListener() {
                                 @Override
                                 public void playerCollectionCallback(Map<String, String> map) {

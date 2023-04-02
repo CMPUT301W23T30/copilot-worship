@@ -121,7 +121,8 @@ public class AddPlayerActivity extends AppCompatActivity {
             db.getPlayer(username).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    if(documentSnapshot.exists())
+
+                    if(documentSnapshot.exists() && !username.equals(passedUserName))
                     {
                         //Username is not unique, so it is invalid
 
