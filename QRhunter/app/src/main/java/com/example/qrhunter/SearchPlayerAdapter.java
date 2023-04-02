@@ -1,6 +1,8 @@
 package com.example.qrhunter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import de.hdodenhof.circleimageview.CircleImageView;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,6 +23,7 @@ import java.util.List;
  */
 public class SearchPlayerAdapter extends RecyclerView.Adapter<SearchPlayerAdapter.myViewHolder> {
     private OnItemClickListener onItemClickListener1;
+    private final Database db = new Database();
 
     public SearchPlayerAdapter(List<SearchModel> userList, Context context, OnItemClickListener onItemClickListener1) {
         this.userList = userList;
@@ -56,15 +61,19 @@ public class SearchPlayerAdapter extends RecyclerView.Adapter<SearchPlayerAdapte
     public void onBindViewHolder(@NonNull @NotNull myViewHolder holder, int position) {
         SearchModel item = userList.get(position);
 
-//        holder.img.setImageResource(item.getPfp());
-        holder.username.setText(item.getUsername());
+        String username = item.getUsername();
+        Bitmap bmp = item.getBmp();
 
-//        Glide.with(holder.img.getContext())
-//                .load(SearchModel.getPfp())
-//                .placeholder(R.drawable._icon__profile_circle_)
-//                .circleCrop()
-//                .error(com.google.android.gms.base.R.drawable.common_google_signin_btn_icon_dark_normal)
-//                .into(holder.img);
+
+        Glide.with(holder.img.getContext())
+                .load(bmp)
+                .placeholder(R.drawable._icon__profile_circle_)
+                .circleCrop()
+                .error(R.drawable._icon__profile_circle_)
+                .into(holder.img);
+
+        holder.username.setText(username);
+
     }
 
     @Override
