@@ -44,7 +44,7 @@ public class OtherProfiles extends AppCompatActivity {
             public void playerInfoCallback(Player player) {
                 Log.d("TASK", "START");
                 currentPlayer = player;
-                db.getPlayerCollection(player.getUsername(), new PlayerCollectionListener() {
+                db.getPlayerCollection(player.getId(), new PlayerCollectionListener() {
                     @Override
                     public void playerCollectionCallback(Map<String, String> map) {
                         for (Map.Entry<String,String> qrEntry : map.entrySet()) {

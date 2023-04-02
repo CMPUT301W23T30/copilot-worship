@@ -4,6 +4,7 @@ package com.example.qrhunter;
 import static android.view.ViewGroup.FOCUS_BLOCK_DESCENDANTS;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -107,8 +108,10 @@ public class Gallery extends AppCompatActivity {
         qrCodeComments.remove(qrCodeComment);
 
         // remove from firestore
-        deleteDB.removeQrCodesFromPlayer(username,deleteQR.getHash());
-        deleteDB.removePlayerFromQRCode(username,deleteQR.getHash());
+
+        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+        deleteDB.removeQrCodesFromPlayer(settings.getString("id", username),deleteQR.getHash());
+        deleteDB.removePlayerFromQRCode(settings.getString("id", username),deleteQR.getHash());
     }
 
     // enable back button

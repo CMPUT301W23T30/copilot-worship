@@ -121,7 +121,10 @@ public class AddPlayerActivity extends AppCompatActivity {
             if(username.equals(passedUserName)){
                 if(picAdded){savePicture(username);}
 
+                SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+                newUser.setId(settings.getString("id", username));
                 db.changeInfo(newUser);
+
                 Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
                 startActivity(intent);
                 SharedPreferences settings2 = getSharedPreferences("LocalLeaderboard", 0);

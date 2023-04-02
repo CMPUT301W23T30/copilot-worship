@@ -53,6 +53,7 @@ public class Player implements Parcelable {
         this.email = "Default email";
         this.number = 0;
         this.qrCodes = new ArrayList<>();
+        this.id = username;
     }
 
     /**

@@ -92,7 +92,7 @@ public class Database {
                                 Integer.parseInt(document.get("number").toString()),
                                 new ArrayList<>()
                         );
-
+                        player.setId(document.getString("id"));
                         callback.playerInfoCallback(player);
                     }
                 } else {
@@ -193,6 +193,7 @@ public class Database {
      * @param player : Player to add
      * @return Void Task of the player being added to the database
      */
+    //TODO work on this when changing profile info
     public Task<Void> addPlayer(Player player) {
         Map<String, Object> playerInfo = new HashMap<>();
         playerInfo.put("email", player.getEmail());
@@ -207,6 +208,7 @@ public class Database {
 
 
     public Task<Void> changeInfo(Player player){
+
         WriteBatch batch = db.batch();
         batch.update(playersCollection.document(player.getId()),
                 "email", player.getEmail());
@@ -216,6 +218,8 @@ public class Database {
                 "username", player.getUsername());
         return batch.commit();
     }
+
+    //TODO change how edit player is done
 
     /**
      * Removes a player from the database
@@ -344,6 +348,7 @@ public class Database {
                 .delete();
     }
 
+    //TODO maybe this will change with edit player
     /**
      * Assigns p1's QrCode to p2
      * @param p1 Player that is losing the qr

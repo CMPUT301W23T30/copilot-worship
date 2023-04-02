@@ -198,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
                                     username = "Player-" + (task.getResult().getCount()
                                             + 1);
                                     editor.putString("Username", username);
+                                    editor.putString("id", username);
                                     editor.apply();
                                 } else {
                                     //TODO add an error message here
@@ -210,7 +211,6 @@ public class MainActivity extends AppCompatActivity {
 
                                             @Override
                                             public void onSuccess(Void unused) {
-                                                System.out.println("NEW USER ADDING");
                                                 setInfo(db, profileCircle, totalScoreTextView, userEmailTextView, userPhoneTextView, beefyQRTextView,
                                                         squishyQRTextView);
                                             }
@@ -243,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
                         profileCircle.setImageBitmap(bmp);
                     }
                 });
-                db.getPlayerCollection(player.getUsername(), new PlayerCollectionListener() {
+                db.getPlayerCollection(player.getId(), new PlayerCollectionListener() {
                     @Override
                     public void playerCollectionCallback(Map<String, String> map) {
                         for (Map.Entry<String, String> qrEntry : map.entrySet()) {
@@ -674,7 +674,8 @@ public class MainActivity extends AppCompatActivity {
                 //If player does not already have qr
                 if(aggregateQuerySnapshot.getCount() == 0){
                     db.addQrCode(newQR);
-                    db.addScannedCode(newQR, new Player(username));
+
+                    db.addScannedCode(newQR, currentPlayer);
                     //Check to see if we think we moved up in the db, if first place or no score to beat
                     // Then refresh always with lessScore
                     SharedPreferences settings = getSharedPreferences("LocalLeaderboard", 0);
