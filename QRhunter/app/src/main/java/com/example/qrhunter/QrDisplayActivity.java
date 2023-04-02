@@ -3,6 +3,7 @@ package com.example.qrhunter;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -36,13 +37,7 @@ public class QrDisplayActivity extends AppCompatActivity {
 
     private static final DecimalFormat df = new DecimalFormat("00.00");
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_qr_display);
-
-        Bundle bundle = getIntent().getExtras();
-        qrCode = bundle.getParcelable("QRCode");
+    private void display(Bundle bundle){
         String currentPlayer = bundle.getString("currentUsername");
 
         TextView qrName =  findViewById(R.id.qr_name);
@@ -84,6 +79,35 @@ public class QrDisplayActivity extends AppCompatActivity {
         });
         // Set the action bar to show the Up button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_qr_display);
+
+        Bundle bundle = getIntent().getExtras();
+        qrCode = bundle.getParcelable("QRCode");
+        if (bundle.containsKey("hash")) {
+            Database db = new Database();
+            db.getQr(bundle.getString("hash")).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    for(QueryDocumentSnapshot doc : queryDocumentSnapshots){
+                        Location location = new Location("");
+                        location.setLatitude(doc.getLong("latitude").doubleValue());
+                        location.setLongitude(doc.getLong("longitude").doubleValue());
+
+                        qrCode = new QRCode(doc.getString("hash"), doc.getString("name")
+                        ,location, doc.getLong("score").intValue());
+
+                        display(bundle);
+                    }
+                }
+            });
+        }
+        else{
+            display(bundle);
+        }
     }
 
     /**
