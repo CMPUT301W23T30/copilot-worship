@@ -117,21 +117,6 @@ public class AddPlayerActivity extends AppCompatActivity {
             String number = phoneEditText.getText().toString();
             Player newUser = new Player(username,email, Integer.parseInt(number), new ArrayList<>());
 
-            //If just changing info, no need to change much
-            if(username.equals(passedUserName)){
-                if(picAdded){savePicture(username);}
-
-                SharedPreferences settings = getSharedPreferences("UserInfo", 0);
-                newUser.setId(settings.getString("id", username));
-                db.changeInfo(newUser);
-
-                Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
-                startActivity(intent);
-                SharedPreferences settings2 = getSharedPreferences("LocalLeaderboard", 0);
-                SharedPreferences.Editor editor1 = settings2.edit();
-                editor1.putBoolean("playersSaved", false); //reload leaderboard next time
-                editor1.commit();
-            }
             //making Sure it is unique
             db.getPlayer(username).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
@@ -142,6 +127,30 @@ public class AddPlayerActivity extends AppCompatActivity {
 
                         errorText.setText("Username is taken dummmy");
                     }
+                    else{
+                        System.out.println("THis tan???");
+                        if(picAdded){savePicture(username);}
+
+                        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+
+                        newUser.setId(settings.getString("id", username));
+                        System.out.println(newUser.getId());
+                        db.changeInfo(newUser);
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.clear();
+                        editor.putString("Username", username);
+                        editor.commit();
+                        SharedPreferences settings2 = getSharedPreferences("LocalLeaderboard", 0);
+                        SharedPreferences.Editor editor1 = settings2.edit();
+                        editor1.putBoolean("playersSaved", false); //reload leaderboard next time
+                        editor1.commit();
+
+
+                        Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
+                        startActivity(intent);
+
+                    }
+                    /*
                     else {
                         //TODO add on Failure listener
                         if(picAdded){savePicture(username);}
@@ -196,6 +205,8 @@ public class AddPlayerActivity extends AppCompatActivity {
                                     }
                                 });
                     }
+
+                     */
                 }
             });
 
