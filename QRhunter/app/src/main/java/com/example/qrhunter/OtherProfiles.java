@@ -1,9 +1,13 @@
 package com.example.qrhunter;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +24,27 @@ public class OtherProfiles extends AppCompatActivity {
     private String currentUsername;
     ArrayList<QRCodeComment> qrCodeComments = new ArrayList<>();
 
+    public void handleNullPlayer(){
+        new AlertDialog.Builder(OtherProfiles.this)
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                })
+                .setPositiveButton("Refresh", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        SharedPreferences settings = getSharedPreferences("LocalLeaderboard", 0);
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putBoolean("playersSaved", false);
+                        editor.commit();
+                        finish();
+                    }
+                })
+                .setMessage("Player not found, your leaderboard might not be up to date, do you want to refresh it?")
+                .show();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,11 +64,16 @@ public class OtherProfiles extends AppCompatActivity {
 
         username.setText(currentUsername);
 
+
         db.getPlayerInfo(currentUsername, new PlayerInfoListener() {
             @Override
             public void playerInfoCallback(Player player) {
                 Log.d("TASK", "START");
                 currentPlayer = player;
+                db.getProfilePicture(player.getId());
+                if(player == null){
+                    handleNullPlayer();
+                }
                 db.getPlayerCollection(player.getId(), new PlayerCollectionListener() {
                     @Override
                     public void playerCollectionCallback(Map<String, String> map) {
