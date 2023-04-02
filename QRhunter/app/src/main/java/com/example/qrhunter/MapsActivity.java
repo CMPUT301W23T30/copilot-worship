@@ -236,8 +236,9 @@ public class MapsActivity extends FragmentActivity
                                                     LatLng qrLocation = new LatLng(qrCode.getLocation().getLatitude(), qrCode.getLocation().getLongitude());
                                                     Marker marker = mMap.addMarker(new MarkerOptions().position(qrLocation).title(qrCode.getName()));
                                                     String hash = qrCode.getHash();
-                                                    marker.setTag(hash);
+                                                    marker.setTag(qrCode.getName());
                                                     markerList.add(marker);
+                                                    hashHashMap.put(qrCode.getName(), hash);
                                                 }
                                             }
                                         }
@@ -250,9 +251,9 @@ public class MapsActivity extends FragmentActivity
             @Override
             public void onInfoWindowClick(@NonNull Marker marker) {
                 // Get the QR code's hash from the marker's tag
-                String hash = marker.getTag().toString();
+                String name = marker.getTag().toString();
                 // Navigate to the QR code's detailed page
-
+                String hash = hashHashMap.get(name);
                 Intent intent = new Intent(MapsActivity.this, QrDisplayActivity.class);
                 Bundle b = new Bundle();
                 b.putString("hash", hash);
