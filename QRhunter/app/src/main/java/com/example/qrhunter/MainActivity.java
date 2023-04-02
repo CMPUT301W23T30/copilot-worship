@@ -570,7 +570,7 @@ public class MainActivity extends AppCompatActivity {
                                             Log.d("ADDQR", "Hash: " + hashedCode);
                                             Log.d("ADDQR", "Score: " + score);
 
-                                            QRCode one = new QRCode(hashedCode, hashedCode, location, score);
+                                            QRCode one = new QRCode(hashedCode, generateRandomName(getFirstSixDigits(hashedCode)), location, score);
                                             Database db = new Database();
                                             SharedPreferences settings = getSharedPreferences("UserInfo", 0);
                                             String id = settings.getString("id", "no-id");
@@ -597,9 +597,12 @@ public class MainActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     Log.d("ADDQR", "Hash: " + hashedCode);
                                     Log.d("ADDQR", "Score: " + score);
-                                    QRCode one = new QRCode(hashedCode, hashedCode, new Location(""), score);
+
+                                    QRCode one = new QRCode(hashedCode, generateRandomName(getFirstSixDigits(hashedCode)), new Location(""), score);
                                     Database db = new Database();
-                                    db.getPlayer(username).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+                                    String id = settings.getString("id", "no-id");
+                                    db.getPlayer(id).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                         @Override
                                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                                             AddQR(one, documentSnapshot.get("totalScore").toString());
