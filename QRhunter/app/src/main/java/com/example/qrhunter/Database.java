@@ -205,14 +205,14 @@ public class Database {
                 .set(playerInfo);
     }
 
-    //TODO change to id
+
     public Task<Void> changeInfo(Player player){
         WriteBatch batch = db.batch();
-        batch.update(playersCollection.document(player.getUsername()),
+        batch.update(playersCollection.document(player.getId()),
                 "email", player.getEmail());
-        batch.update(playersCollection.document(player.getUsername()),
+        batch.update(playersCollection.document(player.getId()),
                 "number", player.getNumber());
-        batch.update(playersCollection.document(player.getUsername()),
+        batch.update(playersCollection.document(player.getId()),
                 "username", player.getUsername());
         return batch.commit();
     }
@@ -383,13 +383,13 @@ public class Database {
         });
     }
 
-    //TODO CHNGE TO ID
 
     /**
      * Associates a QR Code with a Player
      * Assumptions:
      *   - QR Code and Player are already in the database
      *   - QRCode hash & score is correct
+     *   - Player ID is correct
      * Also updates the players total score in the db
      * Returns a map of tasks for the caller to handle
      * @param qrCode qrcode to be added
@@ -404,22 +404,22 @@ public class Database {
         WriteBatch batch = db.batch();
         qrInfo.put("hash", qrCode.getHash());
         batch.set(playersCollection
-                .document(player.getUsername())
+                .document(player.getId())
                 .collection("QRCodes")
                 .document(qrCode.getHash()), qrInfo);
 
 
-        tasks.put("updateTotalScore", playersCollection.document(player.getUsername()).update(
+        tasks.put("updateTotalScore", playersCollection.document(player.getId()).update(
                 "totalScore", FieldValue.increment(qrCode.getScore())
         ));
 
 
-        playerInfo.put("username", player.getUsername());
+        playerInfo.put("id", player.getId());
 
         batch.set(qrCodeCollection
                         .document(qrCode.getHash())
                         .collection("Players")
-                        .document(player.getUsername()), playerInfo);
+                        .document(player.getId()), playerInfo);
 
         tasks.put("associate", batch.commit());
         return tasks;
