@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                                             + 1);
                                     username = "Player-" + count;
                                     editor.putString("Username", username);
-                                    editor.putString("id", String.valueOf(count));
+                                    editor.putString("id", username);
                                     System.out.println(username + "ID PUTTED");
                                     editor.apply();
                                 } else {
@@ -574,9 +574,11 @@ public class MainActivity extends AppCompatActivity {
                                             Database db = new Database();
                                             SharedPreferences settings = getSharedPreferences("UserInfo", 0);
                                             String id = settings.getString("id", "no-id");
+                                            System.out.println(id);
                                             db.getPlayer(id).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                                 @Override
                                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                    System.out.println(documentSnapshot.get("totalScore"));
                                                     AddQR(one, documentSnapshot.get("totalScore").toString());
                                                     askAndTakePhoto(one);
                                                 }
@@ -678,7 +680,9 @@ public class MainActivity extends AppCompatActivity {
      */
     public void AddQR(QRCode newQR, String totalScore){
         Database db = new Database();
-        db.getQRCountFromPlayer(username, newQR.hash).addOnSuccessListener(new OnSuccessListener<AggregateQuerySnapshot>() {
+        SharedPreferences setting = getSharedPreferences("UserInfo", 0);
+        String id = setting.getString("id", "no-id");
+        db.getQRCountFromPlayer(id, newQR.hash).addOnSuccessListener(new OnSuccessListener<AggregateQuerySnapshot>() {
             @Override
             public void onSuccess(AggregateQuerySnapshot aggregateQuerySnapshot) {
                 //If player does not already have qr
