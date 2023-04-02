@@ -104,11 +104,11 @@ public class Database {
 
     /**
      * Gets an array of the Player's collection of QR codes hashes
-     * @param username Username of the player
+     * @param id Username of the player
      * @param callback Listener for player info from database
      */
-    public void getPlayerCollection(String username, final PlayerCollectionListener callback){
-        playersCollection.document(username).collection("QRCodes").addSnapshotListener(new EventListener<QuerySnapshot>() {
+    public void getPlayerCollection(String id, final PlayerCollectionListener callback){
+        playersCollection.document(id).collection("QRCodes").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 Map<String, String> qrMap = new HashMap<String, String>();
@@ -133,12 +133,12 @@ public class Database {
 
     /**
      * Updates a Player's comment on a specific QRCode in their collection
-     * @param username username of Player
+     * @param id id of Player
      * @param comment comment updated by Player
      * @param hash hash of QRCode
      */
-    public void editComment(String username, String comment, String hash){
-        playersCollection.document(username).collection("QRCodes").document(hash)
+    public void editComment(String id, String comment, String hash){
+        playersCollection.document(id).collection("QRCodes").document(hash)
                 .update("comment", comment)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -198,30 +198,33 @@ public class Database {
         playerInfo.put("email", player.getEmail());
         playerInfo.put("number", player.getNumber());
         playerInfo.put("username", player.getUsername());
-
+        playerInfo.put("id", player.getUsername());
         playerInfo.put("totalScore", player.getTotalScore());
         return playersCollection
                 .document(player.getUsername())
                 .set(playerInfo);
     }
 
+    //TODO change to id
     public Task<Void> changeInfo(Player player){
         WriteBatch batch = db.batch();
         batch.update(playersCollection.document(player.getUsername()),
                 "email", player.getEmail());
         batch.update(playersCollection.document(player.getUsername()),
                 "number", player.getNumber());
+        batch.update(playersCollection.document(player.getUsername()),
+                "username", player.getUsername());
         return batch.commit();
     }
 
     /**
      * Removes a player from the database
-     * @param player username of player to remove
+     * @param  id of player to remove
      * @return Void task of player being removed
      */
-    public Task<Void> removePlayer(String player){
+    public Task<Void> removePlayer(String id){
         return playersCollection
-                .document(player)
+                .document(id)
                 .delete();
 
     }
@@ -241,14 +244,14 @@ public class Database {
 
     /**
      * Deletes Player from a QR Code's Players collection
-     * @param username
+     * @param id
      * @param hash
      */
-    public void removePlayerFromQRCode(String username, String hash){
+    public void removePlayerFromQRCode(String id, String hash){
         qrCodeCollection
                 .document(hash)
                 .collection("Players")
-                .document(username)
+                .document(id)
                 .delete();
     }
 
@@ -295,28 +298,28 @@ public class Database {
     /**
 
      * Returns a task of QuerySnapshot for finding a QR code in the player collection
-     * @param username Username of the player to be found
+     * @param id Username of the player to be found
      * @return Task of Query with the result
      */
-    public Task<QuerySnapshot> getQrCodesFromPlayer(String username) {
+    public Task<QuerySnapshot> getQrCodesFromPlayer(String id) {
         return playersCollection
-                .document(username)
+                .document(id)
 
                 .collection("QRCodes")
                 .get();
     }
 
-    public Task<AggregateQuerySnapshot> getQRCountFromPlayer(String username, String hash){
-        return playersCollection.document(username)
+    public Task<AggregateQuerySnapshot> getQRCountFromPlayer(String id, String hash){
+        return playersCollection.document(id)
                 .collection("QRCodes")
                 .whereEqualTo("hash", hash)
                 .count()
                 .get(AggregateSource.SERVER);
     }
 
-    public Task<DocumentSnapshot> getPlayer(String username) {
+    public Task<DocumentSnapshot> getPlayer(String id) {
         return playersCollection
-                .document(username)
+                .document(id)
                 .get();
     }
 
@@ -330,12 +333,12 @@ public class Database {
 
     /**
      * Removes specified QR from Player QRCode Collection
-     * @param userName
+     * @param id
      * @param hash
      */
-    public void removeQrCodesFromPlayer(String userName, String hash){
+    public void removeQrCodesFromPlayer(String id, String hash){
         playersCollection
-                .document(userName)
+                .document(id)
                 .collection("QRCodes")
                 .document(hash)
                 .delete();
@@ -379,6 +382,8 @@ public class Database {
             }
         });
     }
+
+    //TODO CHNGE TO ID
 
     /**
      * Associates a QR Code with a Player
@@ -429,17 +434,7 @@ public class Database {
                 .get(AggregateSource.SERVER);
     }
 
-    /**
-     *  Returns task of global top "n" qr codes
-     * @param n
-     * @return
-     */
-    public Task<QuerySnapshot> getTopNScores(int n){
-        return qrCodeCollection
-                .orderBy("score", Query.Direction.ASCENDING)
-                .limit(n)
-                .get();
-    }
+
 
     //Test method for popualting DB MUST Call pOPULATE SCORE WHEN DONE
     //TODO DELETE THIS
