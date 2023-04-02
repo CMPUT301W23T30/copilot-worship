@@ -61,18 +61,15 @@ public class SearchPlayerAdapter extends RecyclerView.Adapter<SearchPlayerAdapte
     public void onBindViewHolder(@NonNull @NotNull myViewHolder holder, int position) {
         SearchModel item = userList.get(position);
 
-        String username = item.getUsername();
-        Bitmap bmp = item.getBmp();
-
+        holder.username.setText(item.getUsername());
 
         Glide.with(holder.img.getContext())
-                .load(bmp)
+                .load(item.getBmp())
                 .placeholder(R.drawable._icon__profile_circle_)
                 .circleCrop()
                 .error(R.drawable._icon__profile_circle_)
                 .into(holder.img);
 
-        holder.username.setText(username);
 
     }
 

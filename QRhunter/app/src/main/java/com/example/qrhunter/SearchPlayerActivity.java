@@ -112,13 +112,8 @@ public class SearchPlayerActivity extends AppCompatActivity implements SearchPla
                 userList.add(item);
             }
         }
-
-
         adapter = new SearchPlayerAdapter(userList, SearchPlayerActivity.this, SearchPlayerActivity.this::OnItemClick);
         recyclerView.setAdapter(adapter);
-
-
-
     }
 
     @Override

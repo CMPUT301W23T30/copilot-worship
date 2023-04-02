@@ -2,6 +2,8 @@ package com.example.qrhunter;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,9 +13,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -39,6 +43,7 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
     private String firstUsernameStr;
     private String secondUsernameStr;
     private String thirdUsernameStr;
+    private CircleImageView firstPlace, secondPlace, thirdPlace;
 
     private String currentUser;
 
@@ -105,7 +110,7 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
         thirdUsername.setText(thirdUsernameStr);
         thirdScore.setText(d1.get("totalScore").toString());
         list.remove(0);
-
+        glideTopThree();
         for (DocumentSnapshot d : list) {
 
             LeaderboardModel user = new LeaderboardModel(d.get("username").toString(),Integer.parseInt(d.get("totalScore").toString()));
@@ -128,6 +133,7 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
         thirdUsernameStr = userList.get(2).getUsername();
         thirdUsername.setText(thirdUsernameStr);
         thirdScore.setText(userList.get(2).getTotalScore().toString());
+        glideTopThree();
         userList.remove(0);
         userList.remove(0);
         userList.remove(0);
@@ -135,6 +141,47 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
 
         recyclerView.setAdapter(adapter);
 
+    }
+
+    /**
+     * helper function to display pfp of top 3
+     * @param username
+     * @return the bitmap of the player
+     */
+    protected Bitmap getBitmap(String username){
+        final Bitmap[] bmp = new Bitmap[1];
+        db.getProfilePicture(username).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                //From https://stackoverflow.com/questions/7359173/create-bitmap-from-bytearray-in-android
+                //TODO Cite properly
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inMutable = true;
+                bmp[0] = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+            }
+        });
+        return bmp[0];
+    }
+
+    protected void glideTopThree(){
+        Glide.with(firstPlace)
+                .load(getBitmap(firstUsernameStr))
+                .placeholder(R.drawable._icon__profile_circle_)
+                .circleCrop()
+                .error(R.drawable._icon__profile_circle_)
+                .into(firstPlace);
+        Glide.with(secondPlace)
+                .load(getBitmap(firstUsernameStr))
+                .placeholder(R.drawable._icon__profile_circle_)
+                .circleCrop()
+                .error(R.drawable._icon__profile_circle_)
+                .into(secondPlace);
+        Glide.with(thirdPlace)
+                .load(getBitmap(firstUsernameStr))
+                .placeholder(R.drawable._icon__profile_circle_)
+                .circleCrop()
+                .error(R.drawable._icon__profile_circle_)
+                .into(thirdPlace);
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,6 +200,9 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
         secondScore = findViewById(R.id.second_place_score);
         thirdUsername = findViewById(R.id.third_place_name);
         thirdScore = findViewById(R.id.third_place_score);
+        firstPlace = findViewById(R.id.first_place);
+        secondPlace = findViewById(R.id.second_place);
+        thirdPlace = findViewById(R.id.third_place);
         currentUser = getIntent().getExtras().getString("username");
 
         Boolean saved;
