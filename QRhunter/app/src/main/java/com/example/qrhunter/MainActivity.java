@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.icu.text.SymbolTable;
 import android.location.Location;
 import android.media.Image;
 import android.os.Bundle;
@@ -195,10 +196,12 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AggregateQuerySnapshot> task) {
                                 if (task.isSuccessful()) {
-                                    username = "Player-" + (task.getResult().getCount()
+                                    long count = (task.getResult().getCount()
                                             + 1);
+                                    username = "Player-" + count;
                                     editor.putString("Username", username);
-                                    editor.putString("id", username);
+                                    editor.putString("id", String.valueOf(count));
+                                    System.out.println(username + "ID PUTTED");
                                     editor.apply();
                                 } else {
                                     //TODO add an error message here
@@ -569,7 +572,9 @@ public class MainActivity extends AppCompatActivity {
 
                                             QRCode one = new QRCode(hashedCode, hashedCode, location, score);
                                             Database db = new Database();
-                                            db.getPlayer(username).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+                                            String id = settings.getString("id", "no-id");
+                                            db.getPlayer(id).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                                 @Override
                                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                                                     AddQR(one, documentSnapshot.get("totalScore").toString());
