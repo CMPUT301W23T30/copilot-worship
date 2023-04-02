@@ -228,6 +228,17 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    /**
+     * Sets the information of the player in the text views
+     * @param db
+     * @param profileCircle
+     * @param totalScoreTextView
+     * @param userEmailTextView
+     * @param userPhoneTextView
+     * @param beefyQRTextView
+     * @param squishyQRTextView
+     *
+     */
     public void setInfo(Database db, ImageView profileCircle, TextView totalScoreTextView, TextView userEmailTextView, TextView userPhoneTextView, TextView beefyQRTextView, TextView squishyQRTextView){
         db.getPlayerInfo(username, new PlayerInfoListener() {
             @Override
