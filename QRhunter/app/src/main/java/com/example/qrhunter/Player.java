@@ -32,6 +32,7 @@ public class Player implements Parcelable {
      */
     private ArrayList<QRCode> qrCodes;
 
+    private String id;
     /**
      * Test constructor with invalid username for testing
      * provides us with an invalid username (above 20 characters, so that we are sure
@@ -52,6 +53,7 @@ public class Player implements Parcelable {
         this.email = "Default email";
         this.number = 0;
         this.qrCodes = new ArrayList<>();
+        this.id = username;
     }
 
     /**
@@ -137,6 +139,14 @@ public class Player implements Parcelable {
         }
 
         return Collections.max(scores);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override

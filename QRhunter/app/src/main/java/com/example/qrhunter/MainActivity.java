@@ -7,7 +7,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.icu.text.SymbolTable;
 import android.location.Location;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
@@ -42,6 +46,7 @@ import com.journeyapps.barcodescanner.ScanOptions;
 import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.Text;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -114,6 +119,17 @@ public class MainActivity extends AppCompatActivity {
                     bundle.putString("username", currentPlayer.getUsername());
                     bundle.putString("email", currentPlayer.getEmail());
                     bundle.putString("phone", String.valueOf(currentPlayer.getNumber()));
+                    ImageView profile = findViewById(R.id.profile_icon);
+                    SharedPreferences settings = getSharedPreferences("profilePicture", 0);
+                    byte[] data = null;
+                    if(settings.getBoolean("saved", false)){
+                        BitmapDrawable bitmapDrawable = (BitmapDrawable) profile.getDrawable();
+                        Bitmap bitmap = bitmapDrawable.getBitmap();
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        data = baos.toByteArray();
+                    }
+                    bundle.putByteArray("pictureBytes", data);
                     intent.putExtras(bundle);
                 }
                 else {
@@ -121,6 +137,8 @@ public class MainActivity extends AppCompatActivity {
                     bundle.putString("username", "");
                     bundle.putString("email", "");
                     bundle.putString("phone", "");
+                    byte[] noBytes = new byte[0];
+                    bundle.putByteArray("pictureBytes", noBytes);
                     intent.putExtras(bundle);
                 }
 
@@ -146,14 +164,20 @@ public class MainActivity extends AppCompatActivity {
      * @param bundle bundle of data that will include a username if is sent through another activity
      * @param db Database instance to query from
      * @param userText User text to set the username too
+     * @return true if new player
      */
-    public void getUsername(Bundle bundle, Database db, TextView userText) {
+    public Boolean getUsername(Bundle bundle, Database db, TextView userText,
+    ImageView profileCircle, TextView totalScoreTextView, TextView userEmailTextView, TextView
+                               userPhoneTextView, TextView beefyQRTextView, TextView
+                               squishyQRTextView) {
         //https://stackoverflow.com/questions/10209814/saving-user-information-in-app-settings
         //Roughly following
         //TODO properly cite
         if (bundle != null) {
             username = bundle.getString("username");
             userText.setText(username);
+            setInfo(db, profileCircle, totalScoreTextView, userEmailTextView, userPhoneTextView, beefyQRTextView,
+                    squishyQRTextView);
         } else {
 
             SharedPreferences settings = getSharedPreferences("UserInfo", 0);
@@ -161,6 +185,8 @@ public class MainActivity extends AppCompatActivity {
             if (settings.contains("Username")) {
                 username = settings.getString("Username", "");
                 userText.setText(username);
+                setInfo(db, profileCircle, totalScoreTextView, userEmailTextView, userPhoneTextView, beefyQRTextView,
+                        squishyQRTextView);
             }
             //else we can assume a new player
             else {
@@ -170,29 +196,78 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AggregateQuerySnapshot> task) {
                                 if (task.isSuccessful()) {
-                                    username = "Player-" + (task.getResult().getCount()
+                                    long count = (task.getResult().getCount()
                                             + 1);
+                                    username = "Player-" + count;
+                                    editor.putString("Username", username);
+                                    editor.putString("id", String.valueOf(count));
+                                    System.out.println(username + "ID PUTTED");
+                                    editor.apply();
                                 } else {
                                     //TODO add an error message here
                                     Log.d(TAG, "Failed to get player count for new player");
                                     username = "Player-?";
                                 }
-                                editor.putString("Username", username);
-                                editor.apply();
                                 userText.setText(username);
-                                db.addPlayer(new Player(username));
-                            }
-                        })
-                ;
+                                db.addPlayer(new Player(username))
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
 
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                setInfo(db, profileCircle, totalScoreTextView, userEmailTextView, userPhoneTextView, beefyQRTextView,
+                                                        squishyQRTextView);
+                                            }
+                                        });
+                            }
+                        });
+                return true;
             }
+
         }
+        return false;
     }
 
-    public void getRankingEstimates(Bundle bundle, Database db) {
-        if (bundle != null) {
+    public void setInfo(Database db, ImageView profileCircle, TextView totalScoreTextView, TextView userEmailTextView, TextView userPhoneTextView, TextView beefyQRTextView, TextView squishyQRTextView){
+        db.getPlayerInfo(username, new PlayerInfoListener() {
+            @Override
+            public void playerInfoCallback(Player player) {
+                currentPlayer = player;
+                userEmailTextView.setText(currentPlayer.getEmail());
+                userPhoneTextView.setText(String.valueOf(currentPlayer.getNumber()));
+                db.getProfilePicture(currentPlayer.getId()).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        //From https://stackoverflow.com/questions/7359173/create-bitmap-from-bytearray-in-android
+                        //TODO Cite properly
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inMutable = true;
+                        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+                        bmp = Bitmap.createScaledBitmap(bmp, profileCircle.getHeight(), profileCircle.getWidth(), true);
+                        profileCircle.setImageBitmap(bmp);
+                    }
+                });
+                db.getPlayerCollection(player.getId(), new PlayerCollectionListener() {
+                    @Override
+                    public void playerCollectionCallback(Map<String, String> map) {
+                        for (Map.Entry<String, String> qrEntry : map.entrySet()) {
+                            db.getQRCodeInfo(qrEntry.getKey(), new QRCodeListener() {
+                                @Override
+                                public void qrCodeCallback(QRCode qrCode) {
+                                    currentPlayer.addQrCode(qrCode);
+                                    qrCodeComments.add(new QRCodeComment(qrCode, qrEntry.getValue()));
+                                    if (currentPlayer.getTotalScore() != 0) {
+                                        totalScoreTextView.setText(String.valueOf(currentPlayer.getTotalScore()));
+                                        beefyQRTextView.setText(String.valueOf(currentPlayer.getBeefy()));
+                                        squishyQRTextView.setText(String.valueOf(currentPlayer.getSquishy()));
+                                    }
 
-        }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -213,10 +288,9 @@ public class MainActivity extends AppCompatActivity {
 
         String testHash = "2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824";
         String firstSixDigits = getFirstSixDigits(testHash);
-        CharacterImage testCharacter = characterCreator(firstSixDigits);
-        profileCircle.setImageBitmap(testCharacter.getCharacterImage());
+        //CharacterImage testCharacter = characterCreator(firstSixDigits);
+        //profileCircle.setImageBitmap(testCharacter.getCharacterImage());
 
-        smallerTextView.setText("QRCREATURE TIME");
 
         // profileCircle.setImageResource(R.drawable._icon__profile_circle_);
 
@@ -235,37 +309,12 @@ public class MainActivity extends AppCompatActivity {
         Database db = new Database();
         //db.populateDB(); //Run only when we need to redo db after a purge
         //db.populateScore(20);// Run only after populate db
-        getUsername(bundle, db, usernameText);
+        getUsername(bundle, db, usernameText, profileCircle, totalScoreTextView,
+                userEmailTextView, userPhoneTextView, beefyQRTextView, squishyQRTextView);
 
         // Player Information
         //TODO CHANGE BACK TO USERNAME
-        db.getPlayerInfo(username, new PlayerInfoListener() {
-            @Override
-            public void playerInfoCallback(Player player) {
-                currentPlayer = player;
-                userEmailTextView.setText(currentPlayer.getEmail());
-                userPhoneTextView.setText(String.valueOf(currentPlayer.getNumber()));
-                db.getPlayerCollection(player.getUsername(), new PlayerCollectionListener() {
-                    @Override
-                    public void playerCollectionCallback(Map<String, String> map) {
-                        for (Map.Entry<String, String> qrEntry : map.entrySet()) {
-                            db.getQRCodeInfo(qrEntry.getKey(), new QRCodeListener() {
-                                @Override
-                                public void qrCodeCallback(QRCode qrCode) {
-                                    currentPlayer.addQrCode(qrCode);
-                                    qrCodeComments.add(new QRCodeComment(qrCode, qrEntry.getValue()));
-                                    if (currentPlayer.getTotalScore() != 0) {
-                                        totalScoreTextView.setText(String.valueOf(currentPlayer.getTotalScore()));
-                                        beefyQRTextView.setText(String.valueOf(currentPlayer.getBeefy()));
-                                        squishyQRTextView.setText(String.valueOf(currentPlayer.getSquishy()));
-                                    }
-                                }
-                            });
-                        }
-                    }
-                });
-            }
-        });
+
 
         // NAVBAR Buttons
         mapButton = findViewById(R.id.navbar_map_button);
@@ -338,6 +387,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /*
+        //Commented out cuz we have profile pictures now
         profileCircle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -347,7 +398,7 @@ public class MainActivity extends AppCompatActivity {
                 profileCircle.setImageBitmap(testCharacter.getCharacterImage());
                 smallerTextView.setText(generateRandomName(firstSixDigits));
             }
-        });
+        });*/
 
     }
 
@@ -519,9 +570,11 @@ public class MainActivity extends AppCompatActivity {
                                             Log.d("ADDQR", "Hash: " + hashedCode);
                                             Log.d("ADDQR", "Score: " + score);
 
-                                            QRCode one = new QRCode(hashedCode, hashedCode, location, score);
+                                            QRCode one = new QRCode(hashedCode, generateRandomName(getFirstSixDigits(hashedCode)), location, score);
                                             Database db = new Database();
-                                            db.getPlayer(username).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+                                            String id = settings.getString("id", "no-id");
+                                            db.getPlayer(id).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                                 @Override
                                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                                                     AddQR(one, documentSnapshot.get("totalScore").toString());
@@ -544,9 +597,12 @@ public class MainActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     Log.d("ADDQR", "Hash: " + hashedCode);
                                     Log.d("ADDQR", "Score: " + score);
-                                    QRCode one = new QRCode(hashedCode, hashedCode, new Location(""), score);
+
+                                    QRCode one = new QRCode(hashedCode, generateRandomName(getFirstSixDigits(hashedCode)), new Location(""), score);
                                     Database db = new Database();
-                                    db.getPlayer(username).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+                                    String id = settings.getString("id", "no-id");
+                                    db.getPlayer(id).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                         @Override
                                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                                             AddQR(one, documentSnapshot.get("totalScore").toString());
@@ -583,7 +639,9 @@ public class MainActivity extends AppCompatActivity {
             image = (Bitmap) data.getExtras().get("data");
             Database db = new Database();
             String hash = getIntent().getStringExtra("CamHash");
-            db.storeQRPicture(username, hash, image);
+            SharedPreferences setting = getSharedPreferences("UserInfo", 0);
+            String id = setting.getString("id", "no-id");
+            db.storeQRPicture(id, hash, image);
         }
     }
 
@@ -626,7 +684,8 @@ public class MainActivity extends AppCompatActivity {
                 //If player does not already have qr
                 if(aggregateQuerySnapshot.getCount() == 0){
                     db.addQrCode(newQR);
-                    db.addScannedCode(newQR, new Player(username));
+
+                    db.addScannedCode(newQR, currentPlayer);
                     //Check to see if we think we moved up in the db, if first place or no score to beat
                     // Then refresh always with lessScore
                     SharedPreferences settings = getSharedPreferences("LocalLeaderboard", 0);

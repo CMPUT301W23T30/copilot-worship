@@ -24,6 +24,8 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -119,18 +121,26 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         comment.setText(qrComment);
         //set picture
         Database db = new Database();
-        db.getQRPicture(username, qrCode.getHash())
-                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                    @Override
-                    public void onSuccess(byte[] bytes) {
-                        //From https://stackoverflow.com/questions/7359173/create-bitmap-from-bytearray-in-android
-                        //TODO Cite properly
-                        BitmapFactory.Options options = new BitmapFactory.Options();
-                        options.inMutable = true;
-                        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
-                        photo.setImageBitmap(bmp);
-                    }
-                });
+        db.getPlayerFromUsername(username).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for(QueryDocumentSnapshot doc : queryDocumentSnapshots){
+                    db.getQRPicture(doc.getString("id"), qrCode.getHash())
+                            .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                @Override
+                                public void onSuccess(byte[] bytes) {
+                                    //From https://stackoverflow.com/questions/7359173/create-bitmap-from-bytearray-in-android
+                                    //TODO Cite properly
+                                    BitmapFactory.Options options = new BitmapFactory.Options();
+                                    options.inMutable = true;
+                                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+                                    photo.setImageBitmap(bmp);
+                                }
+                            });
+                }
+            }
+        });
+
 
         //TODO don't forget to HIDE QRCode photo
         //Hide Extras
@@ -183,14 +193,23 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                 comment.setVisibility(View.VISIBLE);
 
                 Database db = new Database();
-                db.editComment(username, qrComment, qrCode.getHash());
+                db.getPlayerFromUsername(username).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for(QueryDocumentSnapshot doc: queryDocumentSnapshots ){
+                            db.editComment(doc.getString("id"), qrComment, qrCode.getHash());
 
-                //Hides soft keyboard
-                //https://stackoverflow.com/questions/19451395/how-to-hide-the-soft-keyboard-in-android-after-doing-something-outside-of-editte
-                InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                            //Hides soft keyboard
+                            //https://stackoverflow.com/questions/19451395/how-to-hide-the-soft-keyboard-in-android-after-doing-something-outside-of-editte
+                            InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
-                Toast.makeText(context, "Your comment has been saved.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Your comment has been saved.", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+
             }
         });
 

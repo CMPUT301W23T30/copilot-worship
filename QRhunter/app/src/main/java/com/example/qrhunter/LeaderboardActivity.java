@@ -2,6 +2,8 @@ package com.example.qrhunter;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,9 +13,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -39,6 +44,7 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
     private String firstUsernameStr;
     private String secondUsernameStr;
     private String thirdUsernameStr;
+    private CircleImageView firstPlace, secondPlace, thirdPlace;
 
     private String currentUser;
 
@@ -105,7 +111,7 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
         thirdUsername.setText(thirdUsernameStr);
         thirdScore.setText(d1.get("totalScore").toString());
         list.remove(0);
-
+        glideTopThree();
         for (DocumentSnapshot d : list) {
 
             LeaderboardModel user = new LeaderboardModel(d.get("username").toString(),Integer.parseInt(d.get("totalScore").toString()));
@@ -128,12 +134,89 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
         thirdUsernameStr = userList.get(2).getUsername();
         thirdUsername.setText(thirdUsernameStr);
         thirdScore.setText(userList.get(2).getTotalScore().toString());
+        glideTopThree();
         userList.remove(0);
         userList.remove(0);
         userList.remove(0);
         adapter = new LeaderboardAdapter(userList, LeaderboardActivity.this, LeaderboardActivity.this::OnItemClick);
 
         recyclerView.setAdapter(adapter);
+
+    }
+
+
+    /**
+     * ugly function to get the images for the pfps of the top 3 and glide.
+     * @author X
+     */
+    protected void glideTopThree(){
+        db.getPlayerFromUsername(firstUsernameStr).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for(QueryDocumentSnapshot doc: queryDocumentSnapshots){
+                    db.getProfilePicture(doc.getString("id")).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+                            BitmapFactory.Options options = new BitmapFactory.Options();
+                            options.inMutable = true;
+                            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+
+                            Glide.with(firstPlace)
+                                    .load(bmp)
+                                    .placeholder(R.drawable._icon__profile_circle_)
+                                    .circleCrop()
+                                    .error(R.drawable._icon__profile_circle_)
+                                    .into(firstPlace);
+                        }
+                    });
+                }
+            }
+        });
+
+        db.getPlayerFromUsername(secondUsernameStr).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for(QueryDocumentSnapshot doc: queryDocumentSnapshots){
+                    db.getProfilePicture(doc.getString("id")).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+                            BitmapFactory.Options options = new BitmapFactory.Options();
+                            options.inMutable = true;
+                            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+
+                            Glide.with(secondPlace)
+                                    .load(bmp)
+                                    .placeholder(R.drawable._icon__profile_circle_)
+                                    .circleCrop()
+                                    .error(R.drawable._icon__profile_circle_)
+                                    .into(secondPlace);
+                        }
+                    });
+                }
+            }
+        });
+        db.getPlayerFromUsername(thirdUsernameStr).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for(QueryDocumentSnapshot doc: queryDocumentSnapshots){
+                    db.getProfilePicture(doc.getString("id")).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+                            BitmapFactory.Options options = new BitmapFactory.Options();
+                            options.inMutable = true;
+                            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+
+                            Glide.with(thirdPlace)
+                                    .load(bmp)
+                                    .placeholder(R.drawable._icon__profile_circle_)
+                                    .circleCrop()
+                                    .error(R.drawable._icon__profile_circle_)
+                                    .into(thirdPlace);
+                        }
+                    });
+                }
+            }
+        });
 
     }
     @Override
@@ -153,6 +236,9 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
         secondScore = findViewById(R.id.second_place_score);
         thirdUsername = findViewById(R.id.third_place_name);
         thirdScore = findViewById(R.id.third_place_score);
+        firstPlace = findViewById(R.id.first_place);
+        secondPlace = findViewById(R.id.second_place);
+        thirdPlace = findViewById(R.id.third_place);
         currentUser = getIntent().getExtras().getString("username");
 
         Boolean saved;

@@ -10,6 +10,10 @@ import android.graphics.RadialGradient;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
+import androidx.annotation.ColorInt;
+
+import com.google.firebase.firestore.CollectionReference;
+
 import java.util.Random;
 
 public class CharacterImage {
@@ -88,6 +92,9 @@ public class CharacterImage {
 
         // Get canvas for new bitmap
         Canvas canvas = new Canvas(characterImage);
+
+        //Set to white for jpeg purpose
+        canvas.drawColor(Color.WHITE);
 
         // Draw bitmaps onto canvas in desired order and positions
         canvas.drawBitmap(body,radius - radius/8,radius/2 + hat.getHeight()/4 + radius/4,null);

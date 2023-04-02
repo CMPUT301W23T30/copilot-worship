@@ -8,10 +8,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
 
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,6 +40,7 @@ import com.google.firebase.firestore.QuerySnapshot;
  * It is called from the MainActivity class.
  * @author: Maarij
  */
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,6 +52,9 @@ import java.util.HashMap;
  */
 public class AddPlayerActivity extends AppCompatActivity {
     String passedUserName, passedEmail, passedPhone;
+    byte[] passedPicture;
+
+    boolean picAdded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,26 +75,35 @@ public class AddPlayerActivity extends AppCompatActivity {
             passedUserName = bundle.getString("username");
             passedEmail = bundle.getString("email");
             passedPhone = bundle.getString("phone");
-
+            passedPicture = bundle.getByteArray("pictureBytes");
             usernameEditText.setText(passedUserName);
             emailEditText.setText(passedEmail);
             phoneEditText.setText(passedPhone);
+            if(passedPicture != null){
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inMutable = true;
+                Bitmap bmp = BitmapFactory.decodeByteArray(passedPicture, 0, passedPicture.length, options);
+                profilePicImageView.setImageBitmap(bmp);
+            }
+
         }
 
-        profilePicImageView.setImageBitmap(generateRandomQReature());
 
         selectButton.setOnClickListener(v -> {
             imageChooser();
         });
 
         randomizeButton.setOnClickListener(v -> {
+
             profilePicImageView.setImageBitmap(generateRandomQReature());
+            picAdded = true;
         });
 
         submitButton.setOnClickListener(v -> {
             //To update the player info, we need to delete
             // all the documents and re add it
             // To do that we have to reconstruct the player object for deletion and addition
+            //TODO Change player username in pics as well
             Database db = new Database();
 
 
@@ -99,75 +116,40 @@ public class AddPlayerActivity extends AppCompatActivity {
             String email = emailEditText.getText().toString();
             String number = phoneEditText.getText().toString();
             Player newUser = new Player(username,email, Integer.parseInt(number), new ArrayList<>());
-            //If just changing info, no need to change much
-            if(username.equals(passedUserName)){
-                db.changeInfo(newUser);
-                Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
+
             //making Sure it is unique
             db.getPlayer(username).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    if(documentSnapshot.exists())
+
+                    if(documentSnapshot.exists() && !username.equals(passedUserName))
                     {
                         //Username is not unique, so it is invalid
 
                         errorText.setText("Username is taken dummmy");
                     }
-                    else {
-                        //TODO add on Failure listener
+                    else{
+                        System.out.println("THis tan???");
+                        if(picAdded){savePicture(username);}
 
-                        db.addPlayer(newUser);
-                        //TODO add on failure listener
-                        //Need to delete the player from the qr too
-                        db.getQrCodesFromPlayer(passedUserName)
-                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                        errorText.setTextColor(getResources().getColor(R.color.white));
-                                        errorText.setText("Changing info...");
-                                        ArrayList<Task<?>> tasks = new ArrayList<>();
-                                        for(QueryDocumentSnapshot doc : queryDocumentSnapshots){
-                                            //TODO add failure listeners
-                                            //Not sure what they can do since no rollback but atleast we can
-                                            //let the user know there was a glitch
-                                            String hash = doc.getString("hash");
-                                            tasks.add(db.giveQRCode(passedUserName, username, hash));
+                        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+                        String id = settings.getString("id", "no-id");
+                        newUser.setId(id);
+                        System.out.println(newUser.getId());
+                        db.changeInfo(newUser);
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.remove("Username");
+                        editor.putString("Username", username);
+                        editor.commit();
+                        SharedPreferences settings2 = getSharedPreferences("LocalLeaderboard", 0);
+                        SharedPreferences.Editor editor1 = settings2.edit();
+                        editor1.putBoolean("playersSaved", false); //reload leaderboard next time
+                        editor1.commit();
 
-                                        }
 
-                                        //When done transfer
-                                        Tasks.whenAll(tasks)
-                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void unused) {
-                                                        if (passedUserName != null) {
-                                                            db.removePlayer(passedUserName);
-                                                        }
-                                                        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
-                                                        //Save this new username locally, how nice
-                                                        SharedPreferences.Editor editor = settings.edit();
-                                                        editor.clear();
-                                                        editor.putString("Username", username);
-                                                        editor.apply();
+                        Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
+                        startActivity(intent);
 
-                                                        SharedPreferences settings2 = getSharedPreferences("LocalLeaderboard", 0);
-                                                        SharedPreferences.Editor editor1 = settings2.edit();
-                                                        editor1.putBoolean("playersSaved", false); //reload leaderboard next time
-                                                        editor1.commit();
-
-                                                        Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
-                                                        Bundle bundle = new Bundle();
-                                                        bundle.putString("username", usernameEditText.getText().toString());
-                                                        bundle.putString("email", emailEditText.getText().toString());
-                                                        bundle.putString("phone", phoneEditText.getText().toString());
-                                                        startActivity(intent);
-                                                    }
-                                                });
-
-                                    }
-                                });
                     }
                 }
             });
@@ -237,10 +219,31 @@ public class AddPlayerActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
 
+                        if(selectedImageBitmap != null){
+                            picAdded = true;
+                        }
+
                         ImageView profilePicImageView = findViewById(R.id.edit_player_profile_pic);
                         profilePicImageView.setImageBitmap(selectedImageBitmap);
                     }
                 }
             });
+
+    public void savePicture(String username){
+
+        SharedPreferences settings = getSharedPreferences("profilePicture", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("saved", true);
+        editor.commit();
+        ImageView iv = findViewById(R.id.edit_player_profile_pic);
+        Drawable drawable = iv.getDrawable();
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+        Bitmap bitmap = bitmapDrawable.getBitmap();
+        Database db = new Database();
+        SharedPreferences setting = getSharedPreferences("UserInfo", 0);
+        String id = setting.getString("id", "no-id");
+        db.storeProfilePicture(id, bitmap);
+
+    }
 
 }
