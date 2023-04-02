@@ -103,13 +103,12 @@ public class SearchPlayerActivity extends AppCompatActivity implements SearchPla
      * Queries database with provided string and updates recyclerview
      * @param str string fragment you want to search
      * @author X
-     * TODO implement SQL-like *LIKE* case matching/blank space sanitation
      */
     private void txtSearch(String str){
         userList.clear();
 
         for(SearchModel item: userList1){
-            if(item.getUsername().contains(str)){
+            if(item.getUsername().toUpperCase().contains(str.toUpperCase())){
                 userList.add(item);
             }
         }
