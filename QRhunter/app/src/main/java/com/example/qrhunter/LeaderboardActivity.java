@@ -144,44 +144,56 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
     }
 
     /**
-     * helper function to display pfp of top 3
-     * @param username
-     * @return the bitmap of the player
+     * ugly function to get the images for the pfps of the top 3 and glide.
+     * @author X
      */
-    protected Bitmap getBitmap(String username){
-        final Bitmap[] bmp = new Bitmap[1];
-        db.getProfilePicture(username).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+    protected void glideTopThree(){
+        db.getProfilePicture(firstUsernameStr).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
-                //From https://stackoverflow.com/questions/7359173/create-bitmap-from-bytearray-in-android
-                //TODO Cite properly
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inMutable = true;
-                bmp[0] = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+
+                Glide.with(firstPlace)
+                        .load(bmp)
+                        .placeholder(R.drawable._icon__profile_circle_)
+                        .circleCrop()
+                        .error(R.drawable._icon__profile_circle_)
+                        .into(firstPlace);
             }
         });
-        return bmp[0];
-    }
+        db.getProfilePicture(secondUsernameStr).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inMutable = true;
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
 
-    protected void glideTopThree(){
-        Glide.with(firstPlace)
-                .load(getBitmap(firstUsernameStr))
-                .placeholder(R.drawable._icon__profile_circle_)
-                .circleCrop()
-                .error(R.drawable._icon__profile_circle_)
-                .into(firstPlace);
-        Glide.with(secondPlace)
-                .load(getBitmap(firstUsernameStr))
-                .placeholder(R.drawable._icon__profile_circle_)
-                .circleCrop()
-                .error(R.drawable._icon__profile_circle_)
-                .into(secondPlace);
-        Glide.with(thirdPlace)
-                .load(getBitmap(firstUsernameStr))
-                .placeholder(R.drawable._icon__profile_circle_)
-                .circleCrop()
-                .error(R.drawable._icon__profile_circle_)
-                .into(thirdPlace);
+                Glide.with(secondPlace)
+                        .load(bmp)
+                        .placeholder(R.drawable._icon__profile_circle_)
+                        .circleCrop()
+                        .error(R.drawable._icon__profile_circle_)
+                        .into(secondPlace);
+            }
+        });
+        db.getProfilePicture(thirdUsernameStr).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inMutable = true;
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+
+                Glide.with(thirdPlace)
+                        .load(bmp)
+                        .placeholder(R.drawable._icon__profile_circle_)
+                        .circleCrop()
+                        .error(R.drawable._icon__profile_circle_)
+                        .into(thirdPlace);
+            }
+        });
+
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
