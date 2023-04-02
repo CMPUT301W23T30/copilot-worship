@@ -16,6 +16,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -39,7 +42,8 @@ public class OtherProfiles extends AppCompatActivity {
                         SharedPreferences.Editor editor = settings.edit();
                         editor.putBoolean("playersSaved", false);
                         editor.commit();
-                        finish();
+                        Intent intent = new Intent(OtherProfiles.this, LeaderboardActivity.class);
+                        startActivity(intent);
                     }
                 })
                 .setMessage("Player not found, your leaderboard might not be up to date, do you want to refresh it?")
@@ -64,39 +68,49 @@ public class OtherProfiles extends AppCompatActivity {
 
         username.setText(currentUsername);
 
-
-        db.getPlayerInfo(currentUsername, new PlayerInfoListener() {
+        //Check first to see if null
+        db.getPlayerFromUsername(currentUsername).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
-            public void playerInfoCallback(Player player) {
-                Log.d("TASK", "START");
-                currentPlayer = player;
-                db.getProfilePicture(player.getId());
-                if(player == null){
-                    handleNullPlayer();
-                }
-                db.getPlayerCollection(player.getId(), new PlayerCollectionListener() {
-                    @Override
-                    public void playerCollectionCallback(Map<String, String> map) {
-                        for (Map.Entry<String,String> qrEntry : map.entrySet()) {
-                            db.getQRCodeInfo(qrEntry.getKey(), new QRCodeListener() {
-                                @Override
-                                public void qrCodeCallback(QRCode qrCode) {
-                                    Log.d("TASK", "." + qrEntry.getKey() +".");
-                                    currentPlayer.addQrCode(qrCode);
-                                    qrCodeComments.add(new QRCodeComment(qrCode, qrEntry.getValue()));
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if(queryDocumentSnapshots.isEmpty()){
+                   handleNullPlayer();
+                }else{
+                    db.getPlayerInfo(currentUsername, new PlayerInfoListener() {
+                        @Override
+                        public void playerInfoCallback(Player player) {
+                            Log.d("TASK", "START");
+                            currentPlayer = player;
+                            db.getProfilePicture(player.getId());
 
-                                    if (currentPlayer.getTotalScore() != 0) {
-                                        totalScore.setText(String.valueOf(currentPlayer.getTotalScore()));
-                                        beefyQR.setText(String.valueOf(currentPlayer.getBeefy()));
-                                        squishyQR.setText(String.valueOf(currentPlayer.getSquishy()));
+                            db.getPlayerCollection(player.getId(), new PlayerCollectionListener() {
+                                @Override
+                                public void playerCollectionCallback(Map<String, String> map) {
+                                    for (Map.Entry<String,String> qrEntry : map.entrySet()) {
+                                        db.getQRCodeInfo(qrEntry.getKey(), new QRCodeListener() {
+                                            @Override
+                                            public void qrCodeCallback(QRCode qrCode) {
+                                                Log.d("TASK", "." + qrEntry.getKey() +".");
+                                                currentPlayer.addQrCode(qrCode);
+                                                qrCodeComments.add(new QRCodeComment(qrCode, qrEntry.getValue()));
+
+                                                if (currentPlayer.getTotalScore() != 0) {
+                                                    totalScore.setText(String.valueOf(currentPlayer.getTotalScore()));
+                                                    beefyQR.setText(String.valueOf(currentPlayer.getBeefy()));
+                                                    squishyQR.setText(String.valueOf(currentPlayer.getSquishy()));
+                                                }
+                                            }
+                                        });
                                     }
                                 }
                             });
                         }
-                    }
-                });
+                    });
+                }
             }
         });
+
+
+
 
         // GALLERY Button
         ImageButton galleryButton = findViewById(R.id.other_player_gallery);
