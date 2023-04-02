@@ -504,7 +504,7 @@ public class Database {
 
                                 p.getQrCodes().add(qr);
                             }
-                            addPlayer(p);
+                            //addPlayer(p);
                         }
                     });
         }
