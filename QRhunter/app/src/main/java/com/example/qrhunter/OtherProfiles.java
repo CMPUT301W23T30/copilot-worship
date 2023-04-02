@@ -29,6 +29,10 @@ public class OtherProfiles extends AppCompatActivity {
     private String currentUsername;
     ArrayList<QRCodeComment> qrCodeComments = new ArrayList<>();
 
+    /**
+     * Sometimes the player can click on a null player from the leaderboard
+     * This method handles that case
+     */
     public void handleNullPlayer(){
         new AlertDialog.Builder(OtherProfiles.this)
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
