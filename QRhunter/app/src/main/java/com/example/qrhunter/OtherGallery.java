@@ -77,4 +77,3 @@ public class OtherGallery extends AppCompatActivity {
         return true;
     }
 }
-}
