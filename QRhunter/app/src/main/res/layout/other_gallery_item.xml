@@ -7,7 +7,7 @@
     android:paddingVertical="10dp">
 
     <ImageView
-        android:id="@+id/QRmon_image"
+        android:id="@+id/QReature_image"
         android:layout_width="55dp"
         android:layout_height="55dp"
         android:padding="5dp"
@@ -16,7 +16,7 @@
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/QRmon_name"
+        android:id="@+id/QReature_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxWidth="250dp"
@@ -24,7 +24,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_marginLeft="2dp"
-        app:layout_constraintStart_toEndOf="@+id/QRmon_image"
+        app:layout_constraintStart_toEndOf="@+id/QReature_image"
         app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -35,8 +35,8 @@
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingBottom="10dp"
-        app:layout_constraintStart_toEndOf="@+id/QRmon_image"
-        app:layout_constraintTop_toBottomOf="@+id/QRmon_name">
+        app:layout_constraintStart_toEndOf="@+id/QReature_image"
+        app:layout_constraintTop_toBottomOf="@+id/QReature_name">
 
         <ImageView
             android:id="@+id/location_icon"
@@ -46,7 +46,7 @@
             android:background="@drawable/location_icon" />
 
         <TextView
-            android:id="@+id/QRmon_long"
+            android:id="@+id/QReature_long"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
@@ -57,17 +57,17 @@
 
 
     <TextView
-        android:id="@+id/QRmon_lat"
+        android:id="@+id/QReature_lat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:text=""
         android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@+id/QRmon_location"
-        app:layout_constraintTop_toBottomOf="@+id/QRmon_name" />
+        app:layout_constraintTop_toBottomOf="@+id/QReature_name" />
 
     <LinearLayout
-        android:id="@+id/QRmon_score_display"
+        android:id="@+id/QReature_score_display"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="5dp"
@@ -83,7 +83,7 @@
             android:textSize="14sp"/>
 
         <TextView
-            android:id="@+id/QRmon_score"
+            android:id="@+id/QReature_score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
@@ -101,7 +101,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/QRmon_score_display">
+        app:layout_constraintTop_toBottomOf="@+id/QReature_score_display">
 
         <View
             android:layout_width="match_parent"

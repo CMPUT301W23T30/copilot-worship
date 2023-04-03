@@ -3,11 +3,9 @@ package com.example.qrhunter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,11 +30,11 @@ public class OtherGalleryAdapter extends RecyclerView.Adapter<OtherGalleryAdapte
         public ViewHolder(View itemView) {
             super(itemView);
 
-            this.image = (ImageView) itemView.findViewById(R.id.QRmon_image);
-            this.name = (TextView) itemView.findViewById(R.id.QRmon_name);
-            this.longitude = (TextView) itemView.findViewById(R.id.QRmon_long);
-            this.latitude = (TextView) itemView.findViewById(R.id.QRmon_lat);
-            this.score = (TextView) itemView.findViewById(R.id.QRmon_score);
+            this.image = (ImageView) itemView.findViewById(R.id.QReature_image);
+            this.name = (TextView) itemView.findViewById(R.id.QReature_name);
+            this.longitude = (TextView) itemView.findViewById(R.id.QReature_long);
+            this.latitude = (TextView) itemView.findViewById(R.id.QReature_lat);
+            this.score = (TextView) itemView.findViewById(R.id.QReature_score);
         }
 
     }
