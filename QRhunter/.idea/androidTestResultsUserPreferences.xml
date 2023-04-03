@@ -3,6 +3,34 @@
   <component name="AndroidTestResultsUserPreferences">
     <option name="androidTestResultsTableState">
       <map>
+        <entry key="-1977477559">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="RFCR604YP3Y" value="120" />
+                  <entry key="Tests" value="360" />
+                  <entry key="samsung&#10; SM-G781W" value="120" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
+        <entry key="144875415">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="RFCR604YP3Y" value="120" />
+                  <entry key="Tests" value="360" />
+                  <entry key="samsung&#10; SM-G781W" value="120" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
         <entry key="899739336">
           <value>
             <AndroidTestResultsTableState>
@@ -10,7 +38,9 @@
                 <map>
                   <entry key="Duration" value="90" />
                   <entry key="Pixel_2_API_33" value="120" />
+                  <entry key="RFCR604YP3Y" value="120" />
                   <entry key="Tests" value="360" />
+                  <entry key="samsung&#10; SM-G781W" value="120" />
                 </map>
               </option>
             </AndroidTestResultsTableState>

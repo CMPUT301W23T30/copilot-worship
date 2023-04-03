@@ -38,8 +38,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * An activity that displays a map showing the place at the device's current location.
@@ -73,6 +75,8 @@ public class MapsActivity extends FragmentActivity
     // List of markers
     private List<Marker> markerList = new ArrayList<Marker>();
 
+    // Map of QRCodes hashes to names to make displaying and passing easier
+    private Map<String, String> hashHashMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,8 +236,9 @@ public class MapsActivity extends FragmentActivity
                                                     LatLng qrLocation = new LatLng(qrCode.getLocation().getLatitude(), qrCode.getLocation().getLongitude());
                                                     Marker marker = mMap.addMarker(new MarkerOptions().position(qrLocation).title(qrCode.getName()));
                                                     String hash = qrCode.getHash();
-                                                    marker.setTag(hash);
+                                                    marker.setTag(qrCode.getName());
                                                     markerList.add(marker);
+                                                    hashHashMap.put(qrCode.getName(), hash);
                                                 }
                                             }
                                         }
@@ -246,8 +251,9 @@ public class MapsActivity extends FragmentActivity
             @Override
             public void onInfoWindowClick(@NonNull Marker marker) {
                 // Get the QR code's hash from the marker's tag
-                String hash = marker.getTag().toString();
+                String name = marker.getTag().toString();
                 // Navigate to the QR code's detailed page
+                String hash = hashHashMap.get(name);
                 Intent intent = new Intent(MapsActivity.this, QrDisplayActivity.class);
                 Bundle b = new Bundle();
                 b.putString("hash", hash);

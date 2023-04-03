@@ -130,7 +130,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                                 @Override
                                 public void onSuccess(byte[] bytes) {
                                     //From https://stackoverflow.com/questions/7359173/create-bitmap-from-bytearray-in-android
-                                    //TODO Cite properly
                                     BitmapFactory.Options options = new BitmapFactory.Options();
                                     options.inMutable = true;
                                     Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);

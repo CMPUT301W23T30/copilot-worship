@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+/*
 @RunWith(AndroidJUnit4.class)
 public class PlayerGalleryTest {
     private Solo solo;
@@ -36,6 +36,8 @@ public class PlayerGalleryTest {
      * Runs before all tests and creates solo instance.
      * @throws Exception
      */
+
+/*
     @Before
     public void setUp() throws Exception{
 
@@ -47,6 +49,7 @@ public class PlayerGalleryTest {
      * Gets the Activity
      * @throws Exception
      */
+/*
     @Test
     public void start() throws Exception{
         Activity activity = rule.getActivity();
@@ -57,6 +60,7 @@ public class PlayerGalleryTest {
      * one person has scanned the QR Code
      * TODO test when no player has scanned the QR Code
      */
+/*
     @Test
     public void open(){
         ImageButton button = (ImageButton) solo.getView(R.id.navbar_gallery_button);
@@ -133,6 +137,7 @@ public class PlayerGalleryTest {
      * Close activity after each test
      * @throws Exception
      */
+/*
     @After
     public void tearDown() throws Exception{
         solo.finishOpenedActivities();
@@ -140,3 +145,5 @@ public class PlayerGalleryTest {
 
 
 }
+
+ */

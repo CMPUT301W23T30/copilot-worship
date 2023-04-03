@@ -24,7 +24,6 @@ import java.util.ArrayList;
  *  make it look good
  *
  */
-//TODO have this display more than just the player name
 public class PlayerGalleryAdapter extends ArrayAdapter<Player> {
     /**
      * Constructor for the adapter

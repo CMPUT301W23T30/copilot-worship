@@ -42,7 +42,7 @@ public class Player implements Parcelable {
         this.username = "qwertyuiopasdfghjklzxcvbnm";//Invalid username
         this.email = "Default email";
         this.number = 0;
-        this.qrCodes = null;
+        this.qrCodes = new ArrayList<>();
     }
     /**
      * Test constructor for player class
@@ -50,7 +50,7 @@ public class Player implements Parcelable {
      */
     public Player(String username){
         this.username = username;
-        this.email = "Default email";
+        this.email = "";
         this.number = 0;
         this.qrCodes = new ArrayList<>();
         this.id = username;
@@ -110,7 +110,7 @@ public class Player implements Parcelable {
     public void addQrCode(QRCode qrcode){this.qrCodes.add(qrcode);}
 
     /**
-     * TODO Write tests for this
+     *
      * @return total score of player
      */
     public int getTotalScore() {

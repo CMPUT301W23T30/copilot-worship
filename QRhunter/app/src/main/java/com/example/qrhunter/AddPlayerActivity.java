@@ -33,6 +33,7 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.UploadTask;
 
 /**
  * This class is used to add a new player to the database.
@@ -56,6 +57,33 @@ public class AddPlayerActivity extends AppCompatActivity {
 
     boolean picAdded = false;
 
+    /**
+     * Saves and returns to the main screen
+     * @param newUser Object of the new User to be added
+     * @param username Username of the new player
+     * @param db Instance of Database Class
+     */
+    public void saveAndReturn(Player newUser, String username, Database db){
+        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
+        String id = settings.getString("id", "no-id");
+        newUser.setId(id);
+        db.changeInfo(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                SharedPreferences.Editor editor = settings.edit();
+                editor.remove("Username");
+                editor.putString("Username", username);
+                editor.commit();
+                SharedPreferences settings2 = getSharedPreferences("LocalLeaderboard", 0);
+                SharedPreferences.Editor editor1 = settings2.edit();
+                editor1.putBoolean("playersSaved", false); //reload leaderboard next time
+                editor1.commit();
+
+                Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +99,7 @@ public class AddPlayerActivity extends AppCompatActivity {
         TextView errorText = findViewById(R.id.errorText);
 
         Bundle bundle = getIntent().getExtras();
+        //Set player info to the passed information
         if (bundle != null) {
             passedUserName = bundle.getString("username");
             passedEmail = bundle.getString("email");
@@ -100,10 +129,6 @@ public class AddPlayerActivity extends AppCompatActivity {
         });
 
         submitButton.setOnClickListener(v -> {
-            //To update the player info, we need to delete
-            // all the documents and re add it
-            // To do that we have to reconstruct the player object for deletion and addition
-            //TODO Change player username in pics as well
             Database db = new Database();
 
 
@@ -118,41 +143,38 @@ public class AddPlayerActivity extends AppCompatActivity {
             Player newUser = new Player(username,email, Integer.parseInt(number), new ArrayList<>());
 
             //making Sure it is unique
-            db.getPlayer(username).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
+           db.getPlayerFromUsername(username).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+               @Override
+               public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                   if(!queryDocumentSnapshots.isEmpty() && !username.equals(passedUserName))
+                   {
+                       //Username is not unique, so it is invalid
+                       errorText.setText("Username is taken dummmy");
+                       //Check to make sure username is not in id format
+                   } else if (username.contains("Player-")) {
+                       String end = username.substring(6);
+                       try{
+                           Integer.parseInt(end);
+                           errorText.setText("Player- followed by a number is not a valid username");
+                       } catch (NumberFormatException e){
+                           if(picAdded){
+                               savePicture(username, newUser);
+                           }
+                           else{
+                               saveAndReturn(newUser, username, db);
+                           }
+                       }
 
-                    if(documentSnapshot.exists() && !username.equals(passedUserName))
-                    {
-                        //Username is not unique, so it is invalid
-
-                        errorText.setText("Username is taken dummmy");
-                    }
-                    else{
-                        System.out.println("THis tan???");
-                        if(picAdded){savePicture(username);}
-
-                        SharedPreferences settings = getSharedPreferences("UserInfo", 0);
-                        String id = settings.getString("id", "no-id");
-                        newUser.setId(id);
-                        System.out.println(newUser.getId());
-                        db.changeInfo(newUser);
-                        SharedPreferences.Editor editor = settings.edit();
-                        editor.remove("Username");
-                        editor.putString("Username", username);
-                        editor.commit();
-                        SharedPreferences settings2 = getSharedPreferences("LocalLeaderboard", 0);
-                        SharedPreferences.Editor editor1 = settings2.edit();
-                        editor1.putBoolean("playersSaved", false); //reload leaderboard next time
-                        editor1.commit();
-
-
-                        Intent intent = new Intent(AddPlayerActivity.this, MainActivity.class);
-                        startActivity(intent);
-
-                    }
-                }
-            });
+                   } else{
+                       if(picAdded){
+                           savePicture(username, newUser);
+                       }
+                       else{
+                           saveAndReturn(newUser, username, db);
+                       }
+                   }
+               }
+           });
 
         });
         // Set the action bar to show the Up button
@@ -229,7 +251,13 @@ public class AddPlayerActivity extends AppCompatActivity {
                 }
             });
 
-    public void savePicture(String username){
+    /**
+     * Saves the picture to the player profile
+     * Both arguments should have the new player information
+     * @param username username of the player
+     * @param newUser Plyer object of the player
+     */
+    public void savePicture(String username, Player newUser){
 
         SharedPreferences settings = getSharedPreferences("profilePicture", 0);
         SharedPreferences.Editor editor = settings.edit();
@@ -242,7 +270,12 @@ public class AddPlayerActivity extends AppCompatActivity {
         Database db = new Database();
         SharedPreferences setting = getSharedPreferences("UserInfo", 0);
         String id = setting.getString("id", "no-id");
-        db.storeProfilePicture(id, bitmap);
+        db.storeProfilePicture(id, bitmap).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                saveAndReturn(newUser, username, db);
+            }
+        });
 
     }
 

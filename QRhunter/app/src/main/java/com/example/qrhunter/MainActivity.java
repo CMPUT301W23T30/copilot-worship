@@ -159,8 +159,6 @@ public class MainActivity extends AppCompatActivity {
      * - If this is just displaying a user (that is a username was sent through a bundle
      * then just display the user)
      *
-     * TODO have this return whether the user is the current user or not so we can re use this for
-     * other things apart from the main page
      *
      * @param bundle bundle of data that will include a username if is sent through another activity
      * @param db Database instance to query from
@@ -173,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
                                squishyQRTextView) {
         //https://stackoverflow.com/questions/10209814/saving-user-information-in-app-settings
         //Roughly following
-        //TODO properly cite
         if (bundle != null) {
             username = bundle.getString("username");
             userText.setText(username);
@@ -201,11 +198,13 @@ public class MainActivity extends AppCompatActivity {
                                             + 1);
                                     username = "Player-" + count;
                                     editor.putString("Username", username);
-                                    editor.putString("id", String.valueOf(count));
+                                    editor.putString("id", username);
                                     System.out.println(username + "ID PUTTED");
                                     editor.apply();
                                 } else {
-                                    //TODO add an error message here
+                                    new AlertDialog.Builder(MainActivity.this)
+                                            .setMessage("Could not register as a new user\nPlease restart the app and check wifi connection")
+                                                    .show();
                                     Log.d(TAG, "Failed to get player count for new player");
                                     username = "Player-?";
                                 }
@@ -228,6 +227,17 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    /**
+     * Sets the information of the player in the text views
+     * @param db
+     * @param profileCircle
+     * @param totalScoreTextView
+     * @param userEmailTextView
+     * @param userPhoneTextView
+     * @param beefyQRTextView
+     * @param squishyQRTextView
+     *
+     */
     public void setInfo(Database db, ImageView profileCircle, TextView totalScoreTextView, TextView userEmailTextView, TextView userPhoneTextView, TextView beefyQRTextView, TextView squishyQRTextView){
         db.getPlayerInfo(username, new PlayerInfoListener() {
             @Override
@@ -578,9 +588,11 @@ public class MainActivity extends AppCompatActivity {
                                             Database db = new Database();
                                             SharedPreferences settings = getSharedPreferences("UserInfo", 0);
                                             String id = settings.getString("id", "no-id");
+                                            System.out.println(id);
                                             db.getPlayer(id).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                                 @Override
                                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                    System.out.println(documentSnapshot.get("totalScore"));
                                                     AddQR(one, documentSnapshot.get("totalScore").toString());
                                                     askAndTakePhoto(one);
                                                 }
@@ -682,7 +694,9 @@ public class MainActivity extends AppCompatActivity {
      */
     public void AddQR(QRCode newQR, String totalScore){
         Database db = new Database();
-        db.getQRCountFromPlayer(username, newQR.hash).addOnSuccessListener(new OnSuccessListener<AggregateQuerySnapshot>() {
+        SharedPreferences setting = getSharedPreferences("UserInfo", 0);
+        String id = setting.getString("id", "no-id");
+        db.getQRCountFromPlayer(id, newQR.hash).addOnSuccessListener(new OnSuccessListener<AggregateQuerySnapshot>() {
             @Override
             public void onSuccess(AggregateQuerySnapshot aggregateQuerySnapshot) {
                 //If player does not already have qr

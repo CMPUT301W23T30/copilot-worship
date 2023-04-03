@@ -53,8 +53,6 @@ public class MainActivityTest {
     /**
      * Checks the user story that the phone authenticates the user
      *
-     * TODO write a better test to show that the username is unique for new players
-     *
      * @throws Exception
      */
     @Test

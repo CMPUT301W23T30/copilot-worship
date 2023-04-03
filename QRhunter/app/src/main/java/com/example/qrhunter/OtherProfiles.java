@@ -29,6 +29,10 @@ public class OtherProfiles extends AppCompatActivity {
     private String currentUsername;
     ArrayList<QRCodeComment> qrCodeComments = new ArrayList<>();
 
+    /**
+     * Sometimes the player can click on a null player from the leaderboard
+     * This method handles that case
+     */
     public void handleNullPlayer(){
         new AlertDialog.Builder(OtherProfiles.this)
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -48,7 +52,7 @@ public class OtherProfiles extends AppCompatActivity {
                         startActivity(intent);
                     }
                 })
-                .setMessage("Player not found, your leaderboard might not be up to date, do you want to refresh it?")
+                .setMessage("Player not found \nYour leaderboard might not be up to date \nDo you want to refresh it?")
                 .show();
     }
     @Override
@@ -87,7 +91,6 @@ public class OtherProfiles extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(byte[] bytes) {
                                     //From https://stackoverflow.com/questions/7359173/create-bitmap-from-bytearray-in-android
-                                    //TODO Cite properly
                                     ImageView profileCircle = findViewById(R.id.other_profile_icon);
                                     BitmapFactory.Options options = new BitmapFactory.Options();
                                     options.inMutable = true;

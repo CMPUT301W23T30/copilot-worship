@@ -51,7 +51,10 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
     private SharedPreferences settings;
     private SharedPreferences.Editor editor ;
 
-
+    /**
+     * Stores leaderboard in phoen
+     * @param list of document snapshots of players
+     */
     public void storeLeaderboard(List<DocumentSnapshot> list){
         Set<String> LeaderBoardSet = new HashSet<>();
         //Store locally
@@ -76,6 +79,10 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
         editor.commit();
     }
 
+    /**
+     * Gets the local leaderboard
+     * @return returns the ordered list of users
+     */
     public List<LeaderboardModel> getLeaderboard(){
         Set<String> leaderBoardSet = new HashSet<>();
         leaderBoardSet = settings.getStringSet("localLeaderboard", leaderBoardSet);
@@ -94,6 +101,10 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
         return userList;
     }
 
+    /**
+     * Displays the leaderboard in the db
+     * @param list list of document snapshots to be displayed
+     */
     public void displayLeaderboardQuery(List<DocumentSnapshot> list){
         // extract the top 3
         DocumentSnapshot d1 = list.get(0);
@@ -124,6 +135,10 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
         recyclerView.setAdapter(adapter);
     }
 
+    /**
+     * display leaderboard stored locally
+     * @param userList list of leaderboard models stored locally
+     */
     public void displayLeaderboardSaved(List<LeaderboardModel> userList){
         firstUsernameStr = userList.get(0).getUsername();
         firstScore.setText(userList.get(0).getTotalScore().toString());
