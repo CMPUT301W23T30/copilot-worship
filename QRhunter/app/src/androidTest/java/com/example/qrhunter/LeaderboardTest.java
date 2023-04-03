@@ -43,4 +43,13 @@ public class LeaderboardTest {
     public void start() throws Exception {
         Activity activity = rule.getActivity();
     }
+
+    /**
+     * test enter activity through navbar
+     */
+    @Test
+    public void intentButtonTest() throws Exception {
+        solo.clickOnView(solo.getView(R.id.navbar_ranking_button));
+        solo.assertCurrentActivity("Wrong Activity", LeaderboardActivity.class);
+    }
 }
