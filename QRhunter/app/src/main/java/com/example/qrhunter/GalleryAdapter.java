@@ -27,6 +27,10 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 
+/**
+ * Gallery Adapter
+ * Adapter for the Gallery RecyclerView
+ */
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder>{
     private ArrayList<QRCodeComment> qrCodeComments;
     private String username;
