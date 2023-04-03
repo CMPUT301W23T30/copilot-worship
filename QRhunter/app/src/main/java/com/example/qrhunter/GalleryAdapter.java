@@ -99,10 +99,10 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
         //TODO set QRCode Image
         name.setText(qrCode.getName());
-        if (qrCode.getLocation().getLongitude() != 0){
-            longitude.setText(df.format(qrCode.getLocation().getLongitude()));
-            latitude.setText(df.format(qrCode.getLocation().getLatitude()));
-        }
+//        if (qrCode.getLocation().getLongitude() != 0){
+//            longitude.setText(df.format(qrCode.getLocation().getLongitude()));
+//            latitude.setText(df.format(qrCode.getLocation().getLatitude()));
+//        }
         //DELETE LATER
         if(qrCode.getName().length() > 16){
             name.setText(qrCode.getName().substring(0, 13) + "...");
