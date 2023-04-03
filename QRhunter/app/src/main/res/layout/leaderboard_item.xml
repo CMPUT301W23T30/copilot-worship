@@ -27,7 +27,7 @@
         </TextView>
 
         <TextView
-                android:layout_width="250dp"
+                android:layout_width="225dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/profile_name"
                 android:text="default name"
