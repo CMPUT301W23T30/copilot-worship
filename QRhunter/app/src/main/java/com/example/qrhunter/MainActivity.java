@@ -211,7 +211,6 @@ public class MainActivity extends AppCompatActivity {
                                 userText.setText(username);
                                 db.addPlayer(new Player(username))
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
-
                                             @Override
                                             public void onSuccess(Void unused) {
                                                 setInfo(db, profileCircle, totalScoreTextView, userEmailTextView, userPhoneTextView, beefyQRTextView,
@@ -289,8 +288,6 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-
-
         ImageView profileCircle = (ImageView) findViewById(R.id.profile_icon);
         TextView usernameText = findViewById(R.id.user_page_user_name);
         TextView smallerTextView = findViewById(R.id.user_page_total_score);
@@ -325,10 +322,6 @@ public class MainActivity extends AppCompatActivity {
         //db.populateScore(20);// Run only after populate db
         getUsername(bundle, db, usernameText, profileCircle, totalScoreTextView,
                 userEmailTextView, userPhoneTextView, beefyQRTextView, squishyQRTextView);
-
-        // Player Information
-        //TODO CHANGE BACK TO USERNAME
-
 
         // NAVBAR Buttons
         mapButton = findViewById(R.id.navbar_map_button);

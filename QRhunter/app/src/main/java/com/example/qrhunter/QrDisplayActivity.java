@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
  *  Currently Displays very minimal information about the QR Code
  */
 public class QrDisplayActivity extends AppCompatActivity {
+    String armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName;
     ImageButton seeOthersButton;
     QRCode qrCode;
     String qrHeightStat;
@@ -41,19 +43,18 @@ public class QrDisplayActivity extends AppCompatActivity {
         String currentPlayer = bundle.getString("currentUsername");
 
         TextView qrName =  findViewById(R.id.qr_name);
+        ImageView qrImage = findViewById(R.id.qr_image);
         TextView qrPower = findViewById(R.id.qr_power);
         TextView qrHeight = findViewById(R.id.qr_height);
         TextView qrWeight = findViewById(R.id.qr_weight);
         TextView qrType = findViewById(R.id.qr_type);
 
-        setQRStats(qrCode);
+        qrName.setText(qrCode.getName());
 
-        qrName.setText(String.format("%." + 10 + "s",qrCode.getName()));
         qrPower.setText(String.valueOf(qrCode.getScore()));
         qrHeight.setText(qrHeightStat);
         qrWeight.setText(qrWeightStat);
         qrType.setText(qrTypeStat);
-
 
         seeOthersButton = findViewById(R.id.other_players);
         seeOthersButton.setVisibility(View.GONE);
@@ -115,10 +116,12 @@ public class QrDisplayActivity extends AppCompatActivity {
      * @param qrCode The qrcode whose states we want to know
      */
     public void setQRStats(QRCode qrCode){
-        String rawHeight = df.format(qrCode.getLocation().getLongitude()).replace(".", "");
+        Double height = Math.abs(qrCode.getLocation().getLongitude());
+        String rawHeight = df.format(height);
         qrHeightStat = "" + rawHeight.charAt(0) + "." + rawHeight.charAt(1) + rawHeight.charAt(2) + " cm";
 
-        String rawWeight = df.format(qrCode.getLocation().getLatitude()).replace(".", "");
+        Double weight = Math.abs(qrCode.getLocation().getLatitude());
+        String rawWeight = df.format(weight);
         qrWeightStat = "" + rawWeight.charAt(0) + rawWeight.charAt(1) + "." + rawWeight.charAt(2) + rawWeight.charAt(3) + "G";
 
         Integer rawType = qrCode.getScore();

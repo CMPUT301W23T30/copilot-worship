@@ -149,6 +149,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         editButton.setVisibility(View.GONE);
         saveButton.setVisibility(View.GONE);
         editComment.setVisibility(View.GONE);
+        photo.setVisibility(View.GONE);
 
         //ShowMore sets Extra Information to Visible
         showMore.setOnClickListener(new View.OnClickListener() {
@@ -163,6 +164,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                 editButton.setVisibility(View.VISIBLE);
                 saveButton.setVisibility(View.VISIBLE);
                 editComment.setVisibility(View.VISIBLE);
+                photo.setVisibility(View.VISIBLE);
             }
         });
 
@@ -223,6 +225,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                 editButton.setVisibility(View.GONE);
                 saveButton.setVisibility(View.GONE);
                 editComment.setVisibility(View.GONE);
+                photo.setVisibility(View.GONE);
 
                 showMore.setVisibility(View.VISIBLE);
             }

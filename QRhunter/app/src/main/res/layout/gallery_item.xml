@@ -187,12 +187,13 @@
         android:paddingVertical="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" >
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/show_more_button">
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/black"/>
+            android:background="@color/black" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
