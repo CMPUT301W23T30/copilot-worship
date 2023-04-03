@@ -1,5 +1,7 @@
 package com.example.qrhunter;
 
+import static org.junit.Assert.assertEquals;
+
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
@@ -7,6 +9,7 @@ import com.robotium.solo.Solo;
 
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.Test;
 
 public class HasherAndScoreTest {
     private Solo solo;
@@ -26,4 +29,24 @@ public class HasherAndScoreTest {
      * Gets the Activity
      * @throws Exception
      */
+
+    @Test
+    public void testHasher() {
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        final GenerateQReatureAttributes generateQReatureAttributes = new GenerateQReatureAttributes(solo.getCurrentActivity());
+        String QrToHash = "https://twitter.com/yegvalleyLRT";
+        String hashed = generateQReatureAttributes.hasher(QrToHash);
+        assertEquals("7e33059f42adee31abd5ec2da8d4ccea35283aa01a47976af97f5ab5672fa412", hashed);
+
+    }
+
+    @Test
+    public void testScore() {
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        final GenerateQReatureAttributes generateQReatureAttributes = new GenerateQReatureAttributes(solo.getCurrentActivity());
+        String QrToHash = "https://twitter.com/yegvalleyLRT";
+        String hashed = generateQReatureAttributes.hasher(QrToHash);
+        int score = generateQReatureAttributes.scoreCalculator(hashed);
+        assertEquals(39, score);
+    }
 }
