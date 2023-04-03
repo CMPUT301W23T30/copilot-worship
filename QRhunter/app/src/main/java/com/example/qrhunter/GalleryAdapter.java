@@ -5,11 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,11 +50,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         public ViewHolder(View itemView){
             super(itemView);
 
-            this.image = (ImageView) itemView.findViewById(R.id.QRmon_image);
-            this.name = (TextView) itemView.findViewById(R.id.QRmon_name);
-            this.longitude = (TextView) itemView.findViewById(R.id.QRmon_long);
-            this.latitude = (TextView) itemView.findViewById(R.id.QRmon_lat);
-            this.score = (TextView) itemView.findViewById(R.id.QRmon_score);
+            this.image = (ImageView) itemView.findViewById(R.id.QReature_image);
+            this.name = (TextView) itemView.findViewById(R.id.QReature_name);
+            this.longitude = (TextView) itemView.findViewById(R.id.QReature_long);
+            this.latitude = (TextView) itemView.findViewById(R.id.QReature_lat);
+            this.score = (TextView) itemView.findViewById(R.id.QReature_score);
 
             this.showMore = (ImageButton) itemView.findViewById(R.id.show_more_button);
             this.showLess = (ImageButton) itemView.findViewById(R.id.show_less_button);
@@ -66,9 +62,9 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             this.commentCard = (CardView) itemView.findViewById(R.id.cardView);
             this.editButton = (ImageButton) itemView.findViewById(R.id.edit_comment);
             this.saveButton = (ImageButton) itemView.findViewById(R.id.save_comment);
-            this.comment = (TextView) itemView.findViewById(R.id.QRmon_comment);
-            this.editComment = (EditText) itemView.findViewById(R.id.QRmon_edit_comment);
-            this.photo = (ImageView) itemView.findViewById(R.id.QRmon_photo);
+            this.comment = (TextView) itemView.findViewById(R.id.QReature_comment);
+            this.editComment = (EditText) itemView.findViewById(R.id.QReature_edit_comment);
+            this.photo = (ImageView) itemView.findViewById(R.id.QReature_photo);
 
         }
     }
@@ -256,6 +252,13 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                 intent.putExtras(bundle);
                 v.getContext().startActivity(intent);
                 return true;
+            }
+        });
+
+        name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "Press and hold for full name and more information!!!!", Toast.LENGTH_SHORT).show();
             }
         });
 

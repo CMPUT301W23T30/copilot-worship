@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -11,9 +12,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="46dp"
         android:backgroundTint="@color/white"
-        android:text="QR Gallery"
+        android:text="QReature Gallery"
         android:textAlignment="center"
-        
+
         android:textSize="34sp" />
 
     <LinearLayout
@@ -43,6 +44,17 @@
                 app:layout_constraintBottom_toBottomOf="@+id/gallery_sentence"
                 app:layout_constraintStart_toEndOf="@+id/gallery_sentence"
                 app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/swipeDeleteTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(Swipe to Delete!)"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/gallery_sentence"
+                app:layout_constraintTop_toBottomOf="@+id/gallery_sentence" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
