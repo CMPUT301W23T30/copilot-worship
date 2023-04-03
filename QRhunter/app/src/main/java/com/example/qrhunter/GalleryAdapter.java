@@ -98,7 +98,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         TextView score = holder.score;
 
         //TODO set QRCode Image
+
         name.setText(qrCode.getName());
+        //Concactenation
+        if(qrCode.getName().length() > 16){
+            name.setText(qrCode.getName().substring(0, 13) + "...");
+        }
         longitude.setText(df.format(qrCode.getLocation().getLongitude()));
         latitude.setText(df.format(qrCode.getLocation().getLatitude()));
         score.setText(String.format("%d", qrCode.getScore()));
