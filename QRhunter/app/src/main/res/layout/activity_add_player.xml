@@ -8,21 +8,20 @@
 
     <EditText
         android:id="@+id/usernameEditText"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="48dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:minHeight="48dp"
         android:text="default"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_player_profile_pic" />
 
     <EditText
         android:id="@+id/emailEditText"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textEmailAddress"
@@ -30,14 +29,14 @@
         android:text="default@default.com"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintHorizontal_bias="0.489"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/usernameEditText"
-        app:layout_constraintVertical_bias="0.114" />
+        app:layout_constraintVertical_bias="0.055" />
 
     <EditText
         android:id="@+id/numberEditText"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="number"
@@ -45,10 +44,10 @@
         android:text="0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.489"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailEditText"
-        app:layout_constraintVertical_bias="0.164" />
+        app:layout_constraintVertical_bias="0.067" />
 
     <Button
         android:id="@+id/submitButton"
@@ -57,9 +56,21 @@
         android:text="Submit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/randomize_player_char_button"
-        app:layout_constraintVertical_bias="0.04000002" />
+        app:layout_constraintVertical_bias="0.047" />
+
+    <Button
+        android:id="@+id/randomize_player_char_button"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Random QReature"
+        app:layout_constraintEnd_toEndOf="@+id/submitButton"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/submitButton"
+        app:layout_constraintTop_toBottomOf="@+id/select_profile_pic_button" />
 
     <TextView
         android:id="@+id/usernameLabel"
@@ -68,7 +79,7 @@
         android:text="Username"
         app:layout_constraintBottom_toTopOf="@+id/usernameEditText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.01"
         app:layout_constraintStart_toStartOf="@+id/usernameEditText"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
@@ -80,7 +91,7 @@
         android:text="Email"
         app:layout_constraintBottom_toTopOf="@+id/emailEditText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.01"
         app:layout_constraintStart_toStartOf="@+id/emailEditText"
         app:layout_constraintTop_toBottomOf="@+id/usernameEditText"
         app:layout_constraintVertical_bias="1.0" />
@@ -92,7 +103,7 @@
         android:text="Phone Number"
         app:layout_constraintBottom_toTopOf="@+id/numberEditText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.01"
         app:layout_constraintStart_toStartOf="@+id/numberEditText"
         app:layout_constraintTop_toBottomOf="@+id/emailEditText"
         app:layout_constraintVertical_bias="1.0" />
@@ -112,31 +123,21 @@
 
     <Button
         android:id="@+id/select_profile_pic_button"
-        android:layout_width="wrap_content"
+        android:layout_width="220dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:text="Select"
-        app:layout_constraintStart_toStartOf="@+id/submitButton"
-        app:layout_constraintTop_toBottomOf="@+id/numberEditText" />
-
-    <Button
-        android:id="@+id/randomize_player_char_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:text="Randomize"
-        app:layout_constraintEnd_toEndOf="@+id/submitButton"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/select_profile_pic_button"
+        android:layout_marginTop="24dp"
+        android:text="Select Image"
+        app:layout_constraintEnd_toEndOf="@+id/randomize_player_char_button"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/randomize_player_char_button"
         app:layout_constraintTop_toBottomOf="@+id/numberEditText" />
 
     <ImageView
         android:id="@+id/edit_player_profile_pic"
-        android:layout_width="149dp"
-        android:layout_height="161dp"
-        android:layout_marginTop="52dp"
+        android:layout_width="127dp"
+        android:layout_height="135dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/_icon__profile_circle_" />
