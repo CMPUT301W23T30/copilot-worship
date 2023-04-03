@@ -131,7 +131,6 @@ public class AddPlayerActivity extends AppCompatActivity {
         submitButton.setOnClickListener(v -> {
             Database db = new Database();
 
-
             String username = usernameEditText.getText().toString();
             if (username.length() > 20 || username.length() <= 0 ) {
                 errorText.setText("Username must be between 1-20 Characters");
@@ -150,6 +149,11 @@ public class AddPlayerActivity extends AppCompatActivity {
 
                 return;
             }
+//            else if (!number.chars().allMatch(Character::isDigit)) {
+//                errorText.setText("Phone number must be a number!");
+//
+//                return;
+//            }
             Player newUser = new Player(username,email, Integer.parseInt(number), new ArrayList<>());
 
             //making Sure it is unique
@@ -159,7 +163,7 @@ public class AddPlayerActivity extends AppCompatActivity {
                    if(!queryDocumentSnapshots.isEmpty() && !username.equals(passedUserName))
                    {
                        //Username is not unique, so it is invalid
-                       errorText.setText("Username is taken dummmy");
+                       errorText.setText("Username is taken dummy");
                        //Check to make sure username is not in id format
                    } else if (username.contains("Player-")) {
                        String end = username.substring(6);

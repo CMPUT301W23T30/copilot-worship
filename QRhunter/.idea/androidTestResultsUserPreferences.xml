@@ -17,6 +17,20 @@
             </AndroidTestResultsTableState>
           </value>
         </entry>
+        <entry key="-1936721791">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="Tests" value="360" />
+                  <entry key="adb-R58M317CZBW-m6L7Ao._adb-tls-connect._tcp" value="120" />
+                  <entry key="samsung&#10; SM-G970W" value="120" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
         <entry key="144875415">
           <value>
             <AndroidTestResultsTableState>
@@ -40,7 +54,24 @@
                   <entry key="Pixel_2_API_33" value="120" />
                   <entry key="RFCR604YP3Y" value="120" />
                   <entry key="Tests" value="360" />
+                  <entry key="adb-R58M317CZBW-m6L7Ao._adb-tls-connect._tcp" value="120" />
                   <entry key="samsung&#10; SM-G781W" value="120" />
+                  <entry key="samsung&#10; SM-G970W" value="120" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
+        <entry key="1753304418">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="Pixel_2_API_33" value="120" />
+                  <entry key="Tests" value="360" />
+                  <entry key="adb-R58M317CZBW-m6L7Ao._adb-tls-connect._tcp" value="120" />
+                  <entry key="samsung&#10; SM-G970W" value="120" />
                 </map>
               </option>
             </AndroidTestResultsTableState>
