@@ -30,12 +30,14 @@
             android:id="@+id/qr_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="46dp"
             android:backgroundTint="@color/white"
             android:text="QRNAME"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
             android:id="@+id/qrspace"
@@ -174,33 +176,27 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/gallery_button"
+        <TextView
+            android:id="@+id/button_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="5dp"
+            android:text="OTHERS WITH THIS QR"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/qr_stats">
+            app:layout_constraintTop_toBottomOf="@+id/qr_stats"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:layout_marginBottom="5dp"
-                android:text="OTHERS WITH THIS QR" />
-
-            <ImageButton
-                android:id="@+id/other_players"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:backgroundTint="@color/transparent"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/navbar_search" />
-
-        </LinearLayout>
-
+        <ImageButton
+            android:id="@+id/other_players"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:backgroundTint="@color/transparent"
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_title"
+            app:srcCompat="@drawable/navbar_search" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

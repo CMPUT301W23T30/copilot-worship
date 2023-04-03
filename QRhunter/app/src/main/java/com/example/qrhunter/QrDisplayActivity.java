@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
  *  Currently Displays very minimal information about the QR Code
  */
 public class QrDisplayActivity extends AppCompatActivity {
+    String armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName;
     ImageButton seeOthersButton;
     QRCode qrCode;
     String qrHeightStat;
@@ -41,19 +43,18 @@ public class QrDisplayActivity extends AppCompatActivity {
         String currentPlayer = bundle.getString("currentUsername");
 
         TextView qrName =  findViewById(R.id.qr_name);
+        ImageView qrImage = findViewById(R.id.qr_image);
         TextView qrPower = findViewById(R.id.qr_power);
         TextView qrHeight = findViewById(R.id.qr_height);
         TextView qrWeight = findViewById(R.id.qr_weight);
         TextView qrType = findViewById(R.id.qr_type);
 
-        setQRStats(qrCode);
-
-        qrName.setText(String.format("%." + 10 + "s",qrCode.getName()));
+        qrName.setText(qrCode.getName());
+        
         qrPower.setText(String.valueOf(qrCode.getScore()));
         qrHeight.setText(qrHeightStat);
         qrWeight.setText(qrWeightStat);
         qrType.setText(qrTypeStat);
-
 
         seeOthersButton = findViewById(R.id.other_players);
         seeOthersButton.setVisibility(View.GONE);
