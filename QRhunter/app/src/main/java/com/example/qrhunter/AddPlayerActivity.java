@@ -49,7 +49,7 @@ import java.util.HashMap;
 /**
  * This class is used to edit player information
  * It is called from the MainActivity class.
- * @author Maarij
+ * @author Maarij and Sean Mandu
  */
 public class AddPlayerActivity extends AppCompatActivity {
     String passedUserName, passedEmail, passedPhone;
@@ -84,6 +84,12 @@ public class AddPlayerActivity extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     * This method is called when the activity is created.
+     * It sets up the buttons and text fields.
+     * @param savedInstanceState The saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -194,7 +200,12 @@ public class AddPlayerActivity extends AppCompatActivity {
         // Set the action bar to show the Up button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-    // enable back button
+
+    /**
+     * This method operates the back button
+     * @param item The item that was selected (in this case the back button)
+     * @return boolean of whether the back button was selected
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -207,7 +218,7 @@ public class AddPlayerActivity extends AppCompatActivity {
     }
 
     /**
-    This method creates and operates the back button
+    This method creates the back button menu
      */
     public boolean onCreateOptionsMenu(Menu menu) {
         return true;
@@ -280,7 +291,7 @@ public class AddPlayerActivity extends AppCompatActivity {
      * Saves the picture to the player profile
      * Both arguments should have the new player information
      * @param username username of the player
-     * @param newUser Plyer object of the player
+     * @param newUser Player object of the player
      */
     public void savePicture(String username, Player newUser){
 
