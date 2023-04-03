@@ -3,6 +3,8 @@ package com.example.qrhunter;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -55,5 +57,23 @@ public class OtherGallery extends AppCompatActivity {
 
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
+
+        // Set the action bar to show the Up button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+    // enable back button
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return true;
     }
 }
