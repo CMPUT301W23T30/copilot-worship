@@ -1,5 +1,6 @@
 package com.example.qrhunter;
 
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;

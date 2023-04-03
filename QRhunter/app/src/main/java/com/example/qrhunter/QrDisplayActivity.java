@@ -41,6 +41,9 @@ public class QrDisplayActivity extends AppCompatActivity {
 
     private void display(Bundle bundle){
         String currentPlayer = bundle.getString("currentUsername");
+        Log.d("TASK", "INSIDE DISPLAY");
+        Log.d("TASK", "QRCODE: " + qrCode.getName());
+        Log.d("TASK", "QRCODE: " + qrCode.getLocation().getLatitude() + " " + qrCode.getLocation().getLongitude());
 
         TextView qrName =  findViewById(R.id.qr_name);
         ImageView qrImage = findViewById(R.id.qr_image);
@@ -48,20 +51,26 @@ public class QrDisplayActivity extends AppCompatActivity {
         TextView qrHeight = findViewById(R.id.qr_height);
         TextView qrWeight = findViewById(R.id.qr_weight);
         TextView qrType = findViewById(R.id.qr_type);
+        TextView buttonTitle = findViewById(R.id.button_title);
 
         qrName.setText(qrCode.getName());
 
         qrPower.setText(String.valueOf(qrCode.getScore()));
+
+        setQRStats(qrCode);
         qrHeight.setText(qrHeightStat);
         qrWeight.setText(qrWeightStat);
         qrType.setText(qrTypeStat);
 
         seeOthersButton = findViewById(R.id.other_players);
         seeOthersButton.setVisibility(View.GONE);
+        buttonTitle.setVisibility(View.GONE);
 
         //Gallery to see Shared Players is only visible from QRS you own
         if (currentPlayer != null){
             seeOthersButton.setVisibility(View.VISIBLE);
+            buttonTitle.setVisibility(View.VISIBLE);
+
         }
 
         //Find other players that have scanned this QR Code
@@ -118,11 +127,13 @@ public class QrDisplayActivity extends AppCompatActivity {
     public void setQRStats(QRCode qrCode){
         Double height = Math.abs(qrCode.getLocation().getLongitude());
         String rawHeight = df.format(height);
-        qrHeightStat = "" + rawHeight.charAt(0) + "." + rawHeight.charAt(1) + rawHeight.charAt(2) + " cm";
+        String newHeight = rawHeight.replace(".", "");
+        qrHeightStat = "" + newHeight.charAt(0) + "." + newHeight.charAt(1) + newHeight.charAt(2) + " cm";
 
         Double weight = Math.abs(qrCode.getLocation().getLatitude());
         String rawWeight = df.format(weight);
-        qrWeightStat = "" + rawWeight.charAt(0) + rawWeight.charAt(1) + "." + rawWeight.charAt(2) + rawWeight.charAt(3) + "G";
+        String newWeight = rawWeight.replace(".", "");
+        qrWeightStat = "" + newWeight.charAt(0) + newWeight.charAt(1) + "." + newWeight.charAt(2) + newWeight.charAt(3) + "G";
 
         Integer rawType = qrCode.getScore();
         if (rawType <= 15){
