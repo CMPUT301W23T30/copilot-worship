@@ -9,9 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.icu.text.SymbolTable;
 import android.location.Location;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
@@ -38,22 +36,16 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.common.hash.Hashing;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 import org.jetbrains.annotations.Nullable;
-import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Scanner;
 
 
 /**
@@ -68,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_LOCATION = 1;
     //Tag for logging any issues
     final String TAG = "User Profile Page";
+    private final GenerateQReatureAttributes generateQReatureAttributes = new GenerateQReatureAttributes(this);
     Player currentPlayer;
     String username;
     ArrayList<QRCodeComment> qrCodeComments = new ArrayList<>();
@@ -298,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
         TextView userPhoneTextView = findViewById(R.id.user_page_phone);
 
         String testHash = "2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824";
-        String firstSixDigits = getFirstSixDigits(testHash);
+        String firstSixDigits = generateQReatureAttributes.getFirstSixDigits(testHash);
         //CharacterImage testCharacter = characterCreator(firstSixDigits);
         //profileCircle.setImageBitmap(testCharacter.getCharacterImage());
 
@@ -411,74 +404,28 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This method hashes the QR code to SHA256 and returns the hashed hex string
-     * @param unhashedQRCode the unhashed QR code
+     * @param unhashedQRCode the unhashed QR code (String)
      * @return the hashed QR code (String)
      * @author Maarij
      */
     private String hasher(String unhashedQRCode) {
-        final String hashed = Hashing.sha256()
-                .hashString(unhashedQRCode, StandardCharsets.UTF_8)
-                .toString();
-        Log.d("HASHER", "Unhashed: " + unhashedQRCode);
-        Log.d("HASHER", "Hash: " + hashed);
-        return hashed;
+        return generateQReatureAttributes.hasher(unhashedQRCode);
     }
 
     /**
      * This method calculates the score of the QR code based on the number of contiguous repeated numbers or characters
-     * @param hashedQRCode the hashed QR code
+     * @param hashedQRCode the hashed QR code (String)
      * @return the score of the QR code (int)
      * @author Maarij
      */
     private int scoreCalculator(String hashedQRCode) {
         // Find contiguous repeated numbers or characters in hex string
         // Each number or character is equal to number^(n-1) points where n is the number of times it is repeated
-        int score = 0;
-        int n = 0;
-        String prev = "";
-        for (int i = 0; i < hashedQRCode.length(); i++) {
-            if (hashedQRCode.substring(i, i + 1).equals(prev)) {
-                n++;
-            } else {
-                if (n > 1) {
-                    if (prev.equals("0")) {
-                        score += Math.pow(20, n - 1);
-                    } else {
-                        score += Math.pow(Integer.parseInt(prev, 16), n - 1);
-                    }
-                }
-                n = 1;
-                prev = hashedQRCode.substring(i, i + 1);
-            }
-        }
-        Log.d("CALCULATOR", "Hash: " + hashedQRCode);
-        Log.d("CALCULATOR", "Score: " + score);
-        return score;
 
+        return generateQReatureAttributes.scoreCalculator(hashedQRCode);
     }
 
-    public String generateRandomName(String firstSixDigits) {
-
-        final ArrayList<String> adjectivesList = new ArrayList<String>();
-        final ArrayList<String> nounsList = new ArrayList<String>();
-
-        InputStream adjectivesFile = getResources().openRawResource(R.raw.english_adjectives);
-        InputStream nounsFile = getResources().openRawResource(R.raw.nouns_list);
-
-        Scanner adjectivesScanner = new Scanner(adjectivesFile);
-        Scanner nounsScanner = new Scanner(nounsFile);
-
-        while (adjectivesScanner.hasNextLine()) {
-            String word = adjectivesScanner.nextLine();
-            adjectivesList.add(word);
-        }
-        adjectivesScanner.close();
-
-        while (nounsScanner.hasNextLine()) {
-            String word = nounsScanner.nextLine();
-            nounsList.add(word);
-        }
-        nounsScanner.close();
+    public String generateName(String firstSixDigits) {
 
         /*
         Random rand = new Random();
@@ -487,25 +434,14 @@ public class MainActivity extends AppCompatActivity {
         String noun = nounsList.get(rand.nextInt(nounsList.size()));
         */
 
-        int firstFourDigits = Integer.parseInt(firstSixDigits.substring(0, 4));
-        int adjectiveIndex = firstFourDigits - (firstFourDigits / adjectivesList.size()) * adjectivesList.size();
-        String adjective = adjectivesList.get(adjectiveIndex);
-        adjective = adjective.substring(0, 1).toUpperCase() + adjective.substring(1);
-
-        int lastTwoDigits = Integer.parseInt(firstSixDigits.substring(4, 6));
-        int nounIndex = lastTwoDigits - (lastTwoDigits / nounsList.size()) * nounsList.size();
-        String noun = nounsList.get(nounIndex);
-
-        return adjective + " " + noun;
-
+        return generateQReatureAttributes.generateName(firstSixDigits);
     }
 
     private String getFirstSixDigits(String hashedQRCode) {
-        return new BigInteger(hashedQRCode, 16).toString().substring(0, 6);
+        return generateQReatureAttributes.getFirstSixDigits(hashedQRCode);
     }
 
     private CharacterImage characterCreator(String firstSixDigitsString) {
-        String armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName;
 
 //        armsFileName = "arms" + firstSixDigitsString.substring(0, 1);
 //        legsFileName = "legs" + firstSixDigitsString.substring(1, 2);
@@ -513,15 +449,7 @@ public class MainActivity extends AppCompatActivity {
 //        mouthFileName = "mouth" + firstSixDigitsString.substring(3, 4);
 //        hatFileName = "hat" + firstSixDigitsString.substring(4, 5);
 
-        armsFileName = "arms" + (int) (Math.random() * 10);
-        legsFileName = "legs" + (int) (Math.random() * 10);
-        eyesFileName = "eyes" + (int) (Math.random() * 10);
-        mouthFileName = "mouth" + (int) (Math.random() * 10);
-        hatFileName = "hat" + (int) (Math.random() * 10);
-
-        CharacterImage testCharacter = new CharacterImage(this, armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName, firstSixDigitsString);
-
-        return testCharacter;
+        return generateQReatureAttributes.characterCreator(firstSixDigitsString);
     }
 
     public void testThis(){
@@ -543,15 +471,15 @@ public class MainActivity extends AppCompatActivity {
     public ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result ->
     {
         if (result.getContents() != null) {
-            String hashedCode = hasher(result.getContents()); // If this fails alert won't appear, makes it easier to test
-            int score = scoreCalculator(hashedCode);
+            String hashedCode = generateQReatureAttributes.hasher(result.getContents()); // If this fails alert won't appear, makes it easier to test
+            int score = generateQReatureAttributes.scoreCalculator(hashedCode);
 
             Toast.makeText(this, "make object", Toast.LENGTH_SHORT).show();
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Result");
 
-            String testHash = getFirstSixDigits(hashedCode);
-            String name = generateRandomName(testHash);
+            String testHash = generateQReatureAttributes.getFirstSixDigits(hashedCode);
+            String name = generateQReatureAttributes.generateName(testHash);
 
             builder.setMessage("You found a " + name + " worth " + score + " points !" + "\nWould you like to keep it?");
 
@@ -577,7 +505,7 @@ public class MainActivity extends AppCompatActivity {
                                             Log.d("ADDQR", "Hash: " + hashedCode);
                                             Log.d("ADDQR", "Score: " + score);
 
-                                            QRCode one = new QRCode(hashedCode, generateRandomName(getFirstSixDigits(hashedCode)), location, score);
+                                            QRCode one = new QRCode(hashedCode, generateQReatureAttributes.generateName(generateQReatureAttributes.getFirstSixDigits(hashedCode)), location, score);
                                             Database db = new Database();
                                             SharedPreferences settings = getSharedPreferences("UserInfo", 0);
                                             String id = settings.getString("id", "no-id");
@@ -607,7 +535,7 @@ public class MainActivity extends AppCompatActivity {
                                     Log.d("ADDQR", "Hash: " + hashedCode);
                                     Log.d("ADDQR", "Score: " + score);
 
-                                    QRCode one = new QRCode(hashedCode, generateRandomName(getFirstSixDigits(hashedCode)), new Location(""), score);
+                                    QRCode one = new QRCode(hashedCode, generateQReatureAttributes.generateName(generateQReatureAttributes.getFirstSixDigits(hashedCode)), new Location(""), score);
                                     Database db = new Database();
                                     SharedPreferences settings = getSharedPreferences("UserInfo", 0);
                                     String id = settings.getString("id", "no-id");
