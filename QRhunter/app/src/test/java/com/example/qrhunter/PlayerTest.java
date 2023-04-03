@@ -23,7 +23,7 @@ public class PlayerTest {
     @Test
     public void testEmptyTotalScore(){
         Player p = new Player();
-        assertEquals(0, p.getTotalScore() );
+        assertEquals(0, p.getTotalScore());
     }
     /**
      * Test that total Score works for non Empty player
@@ -31,7 +31,8 @@ public class PlayerTest {
     @Test
     public void testTotalScore(){
         Player p = new Player();
-        p.addQrCode(new QRCode("hash", "name", null, 1));
+        QRCode q1 = new QRCode("hash", "name", null, 1);
+        p.addQrCode(q1);
         p.addQrCode(new QRCode("hash", "name", null, 2));
         p.addQrCode(new QRCode("hash", "name", null, 3));
         assertEquals(6, p.getTotalScore());
