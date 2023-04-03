@@ -66,6 +66,12 @@ public class GenerateQReatureAttributes {
 
     /**
      * This method generates the name of the QReature based on the first 6 digits of the hashed QR code
+     *   - The first 3 digits are used to select an adjective from the list of adjectives (english_adjectives.txt)
+     *      - These were taken from https://copylists.com/words/list-of-adjectives/
+     *
+     *   - The last 3 digits are used to select a noun from the list of nouns (nouns_list.txt)
+     *      - These are a mixture of Old English and Yiddish insults,
+     *        as well as some Hitchhiker's Guide to the Galaxy and Discworld characters
      *
      * @param firstSixDigits the first 6 digits of the hashed QR code (String)
      * @return the name of the QReature (String)
