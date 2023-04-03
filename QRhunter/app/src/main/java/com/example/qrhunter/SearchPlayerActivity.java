@@ -63,6 +63,7 @@ public class SearchPlayerActivity extends AppCompatActivity implements SearchPla
                             // storing that data in our array list
                             userList1.add(user);
                         }
+                        // userList1 stores all users and onCreate we need to use userList for onClick
                         userList.addAll(userList1);
                         adapter = new SearchPlayerAdapter(userList, SearchPlayerActivity.this, SearchPlayerActivity.this::OnItemClick);
                         recyclerView.setAdapter(adapter);
