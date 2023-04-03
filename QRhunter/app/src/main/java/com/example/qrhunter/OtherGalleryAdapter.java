@@ -14,6 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+/**
+ * Other Gallery Adapter
+ * Displays the QRCodes owned by a Player using GalleryAdapter
+ * Includes a drop down feature to show additional QR info
+ */
 public class OtherGalleryAdapter extends RecyclerView.Adapter<OtherGalleryAdapter.ViewHolder>{
     private ArrayList<QRCode> qrCodeArrayList;
     private Context context;

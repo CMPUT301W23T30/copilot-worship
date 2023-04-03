@@ -4,6 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+/**
+ * This class is used to display a message when a player is not found
+ *
+ * @author Bohan
+ */
 public class PlayerNotFoundActivity extends AppCompatActivity {
 
     @Override

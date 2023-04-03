@@ -5,6 +5,11 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+/**
+ * This class is used to store the comments of a QR code
+ *
+ * @author Christine
+ */
 public class QRCodeComment implements Parcelable {
     public QRCode qrCode;
     public String comment;
