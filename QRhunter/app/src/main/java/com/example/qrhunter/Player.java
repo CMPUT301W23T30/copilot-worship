@@ -50,7 +50,7 @@ public class Player implements Parcelable {
      */
     public Player(String username){
         this.username = username;
-        this.email = "Default email";
+        this.email = "";
         this.number = 0;
         this.qrCodes = new ArrayList<>();
         this.id = username;
