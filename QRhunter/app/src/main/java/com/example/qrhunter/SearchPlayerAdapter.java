@@ -103,6 +103,7 @@ public class SearchPlayerAdapter extends RecyclerView.Adapter<SearchPlayerAdapte
         /**
          * this override is called when any of the viewholders inside the RecyclerView gets clicked through the
          * listener set in the constructor (itemView.setOnClickListener(this))
+         * @author X
          */
         @Override
         public void onClick(View view) {
@@ -113,6 +114,7 @@ public class SearchPlayerAdapter extends RecyclerView.Adapter<SearchPlayerAdapte
 
     /**
      * interface used to detect and interpret the click, to be implemented inside the activity
+     * @author X
      */
     public interface OnItemClickListener{
         void OnItemClick(int position);

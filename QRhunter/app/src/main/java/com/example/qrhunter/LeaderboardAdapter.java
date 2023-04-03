@@ -65,7 +65,6 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
      * @author X
      */
     class myViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        CircleImageView img;
         TextView username;
         TextView ranking;
         TextView totalScore;
@@ -92,6 +91,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         /**
          * this override is called when any of the viewholders inside the RecyclerView gets clicked through the
          * listener set in the constructor (itemView.setOnClickListener(this))
+         * @author X
          */
         @Override
         public void onClick(View view) {
@@ -101,6 +101,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
 
     /**
      * interface used to detect and interpret the click, to be implemented inside the activity
+     * @author X
      */
     public interface OnItemClickListener{
         void OnItemClick(int position);
