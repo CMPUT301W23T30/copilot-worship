@@ -154,7 +154,7 @@ public class GenerateQReatureAttributes {
         hatFileName = "hat" + firstSixDigitsString.substring(4, 5);
 
 
-        CharacterImage testCharacter = new CharacterImage(null, armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName, firstSixDigitsString);
+        CharacterImage testCharacter = new CharacterImage(context, armsFileName, legsFileName, eyesFileName, mouthFileName, hatFileName, firstSixDigitsString);
 
         return testCharacter;
     }

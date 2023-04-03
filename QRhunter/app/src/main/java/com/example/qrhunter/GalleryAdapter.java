@@ -262,7 +262,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Press and hold for full name and more information!!!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Press and hold for more information!!!!", Toast.LENGTH_SHORT).show();
             }
         });
 
