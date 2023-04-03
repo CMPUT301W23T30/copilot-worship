@@ -58,6 +58,20 @@
             </AndroidTestResultsTableState>
           </value>
         </entry>
+        <entry key="555161733">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="Tests" value="360" />
+                  <entry key="adb-R58M317CZBW-m6L7Ao._adb-tls-connect._tcp" value="120" />
+                  <entry key="samsung&#10; SM-G970W" value="120" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
         <entry key="899739336">
           <value>
             <AndroidTestResultsTableState>

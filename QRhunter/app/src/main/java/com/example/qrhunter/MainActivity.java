@@ -442,13 +442,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private CharacterImage characterCreator(String firstSixDigitsString) {
-
-//        armsFileName = "arms" + firstSixDigitsString.substring(0, 1);
-//        legsFileName = "legs" + firstSixDigitsString.substring(1, 2);
-//        eyesFileName = "eyes" + firstSixDigitsString.substring(2, 3);
-//        mouthFileName = "mouth" + firstSixDigitsString.substring(3, 4);
-//        hatFileName = "hat" + firstSixDigitsString.substring(4, 5);
-
         return generateQReatureAttributes.characterCreator(firstSixDigitsString);
     }
 
