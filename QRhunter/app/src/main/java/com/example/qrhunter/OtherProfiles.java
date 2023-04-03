@@ -31,7 +31,6 @@ import java.util.Map;
 public class OtherProfiles extends AppCompatActivity {
     private Player currentPlayer;
     private String currentUsername;
-    ArrayList<QRCodeComment> qrCodeComments = new ArrayList<>();
 
     /**
      * Sometimes the player can click on a null player from the leaderboard
@@ -111,7 +110,6 @@ public class OtherProfiles extends AppCompatActivity {
                                             public void qrCodeCallback(QRCode qrCode) {
                                                 Log.d("TASK", "." + qrEntry.getKey() +".");
                                                 currentPlayer.addQrCode(qrCode);
-                                                qrCodeComments.add(new QRCodeComment(qrCode, qrEntry.getValue()));
 
                                                 if (currentPlayer.getTotalScore() != 0) {
                                                     totalScore.setText(String.valueOf(currentPlayer.getTotalScore()));
