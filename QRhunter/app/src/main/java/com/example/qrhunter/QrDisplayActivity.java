@@ -50,6 +50,7 @@ public class QrDisplayActivity extends AppCompatActivity {
         TextView qrType = findViewById(R.id.qr_type);
 
         qrName.setText(qrCode.getName());
+        qrImage.setImageBitmap(qrCode.getImage(this));
 
         qrPower.setText(String.valueOf(qrCode.getScore()));
         qrHeight.setText(qrHeightStat);
