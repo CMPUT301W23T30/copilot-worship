@@ -62,9 +62,9 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             this.commentCard = (CardView) itemView.findViewById(R.id.cardView);
             this.editButton = (ImageButton) itemView.findViewById(R.id.edit_comment);
             this.saveButton = (ImageButton) itemView.findViewById(R.id.save_comment);
-            this.comment = (TextView) itemView.findViewById(R.id.QRmon_comment);
-            this.editComment = (EditText) itemView.findViewById(R.id.QRmon_edit_comment);
-            this.photo = (ImageView) itemView.findViewById(R.id.QRmon_photo);
+            this.comment = (TextView) itemView.findViewById(R.id.QReature_comment);
+            this.editComment = (EditText) itemView.findViewById(R.id.QReature_edit_comment);
+            this.photo = (ImageView) itemView.findViewById(R.id.QReature_photo);
 
         }
     }
@@ -252,6 +252,13 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                 intent.putExtras(bundle);
                 v.getContext().startActivity(intent);
                 return true;
+            }
+        });
+
+        name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "Press and hold for full name and more information!!!!", Toast.LENGTH_SHORT).show();
             }
         });
 

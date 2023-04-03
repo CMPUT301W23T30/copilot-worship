@@ -29,7 +29,7 @@
 
 
     <LinearLayout
-        android:id="@+id/QRmon_location"
+        android:id="@+id/QReature_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -63,7 +63,7 @@
         android:layout_marginLeft="10dp"
         android:text=""
         android:textSize="14sp"
-        app:layout_constraintStart_toEndOf="@+id/QRmon_location"
+        app:layout_constraintStart_toEndOf="@+id/QReature_location"
         app:layout_constraintTop_toBottomOf="@+id/QReature_name" />
 
     <LinearLayout

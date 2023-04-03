@@ -29,7 +29,7 @@
 
 
     <LinearLayout
-        android:id="@+id/QRmon_location"
+        android:id="@+id/QReature_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -63,7 +63,7 @@
         android:layout_marginLeft="10dp"
         android:text=""
         android:textSize="14sp"
-        app:layout_constraintStart_toEndOf="@+id/QRmon_location"
+        app:layout_constraintStart_toEndOf="@+id/QReature_location"
         app:layout_constraintTop_toBottomOf="@+id/QReature_name" />
 
     <LinearLayout
@@ -144,7 +144,7 @@
         app:layout_constraintTop_toBottomOf="@+id/QReature_lat">
 
         <TextView
-            android:id="@+id/QRmon_comment"
+            android:id="@+id/QReature_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="5dp"
@@ -156,7 +156,7 @@
             app:layout_constraintTop_toBottomOf="@+id/QReature_lat" />
 
         <EditText
-            android:id="@+id/QRmon_edit_comment"
+            android:id="@+id/QReature_edit_comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="5dp"
@@ -172,7 +172,7 @@
     </androidx.cardview.widget.CardView>
 
     <ImageView
-        android:id="@+id/QRmon_photo"
+        android:id="@+id/QReature_photo"
         android:layout_width="90dp"
         android:layout_height="90dp"
         app:layout_constraintBottom_toTopOf="@+id/gallery_item_divider"
