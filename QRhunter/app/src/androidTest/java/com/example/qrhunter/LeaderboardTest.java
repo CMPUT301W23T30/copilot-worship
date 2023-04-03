@@ -59,6 +59,18 @@ public class LeaderboardTest {
     }
 
     /**
+     * Enter activity and go back, check if returns correctly
+     * @throws Exception
+     */
+    @Test
+    public void intentGoBackTest() throws Exception {
+        solo.clickOnView(solo.getView(R.id.navbar_ranking_button));
+        solo.assertCurrentActivity("Wrong Activity", LeaderboardActivity.class);
+        solo.goBack();
+        solo.assertCurrentActivity("Go back didn't work", MainActivity.class);
+    }
+
+    /**
      * test intent shift on top 1
      * Enter activity and click on top ranker, check if intent shift correctly
      * check if player name has continuity
@@ -96,4 +108,6 @@ public class LeaderboardTest {
         solo.assertCurrentActivity("Wrong Activity", OtherProfiles.class);
         assertTrue(solo.searchText(profileName));
     }
+
+
 }
