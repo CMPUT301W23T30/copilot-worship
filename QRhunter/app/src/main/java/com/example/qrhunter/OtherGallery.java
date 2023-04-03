@@ -44,7 +44,7 @@ public class OtherGallery extends AppCompatActivity {
         galleryName.setText(username + "'s Gallery");
 
         //Find number of QRCode Player has found
-        if (!qrCodesList.equals(null)){
+        if (!qrCodesList.isEmpty()){
             galleryCount.setText(String.valueOf(qrCodesList.size()));
         }
 

@@ -52,8 +52,9 @@ public class Gallery extends AppCompatActivity {
 
         //Find number of QRCode Player has found
         if (!qrCodeComments.isEmpty()){
-            galleryCount.setText(String.valueOf(qrCodeList.size()));
             qrCodeList = player.getQrCodes();
+            galleryCount.setText(String.valueOf(qrCodeList.size()));
+
         }
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.gallery_recycler_view);
@@ -84,14 +85,6 @@ public class Gallery extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    /**
-     * Makes sure Profile is updated to any changes made in Gallery
-     */
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(Gallery.this,MainActivity.class);;
-        startActivity(intent);
-    }
 
     /**
      * Delete QR from specific Player QRCodes Collection
@@ -115,17 +108,31 @@ public class Gallery extends AppCompatActivity {
         deleteDB.removePlayerFromQRCode(settings.getString("id", username),deleteQR.getHash());
     }
 
-    // enable back button
+    /**
+     * Goes back to Homepage when menu back button is pressed
+     * Ensures any changes in Gallery makes it to Profile
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
-                return true;
+                Intent intent = new Intent(Gallery.this,MainActivity.class);;
+                startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+    /**
+     * Goes back to Homepage when phone back button is pressed
+     * Ensures any changes in Gallery makes it to Profile
+     */
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Gallery.this,MainActivity.class);;
+        startActivity(intent);
+    }
+
 
     public boolean onCreateOptionsMenu(Menu menu) {
         return true;
