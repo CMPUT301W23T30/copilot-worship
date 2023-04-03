@@ -259,7 +259,7 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
         firstPlace = findViewById(R.id.first_place);
         secondPlace = findViewById(R.id.second_place);
         thirdPlace = findViewById(R.id.third_place);
-        currentUser = getIntent().getExtras().getString("username");
+        currentUser = getIntent().getExtras().getString("currentUsername");
 
         Boolean saved;
         saved = settings.getBoolean("playersSaved", false);
@@ -288,7 +288,7 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
     public void onClickFirst(View view) {
         Bundle bundle = new Bundle();
         Intent intent = new Intent(LeaderboardActivity.this, OtherProfiles.class);
-        bundle.putString("username", firstUsernameStr);
+        bundle.putString("currentUsername", firstUsernameStr);
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -296,7 +296,7 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
     public void onClickSecond(View view) {
         Bundle bundle = new Bundle();
         Intent intent = new Intent(LeaderboardActivity.this, OtherProfiles.class);
-        bundle.putString("username", secondUsernameStr);
+        bundle.putString("currentUsername", secondUsernameStr);
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -304,7 +304,7 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
     public void onClickThird(View view) {
         Bundle bundle = new Bundle();
         Intent intent = new Intent(LeaderboardActivity.this, OtherProfiles.class);
-        bundle.putString("username", thirdUsernameStr);
+        bundle.putString("currentUsername", thirdUsernameStr);
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -313,7 +313,7 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
     public void OnItemClick(int position) {
         Bundle bundle = new Bundle();
         Intent intent = new Intent(LeaderboardActivity.this, OtherProfiles.class);
-        bundle.putString("username", userList.get(position).getUsername());
+        bundle.putString("currentUsername", userList.get(position).getUsername());
         intent.putExtras(bundle);
         startActivity(intent);
     }

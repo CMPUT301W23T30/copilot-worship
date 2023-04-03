@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.SearchView;
 
@@ -83,6 +84,7 @@ public class SearchPlayerActivity extends AppCompatActivity implements SearchPla
         getMenuInflater().inflate(R.menu.search_player,menu);
         MenuItem item = menu.findItem(R.id.search);
         SearchView searchView = (SearchView)item.getActionView();
+        searchView.setId(View.generateViewId());
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -122,7 +124,7 @@ public class SearchPlayerActivity extends AppCompatActivity implements SearchPla
     public void OnItemClick(int position) {
         Bundle bundle = new Bundle();
         Intent intent = new Intent(SearchPlayerActivity.this, OtherProfiles.class);
-        bundle.putString("username", userList.get(position).getUsername());
+        bundle.putString("currentUsername", userList.get(position).getUsername());
         intent.putExtras(bundle);
         startActivity(intent);
     }
