@@ -277,6 +277,9 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    /**
+     * Intents for each of the ways to navigate to other profiles
+     */
     public void onClickFirst(View view) {
         Bundle bundle = new Bundle();
         Intent intent = new Intent(LeaderboardActivity.this, OtherProfiles.class);

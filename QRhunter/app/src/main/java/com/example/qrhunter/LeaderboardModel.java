@@ -1,5 +1,10 @@
 package com.example.qrhunter;
 
+/**
+ * Abstraction class used for comparing between in LeaderBoardCompare
+ * and used in local userlists inside LeaderBoardActivity
+ * @author X
+ */
 public class LeaderboardModel {
 
     private String username;
