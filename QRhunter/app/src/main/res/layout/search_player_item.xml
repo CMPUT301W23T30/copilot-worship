@@ -24,11 +24,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/profile_name"
-                    android:text="default name"
+                    android:text="No Players Found"
                     android:fontFamily="@font/nunito_bold"
                     android:textSize="25dp"
-                    android:layout_toRightOf="@+id/profile_picture"
-            >
+                    android:layout_toRightOf="@+id/profile_picture">
 
             </TextView>
         </RelativeLayout>

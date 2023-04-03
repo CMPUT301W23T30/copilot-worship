@@ -19,6 +19,7 @@
         android:id="@+id/QRmon_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxWidth="250dp"
         android:text="TextView"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -49,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:text="TextView"
+            android:text="N/A"
             android:textSize="14sp" />
 
     </LinearLayout>
@@ -60,7 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:text="TextView"
+        android:text=""
         android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@+id/QRmon_location"
         app:layout_constraintTop_toBottomOf="@+id/QRmon_name" />
@@ -96,7 +97,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:paddingVertical="10dp"
+        android:paddingTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
