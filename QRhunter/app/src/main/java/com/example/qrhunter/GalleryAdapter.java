@@ -98,6 +98,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         TextView score = holder.score;
 
         //TODO set QRCode Image
+        image.setImageBitmap(qrCode.getImage(this.context));
 
         name.setText(qrCode.getName());
         //Concactenation
