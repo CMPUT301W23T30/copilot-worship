@@ -43,7 +43,7 @@ public class CharacterImage {
         float lightnessValue = (float) 0.85;
 
         float[] hsl = new float[3];  // Hue-Saturation-Lightness
-        hsl[0] = (float) (Math.random() * 360);  // Hue
+        hsl[0] = (float) (hueValue);  // Hue
         hsl[1] = satValue;  // Saturation
         hsl[2] = lightnessValue;  // Lightness
 

@@ -651,6 +651,10 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences setting = getSharedPreferences("UserInfo", 0);
             String id = setting.getString("id", "no-id");
             db.storeQRPicture(id, hash, image);
+            //Reload to prevent duping
+            Intent i = new Intent(MainActivity.this, MainActivity.class);
+            startActivity(i);
+
         }
     }
 
@@ -676,7 +680,14 @@ public class MainActivity extends AppCompatActivity {
                 })
 
                 // A null listener allows the button to dismiss the dialog and take no further action.
-                .setNegativeButton(android.R.string.no, null)
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //Reload to prevent duping
+                        Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                        startActivity(intent);
+                    }
+                })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }

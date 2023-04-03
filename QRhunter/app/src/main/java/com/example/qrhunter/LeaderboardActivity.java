@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
@@ -236,6 +238,9 @@ public class LeaderboardActivity extends AppCompatActivity implements Leaderboar
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //NO MORE DARK MODE, Since users can "re enter" the app through a leaderboard reload
+        //When they find a null player in the old leaderboard this is essential
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaderboard);
 

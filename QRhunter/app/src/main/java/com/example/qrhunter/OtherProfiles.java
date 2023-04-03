@@ -52,7 +52,7 @@ public class OtherProfiles extends AppCompatActivity {
                         startActivity(intent);
                     }
                 })
-                .setMessage("Player not found \nYour leaderboard might not be up to date \nDo you want to refresh it?")
+                .setMessage("Player " + currentUsername + " not found \nYour leaderboard might not be up to date \nDo you want to refresh it?")
                 .show();
     }
     @Override

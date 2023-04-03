@@ -31,6 +31,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.w3c.dom.Document;
+
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -351,11 +353,18 @@ public class Database {
      * @param hash
      */
     public void removeQrCodesFromPlayer(String id, String hash){
-        playersCollection
-                .document(id)
-                .collection("QRCodes")
-                .document(hash)
-                .delete();
+        db.runTransaction(new Transaction.Function<Integer>() {
+            @Nullable
+            @Override
+            public Integer apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+                DocumentSnapshot player = transaction.get(playersCollection.document(id));
+                DocumentSnapshot qr = transaction.get(qrCodeCollection.document(hash));
+                Long newScore = player.getLong("totalScore") - qr.getLong("score");
+                transaction.update(playersCollection.document(id), "totalScore", newScore);
+                transaction.delete(playersCollection.document(id).collection("QRCodes").document(hash));
+                return newScore.intValue();
+            }
+        });
     }
 
 

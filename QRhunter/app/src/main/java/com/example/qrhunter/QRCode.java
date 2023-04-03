@@ -1,5 +1,7 @@
 package com.example.qrhunter;
 
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -83,12 +85,56 @@ public class QRCode implements Parcelable {
         return 0;
     }
 
+
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeString(hash);
         dest.writeString(name);
         dest.writeParcelable(location, flags);
         dest.writeInt(score);
+    }
+
+    /**
+     * Gets the unique-ish image of the qrCode
+     * @param context Conext for where it will be displayed
+     * @return Bitmap of QRCode representation
+     */
+    public Bitmap getImage(Context context){
+
+        String digits = getDigitsHash();
+        String armsFileName = "arms" + digits.substring(0,1);
+        String legsFileName = "legs" + digits.substring(1,2);
+        String eyesFileName = "eyes" + digits.substring(2,3);
+        String mouthFileName = "mouth" + digits.substring(3,4);
+        String hatFileName = "hat" + digits.substring(4,5);
+        String firstSixDigitsString = digits.substring(0, 6);
+        CharacterImage cI = new CharacterImage(context, armsFileName,
+                legsFileName, eyesFileName, mouthFileName, hatFileName,
+                firstSixDigitsString);
+        return  cI.getCharacterImage();
+    }
+
+    /**
+     * Turns hash into digits only
+     * For image to be somewhat unique
+     */
+    public String getDigitsHash(){
+        String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String digits = "";
+        for(int i = 0; i < hash.length(); i++){
+            String s = hash.substring(i, i+1);
+            try{
+                digits += Integer.parseInt(s);
+            } catch (NumberFormatException e){
+                digits += alphabet.indexOf(s);
+            }
+        }
+
+        //In case the string is not long enough we just repeat it
+        while (digits.length() < 6){
+            digits += digits;
+        }
+        return digits;
     }
 }
 

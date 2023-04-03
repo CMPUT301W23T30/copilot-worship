@@ -50,6 +50,7 @@ public class QrDisplayActivity extends AppCompatActivity {
         TextView qrType = findViewById(R.id.qr_type);
 
         qrName.setText(qrCode.getName());
+        qrImage.setImageBitmap(qrCode.getImage(this));
 
         qrPower.setText(String.valueOf(qrCode.getScore()));
         qrHeight.setText(qrHeightStat);
@@ -74,6 +75,7 @@ public class QrDisplayActivity extends AppCompatActivity {
                 Bundle bundle = new Bundle();
                 bundle.putString("currentUsername",currentPlayer);
                 bundle.putString("hash",qrCode.getHash());
+                bundle.putParcelable("qr", qrCode);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
