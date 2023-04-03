@@ -80,10 +80,7 @@ public class SearchPlayerTest {
         solo.clickOnView(solo.getView(R.id.navbar_search_button));
         solo.assertCurrentActivity("Wrong Activity", SearchPlayerActivity.class);
 
-        // I can't seem to get click on view to work,
-        // in this case search is in a menu as an icon with no text so "" refers to
-        // the blank search item in the menu
-        solo.clickOnMenuItem("");
+        solo.clickOnActionBarItem(R.id.search);
         View searchView = solo.getCurrentViews(SearchView.class).get(0);
         solo.clickOnView(searchView);
         solo.enterText(0,"Player-2");
@@ -102,15 +99,30 @@ public class SearchPlayerTest {
         solo.clickOnView(solo.getView(R.id.navbar_search_button));
         solo.assertCurrentActivity("Wrong Activity", SearchPlayerActivity.class);
 
-        // I can't seem to get click on view to work,
-        // in this case search is in a menu as an icon with no text so "" refers to
-        // the blank search item in the menu
-        solo.clickOnMenuItem("");
+        solo.clickOnActionBarItem(R.id.search);
         View searchView = solo.getCurrentViews(SearchView.class).get(0);
         solo.clickOnView(searchView);
         solo.enterText(0,"This player doesn't exist");
         assertFalse(solo.searchText("This player doesn't exist",2));
         solo.enterText(0,"");
         assertTrue(solo.searchText("Player-1"));
+    }
+
+    /**
+     * Test intent shift on clickable searched profile
+     * Enter activity and search for a player and then see if that activity is current
+     * @throws Exception
+     */
+    @Test
+    public void otherProfileIntentTest() throws Exception {
+        solo.clickOnView(solo.getView(R.id.navbar_search_button));
+        solo.assertCurrentActivity("Wrong Activity", SearchPlayerActivity.class);
+
+        solo.clickOnActionBarItem(R.id.search);
+        View searchView = solo.getCurrentViews(SearchView.class).get(0);
+        solo.clickOnView(searchView);
+        solo.enterText(0,"Player-1");
+        solo.clickOnText("Player-1");
+        solo.assertCurrentActivity("Wrong Activity", OtherProfiles.class);
     }
 }
