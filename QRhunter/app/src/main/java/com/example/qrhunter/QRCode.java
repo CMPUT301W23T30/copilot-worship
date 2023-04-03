@@ -85,7 +85,7 @@ public class QRCode implements Parcelable {
         return 0;
     }
 
-    
+
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeString(hash);
@@ -129,8 +129,12 @@ public class QRCode implements Parcelable {
                 digits += alphabet.indexOf(s);
             }
         }
-        return digits;
 
+        //In case the string is not long enough we just repeat it
+        while (digits.length() < 6){
+            digits += digits;
+        }
+        return digits;
     }
 }
 
