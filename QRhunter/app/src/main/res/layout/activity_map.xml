@@ -48,16 +48,4 @@
         android:paddingTop="7dp"
         android:paddingLeft="2dp"/>
 
-    <Button
-        android:id="@+id/map_add_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:background="@color/transparent"
-        android:drawableBottom="@drawable/navbar_add"
-        android:contentDescription="Used to start scanning qr codes"/>
-
-
 </RelativeLayout>
