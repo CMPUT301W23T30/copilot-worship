@@ -139,7 +139,17 @@ public class AddPlayerActivity extends AppCompatActivity {
                 return;
             }
             String email = emailEditText.getText().toString();
+            if (email.length() <= 0 ) {
+                errorText.setText("You need an email silly!");
+
+                return;
+            }
             String number = phoneEditText.getText().toString();
+            if (number.length() <= 0 ) {
+                errorText.setText("Forgetting something?");
+
+                return;
+            }
             Player newUser = new Player(username,email, Integer.parseInt(number), new ArrayList<>());
 
             //making Sure it is unique
