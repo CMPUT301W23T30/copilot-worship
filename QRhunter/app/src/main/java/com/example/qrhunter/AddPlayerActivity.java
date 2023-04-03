@@ -206,10 +206,17 @@ public class AddPlayerActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+    This method creates and operates the back button
+     */
     public boolean onCreateOptionsMenu(Menu menu) {
         return true;
     }
 
+    /**
+     * This method generates a random QReature using the CharacterImage class, and returns it as a Bitmap
+     * @return Bitmap of the random QReature
+     */
     private Bitmap generateRandomQReature() {
         String armsFileName = "arms" + (int) (Math.random() * 10);
         String legsFileName = "legs" + (int) (Math.random() * 10);
@@ -223,7 +230,10 @@ public class AddPlayerActivity extends AppCompatActivity {
         return testCharacter.getCharacterImage();
     }
 
-    // https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
+    /**
+     * This method opens the gallery and allows the user to select an image as their profile picture.
+     * Credit to: https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
+     */
     private void imageChooser()
     {
         Intent i = new Intent();
@@ -233,6 +243,7 @@ public class AddPlayerActivity extends AppCompatActivity {
         launchSomeActivity.launch(i);
     }
 
+    // Create an ActivityResultLauncher for the Select an Image Activity
     ActivityResultLauncher<Intent> launchSomeActivity
             = registerForActivityResult(
             new ActivityResultContracts
