@@ -85,6 +85,7 @@ public class QRCode implements Parcelable {
         return 0;
     }
 
+    
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeString(hash);
@@ -92,6 +93,12 @@ public class QRCode implements Parcelable {
         dest.writeParcelable(location, flags);
         dest.writeInt(score);
     }
+
+    /**
+     * Gets the unique-ish image of the qrCode
+     * @param context Conext for where it will be displayed
+     * @return Bitmap of QRCode representation
+     */
     public Bitmap getImage(Context context){
 
         String digits = getDigitsHash();
