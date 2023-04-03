@@ -115,10 +115,12 @@ public class QrDisplayActivity extends AppCompatActivity {
      * @param qrCode The qrcode whose states we want to know
      */
     public void setQRStats(QRCode qrCode){
-        String rawHeight = df.format(qrCode.getLocation().getLongitude()).replace(".", "");
+        Double height = Math.abs(qrCode.getLocation().getLongitude());
+        String rawHeight = df.format(height);
         qrHeightStat = "" + rawHeight.charAt(0) + "." + rawHeight.charAt(1) + rawHeight.charAt(2) + " cm";
 
-        String rawWeight = df.format(qrCode.getLocation().getLatitude()).replace(".", "");
+        Double weight = Math.abs(qrCode.getLocation().getLatitude());
+        String rawWeight = df.format(weight);
         qrWeightStat = "" + rawWeight.charAt(0) + rawWeight.charAt(1) + "." + rawWeight.charAt(2) + rawWeight.charAt(3) + "G";
 
         Integer rawType = qrCode.getScore();

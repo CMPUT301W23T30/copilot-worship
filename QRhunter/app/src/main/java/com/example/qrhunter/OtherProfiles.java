@@ -60,9 +60,8 @@ public class OtherProfiles extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_other_profiles);
 
-        Log.d("TASK", "ENTERED NEW PROFILE");
         Bundle bundle = getIntent().getExtras();
-        currentUsername = bundle.getString("username");
+        currentUsername = bundle.getString("currentUsername");
         Database db = new Database();
 
 
@@ -127,8 +126,6 @@ public class OtherProfiles extends AppCompatActivity {
         });
 
 
-
-
         // GALLERY Button
         ImageButton galleryButton = findViewById(R.id.other_player_gallery);
 
@@ -154,7 +151,6 @@ public class OtherProfiles extends AppCompatActivity {
                 finish();
                 return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

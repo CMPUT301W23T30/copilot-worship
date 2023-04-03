@@ -10,19 +10,32 @@
     tools:context=".QrDisplayActivity">
 
     <TextView
-        android:id="@+id/qr_name"
+        android:id="@+id/qr_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="46dp"
         android:backgroundTint="@color/white"
-        android:text="QRNAME"
+        android:text="QR STATS"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="34sp" />
 
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/qr_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="46dp"
+            android:backgroundTint="@color/white"
+            android:text="QRNAME"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="20dp" />
 
         <TextView
             android:id="@+id/qrspace"
@@ -30,7 +43,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/qr_name"/>
 
         <ImageView
             android:id="@+id/qr_image"
