@@ -24,6 +24,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Map;
 
+/**
+ * Other Profiles Activity
+ * Shows the profile info of another Player
+ */
 public class OtherProfiles extends AppCompatActivity {
     private Player currentPlayer;
     private String currentUsername;
@@ -143,7 +147,13 @@ public class OtherProfiles extends AppCompatActivity {
         // Set the action bar to show the Up button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-    // enable back button
+
+    /**
+     * Back button to previous Activity
+     * @param item The menu item that was selected.
+     *
+     * @return boolean
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
