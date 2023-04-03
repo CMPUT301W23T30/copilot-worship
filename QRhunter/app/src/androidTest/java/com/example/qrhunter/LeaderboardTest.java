@@ -2,6 +2,7 @@ package com.example.qrhunter;
 
 import android.app.Activity;
 import android.widget.TextView;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
@@ -73,5 +74,26 @@ public class LeaderboardTest {
         TextView textView = (TextView)solo.getView(R.id.first_place_name);
         String firstPlaceUsername = textView.getText().toString();
         assertTrue(solo.searchText(firstPlaceUsername));
+    }
+
+    /**
+     * test intent shift for recyclerview
+     * Enter activity and click on one of the profiles in the userlist, check if intent shift correctly
+     * check if player name has continuity
+     * @throws Exception
+     */
+    @Test
+    public void intentListTest() throws Exception {
+        solo.clickOnView(solo.getView(R.id.navbar_ranking_button));
+        solo.assertCurrentActivity("Wrong Activity", LeaderboardActivity.class);
+
+        RecyclerView recyclerView = (RecyclerView)solo.getView(R.id.leaderboard);
+        solo.waitForView(recyclerView);
+        TextView textView = (TextView)recyclerView.getChildAt(0).findViewById(R.id.profile_name);
+        String profileName = textView.getText().toString();
+
+        solo.clickOnView(recyclerView.getChildAt(0));
+        solo.assertCurrentActivity("Wrong Activity", OtherProfiles.class);
+        assertTrue(solo.searchText(profileName));
     }
 }
