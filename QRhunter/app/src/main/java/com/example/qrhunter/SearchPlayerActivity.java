@@ -63,8 +63,7 @@ public class SearchPlayerActivity extends AppCompatActivity implements SearchPla
                             // storing that data in our array list
                             userList1.add(user);
                         }
-                        userList.addAll(userList1);
-                        adapter = new SearchPlayerAdapter(userList, SearchPlayerActivity.this, SearchPlayerActivity.this::OnItemClick);
+                        adapter = new SearchPlayerAdapter(userList1, SearchPlayerActivity.this, SearchPlayerActivity.this::OnItemClick);
                         recyclerView.setAdapter(adapter);
                     }
                 });
@@ -121,7 +120,7 @@ public class SearchPlayerActivity extends AppCompatActivity implements SearchPla
     public void OnItemClick(int position) {
         Bundle bundle = new Bundle();
         Intent intent = new Intent(SearchPlayerActivity.this, OtherProfiles.class);
-        bundle.putString("username", userList.get(position).getUsername());
+        bundle.putString("currentUsername", userList.get(position).getUsername());
         intent.putExtras(bundle);
         startActivity(intent);
     }
