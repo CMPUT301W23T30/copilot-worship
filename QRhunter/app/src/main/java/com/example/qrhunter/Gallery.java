@@ -48,11 +48,12 @@ public class Gallery extends AppCompatActivity {
         player = bundle.getParcelable("Player");
         username = bundle.getString("Username");
         qrCodeComments = bundle.getParcelableArrayList("QRArray");
-        qrCodeList = player.getQrCodes();
+
 
         //Find number of QRCode Player has found
-        if (qrCodeList != null){
+        if (!qrCodeComments.isEmpty()){
             galleryCount.setText(String.valueOf(qrCodeList.size()));
+            qrCodeList = player.getQrCodes();
         }
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.gallery_recycler_view);
