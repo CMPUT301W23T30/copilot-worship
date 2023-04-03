@@ -14,9 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 /**
- * Gallery Activity
- * Displays the QRCodes owned by a Player using GalleryAdapter
- * Currently displays the QRCodes Name, Location, and Score
+ * Other Gallery Activity
+ * Displays the QRCodes owned by another Player using OtherGalleryAdapter
  */
 public class OtherGallery extends AppCompatActivity {
     Player player;
@@ -61,7 +60,13 @@ public class OtherGallery extends AppCompatActivity {
         // Set the action bar to show the Up button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-    // enable back button
+
+    /**
+     * Back button to previous Activity
+     * @param item The menu item that was selected.
+     *
+     * @return boolean
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

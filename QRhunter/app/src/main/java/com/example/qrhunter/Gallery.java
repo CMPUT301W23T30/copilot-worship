@@ -28,7 +28,7 @@ import java.util.ArrayList;
 /**
  * Gallery Activity
  * Displays the QRCodes owned by a Player using GalleryAdapter
- * Currently displays the QRCodes Name, Location, and Score
+ * Includes a drop down feature to show additional QR info
  */
 public class Gallery extends AppCompatActivity {
     Player player;
