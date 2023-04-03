@@ -159,8 +159,6 @@ public class MainActivity extends AppCompatActivity {
      * - If this is just displaying a user (that is a username was sent through a bundle
      * then just display the user)
      *
-     * TODO have this return whether the user is the current user or not so we can re use this for
-     * other things apart from the main page
      *
      * @param bundle bundle of data that will include a username if is sent through another activity
      * @param db Database instance to query from
@@ -173,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
                                squishyQRTextView) {
         //https://stackoverflow.com/questions/10209814/saving-user-information-in-app-settings
         //Roughly following
-        //TODO properly cite
         if (bundle != null) {
             username = bundle.getString("username");
             userText.setText(username);
@@ -205,7 +202,9 @@ public class MainActivity extends AppCompatActivity {
                                     System.out.println(username + "ID PUTTED");
                                     editor.apply();
                                 } else {
-                                    //TODO add an error message here
+                                    new AlertDialog.Builder(MainActivity.this)
+                                            .setMessage("Could not register as a new user\nPlease restart the app and check wifi connection")
+                                                    .show();
                                     Log.d(TAG, "Failed to get player count for new player");
                                     username = "Player-?";
                                 }

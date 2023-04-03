@@ -109,8 +109,7 @@ public class Database {
      * @param callback Listener for player info from database
      */
     public void getPlayerCollection(String id, final PlayerCollectionListener callback){
-        //TODO Sometimes id is null? I dont know why but it shouldnt affect anything just trying not
-        //to crash here
+
         try {
             playersCollection.document(id).collection("QRCodes").addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
@@ -136,9 +135,6 @@ public class Database {
         }
         catch (Exception e){
             Log.d("DB TEST", "Player Id was null: " + e.getMessage() + " ID : " +  id);
-
-
-
         }
     }
 

@@ -91,7 +91,6 @@ public class OtherProfiles extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(byte[] bytes) {
                                     //From https://stackoverflow.com/questions/7359173/create-bitmap-from-bytearray-in-android
-                                    //TODO Cite properly
                                     ImageView profileCircle = findViewById(R.id.other_profile_icon);
                                     BitmapFactory.Options options = new BitmapFactory.Options();
                                     options.inMutable = true;

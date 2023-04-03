@@ -110,7 +110,7 @@ public class Player implements Parcelable {
     public void addQrCode(QRCode qrcode){this.qrCodes.add(qrcode);}
 
     /**
-     * TODO Write tests for this
+     *
      * @return total score of player
      */
     public int getTotalScore() {

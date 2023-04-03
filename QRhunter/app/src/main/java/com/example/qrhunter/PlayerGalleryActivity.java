@@ -36,7 +36,6 @@ public class PlayerGalleryActivity extends AppCompatActivity {
          ArrayList<Player> playerArrayList = new ArrayList<Player>();
          ListView galleryView;
 
-    //TODO  make better player gallery xml
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
