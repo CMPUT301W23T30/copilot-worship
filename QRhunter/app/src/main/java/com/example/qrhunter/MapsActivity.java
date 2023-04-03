@@ -14,6 +14,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ToggleButton;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -36,6 +37,7 @@ import com.google.common.collect.Maps;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +51,6 @@ public class MapsActivity extends FragmentActivity
         LocationListener {
 
     private GoogleMap mMap;
-    private Button addQRButton;
     private Button backButton;
     private Button myLocationButton;
     private Button searchButton;
@@ -72,6 +73,8 @@ public class MapsActivity extends FragmentActivity
 
     // List of markers
     private List<Marker> markerList = new ArrayList<Marker>();
+    private ActivityResultLauncher<ScanOptions> barLauncher;
+
 
 
     @Override
@@ -155,21 +158,6 @@ public class MapsActivity extends FragmentActivity
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-
-
-        // Add QR Button implementation + onClick
-        // TODO Add Camera activity
-//        addQRButton = findViewById(R.id.map_add_button);
-//
-//        addQRButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
-//        });
-
-        // TODO add functionality to navigate to QR code's detailed page
-
 
     }
 
