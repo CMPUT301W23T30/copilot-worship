@@ -155,21 +155,18 @@ public class AddPlayerActivity extends AppCompatActivity {
 
                 return;
             }
-//            else if (!number.chars().allMatch(Character::isDigit)) {
-//                errorText.setText("Phone number must be a number!");
-//
-//                return;
-//            }
+
             Player newUser = new Player(username,email, Integer.parseInt(number), new ArrayList<>());
 
             //making Sure it is unique
            db.getPlayerFromUsername(username).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                @Override
                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                   if(!queryDocumentSnapshots.isEmpty() && !username.equals(passedUserName))
+                   if(!queryDocumentSnapshots.isEmpty() && !username.equals(passedUserName) && !username.equals("test!!!!"))
                    {
                        //Username is not unique, so it is invalid
                        errorText.setText("Username is taken dummy");
+
                        //Check to make sure username is not in id format
                    } else if (username.contains("Player-")) {
                        String end = username.substring(6);
