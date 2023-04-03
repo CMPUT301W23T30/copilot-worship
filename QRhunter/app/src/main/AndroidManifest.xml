@@ -28,10 +28,12 @@
             android:exported="false" />
         <activity
             android:name=".PlayerGalleryActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:label="Gallery"/>
         <activity
             android:name=".LeaderboardActivity"
-            android:exported="false">
+            android:exported="false"
+            android:label="Leaderboard">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -70,7 +72,8 @@
         </activity>
         <activity
             android:name=".Gallery"
-            android:exported="false">
+            android:exported="false"
+            android:label="Gallery">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -78,7 +81,7 @@
         <activity
             android:name=".AddPlayerActivity"
             android:exported="false"
-            android:label="Add Player" />
+            android:label="Add/Edit Player" />
         <activity
             android:name=".MapsActivity"
             android:exported="false">
@@ -88,7 +91,8 @@
         </activity>
         <activity
             android:name=".SearchPlayerActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:label="Search Player"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">
