@@ -54,6 +54,7 @@ public class QrDisplayActivity extends AppCompatActivity {
         TextView buttonTitle = findViewById(R.id.button_title);
 
         qrName.setText(qrCode.getName());
+        qrImage.setImageBitmap(qrCode.getImage(this));
 
         qrPower.setText(String.valueOf(qrCode.getScore()));
 
@@ -83,6 +84,7 @@ public class QrDisplayActivity extends AppCompatActivity {
                 Bundle bundle = new Bundle();
                 bundle.putString("currentUsername",currentPlayer);
                 bundle.putString("hash",qrCode.getHash());
+                bundle.putParcelable("qr", qrCode);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }

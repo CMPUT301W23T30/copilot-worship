@@ -49,7 +49,7 @@ import java.util.HashMap;
 /**
  * This class is used to edit player information
  * It is called from the MainActivity class.
- * @author Maarij
+ * @author Maarij and Sean Mandu
  */
 public class AddPlayerActivity extends AppCompatActivity {
     String passedUserName, passedEmail, passedPhone;
@@ -84,6 +84,12 @@ public class AddPlayerActivity extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     * This method is called when the activity is created.
+     * It sets up the buttons and text fields.
+     * @param savedInstanceState The saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -194,7 +200,12 @@ public class AddPlayerActivity extends AppCompatActivity {
         // Set the action bar to show the Up button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-    // enable back button
+
+    /**
+     * This method operates the back button
+     * @param item The item that was selected (in this case the back button)
+     * @return boolean of whether the back button was selected
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -206,10 +217,17 @@ public class AddPlayerActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+    This method creates the back button menu
+     */
     public boolean onCreateOptionsMenu(Menu menu) {
         return true;
     }
 
+    /**
+     * This method generates a random QReature using the CharacterImage class, and returns it as a Bitmap
+     * @return Bitmap of the random QReature
+     */
     private Bitmap generateRandomQReature() {
         String armsFileName = "arms" + (int) (Math.random() * 10);
         String legsFileName = "legs" + (int) (Math.random() * 10);
@@ -223,7 +241,10 @@ public class AddPlayerActivity extends AppCompatActivity {
         return testCharacter.getCharacterImage();
     }
 
-    // https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
+    /**
+     * This method opens the gallery and allows the user to select an image as their profile picture.
+     * Credit to: https://www.geeksforgeeks.org/how-to-select-an-image-from-gallery-in-android/
+     */
     private void imageChooser()
     {
         Intent i = new Intent();
@@ -233,6 +254,7 @@ public class AddPlayerActivity extends AppCompatActivity {
         launchSomeActivity.launch(i);
     }
 
+    // Create an ActivityResultLauncher for the Select an Image Activity
     ActivityResultLauncher<Intent> launchSomeActivity
             = registerForActivityResult(
             new ActivityResultContracts
@@ -269,7 +291,7 @@ public class AddPlayerActivity extends AppCompatActivity {
      * Saves the picture to the player profile
      * Both arguments should have the new player information
      * @param username username of the player
-     * @param newUser Plyer object of the player
+     * @param newUser Player object of the player
      */
     public void savePicture(String username, Player newUser){
 

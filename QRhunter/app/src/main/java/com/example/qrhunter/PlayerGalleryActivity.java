@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -44,31 +45,40 @@ public class PlayerGalleryActivity extends AppCompatActivity {
         Database db = new Database();
         Bundle bundle = getIntent().getExtras();
         String currentUsername = bundle.getString("currentUsername");
-
+        QRCode qr = bundle.getParcelable("qr");
 
         galleryView = findViewById(R.id.player_list);
 
         ImageView qrImage = findViewById(R.id.shared_qr_image);
-
+        qrImage.setImageBitmap(qr.getImage(this));
+        galleryAdapter = new PlayerGalleryAdapter(
+                PlayerGalleryActivity.this, playerArrayList);
+        galleryView.setAdapter(galleryAdapter);
         //Query for players associated with qr
-        db.getPlayersFromQRCode(bundle.getString("hash"))
+        db.getPlayersFromQRCode(qr.getHash())
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {System.out.println(queryDocumentSnapshots.size());
+
                         for(QueryDocumentSnapshot doc : queryDocumentSnapshots){
                             //This page will not display all the QR Codes the player
                             // has so we can just set it to a new arrayList
-                            Object number = doc.get("number");
-                            if(number == null){number = "0";}
-                            Player p = new Player(doc.getString("username"),
-                                    doc.getString("email"),
-                                    Integer.valueOf((String) number), new ArrayList<>());
-                            playerArrayList.add(p);
 
+                            db.getPlayer(doc.getString("id")).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot doc) {
+                                    Long number = doc.getLong("number");
+                                    if(number == null){number = Long.valueOf(0);}
+                                    Player p = new Player(doc.getString("username"),
+                                            doc.getString("email"),
+                                            number.intValue(), new ArrayList<>());
+                                    playerArrayList.add(p);
+                                    galleryAdapter.notifyDataSetChanged();
+
+                                }
+                            });
                         }
-                        galleryAdapter = new PlayerGalleryAdapter(
-                                PlayerGalleryActivity.this, playerArrayList);
-                        galleryView.setAdapter(galleryAdapter);
+
 
                         galleryView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override

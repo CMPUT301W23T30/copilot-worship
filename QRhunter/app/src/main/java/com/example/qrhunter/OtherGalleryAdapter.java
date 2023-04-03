@@ -62,7 +62,12 @@ public class OtherGalleryAdapter extends RecyclerView.Adapter<OtherGalleryAdapte
         TextView latitude = holder.latitude;
         TextView score = holder.score;
 
+        image.setImageBitmap(qrCode.getImage(this.context));
         name.setText(qrCode.getName());
+        //Concactenation
+        if(qrCode.getName().length() > 16){
+            name.setText(qrCode.getName().substring(0, 13) + "...");
+        }
         longitude.setText(df.format(qrCode.getLocation().getLongitude()));
         latitude.setText(df.format(qrCode.getLocation().getLatitude()));
         score.setText(String.format("%d", qrCode.getScore()));
