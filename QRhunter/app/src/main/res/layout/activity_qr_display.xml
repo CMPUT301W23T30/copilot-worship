@@ -17,7 +17,6 @@
         android:backgroundTint="@color/white"
         android:text="QR STATS"
         android:textAlignment="center"
-        android:textColor="@color/black"
         android:textSize="34sp" />
 
 
@@ -33,7 +32,6 @@
             android:backgroundTint="@color/white"
             android:text="QRNAME"
             android:textAlignment="center"
-            android:textColor="@color/black"
             android:textSize="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
