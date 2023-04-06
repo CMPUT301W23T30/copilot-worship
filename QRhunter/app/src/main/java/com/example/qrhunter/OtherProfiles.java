@@ -64,7 +64,7 @@ public class OtherProfiles extends AppCompatActivity {
         setContentView(R.layout.activity_other_profiles);
 
         Bundle bundle = getIntent().getExtras();
-        currentUsername = bundle.getString("username");
+        currentUsername = bundle.getString("currentUsername");
         Database db = new Database();
 
 
